@@ -1,0 +1,20 @@
+.guess_container_header img {
+  width: calc(100% - 2rem);
+  height: auto;
+  object-fit: cover;
+  margin: 1rem;
+}
+
+@media only screen and (min-width: 540px) {
+  .guess_container_header img {
+    width: 50rem;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .guess_container_header img {
+    height: 40rem;
+    width: 60rem;
+    object-fit: cover;
+  }
+}
