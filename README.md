@@ -39,15 +39,13 @@ I made a web application with React JS and Flask for the api-rest, I used mongod
 
 ![flags-App-Page](https://raw.githubusercontent.com/DiegoLibonati/DiegoLibonatiWeb/main/data/projects/Flask/Imagenes/flagsgame-3.jpg)
 
-![flags
-
-https://user-images.githubusercontent.com/99032604/199865818-646e2a21-c6a4-42d6-976d-3b4861c5990c.mp4
-
--App-Page](https://raw.githubusercontent.com/DiegoLibonati/DiegoLibonatiWeb/main/data/projects/Flask/Imagenes/flagsgame-4.jpg)
+![flags-App-Page](https://raw.githubusercontent.com/DiegoLibonati/DiegoLibonatiWeb/main/data/projects/Flask/Imagenes/flagsgame-4.jpg)
 
 ## Portfolio Link
 
 `https://diegolibonati.github.io/DiegoLibonatiWeb/#/projects?q=Flags%20Game%20app%20page`
 
 ## Video
+
+https://user-images.githubusercontent.com/99032604/199865818-646e2a21-c6a4-42d6-976d-3b4861c5990c.mp4
 
