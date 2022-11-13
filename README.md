@@ -48,7 +48,7 @@ I made a web application with React JS and Flask for the api-rest, I used mongod
 
 ## Portfolio Link
 
-`https://diegolibonati.github.io/DiegoLibonatiWeb/#/projects?q=Flags%20Game%20app%20page`
+`https://diegolibonati.github.io/DiegoLibonatiWeb/#/projects?q=Flags%20Game%20App%20Page`
 
 ## Video
 
