@@ -34,21 +34,9 @@ I made a web application with React JS and Flask for the api-rest, I used mongod
 
 1. Pymongo
 
-## Galery
-
-![flags-App-Page](https://raw.githubusercontent.com/DiegoLibonati/DiegoLibonatiWeb/main/data/projects/Flask/Imagenes/flagsgame-0.jpg)
-
-![flags-App-Page](https://raw.githubusercontent.com/DiegoLibonati/DiegoLibonatiWeb/main/data/projects/Flask/Imagenes/flagsgame-1.jpg)
-
-![flags-App-Page](https://raw.githubusercontent.com/DiegoLibonati/DiegoLibonatiWeb/main/data/projects/Flask/Imagenes/flagsgame-2.jpg)
-
-![flags-App-Page](https://raw.githubusercontent.com/DiegoLibonati/DiegoLibonatiWeb/main/data/projects/Flask/Imagenes/flagsgame-3.jpg)
-
-![flags-App-Page](https://raw.githubusercontent.com/DiegoLibonati/DiegoLibonatiWeb/main/data/projects/Flask/Imagenes/flagsgame-4.jpg)
-
 ## Portfolio Link
 
-`https://diegolibonati.github.io/DiegoLibonatiWeb/#/projects?q=Flags%20Game%20App%20Page`
+[`https://www.diegolibonati.com.ar/#/project/11`](https://www.diegolibonati.com.ar/#/project/11)
 
 ## Video
 
