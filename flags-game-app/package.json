@@ -1,7 +1,8 @@
 {
   "name": "flags-game-app",
-  "version": "0.1.0",
+  "version": "2.1.0",
   "private": true,
+  "proxy": "http://host.docker.internal:5050",
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.3.0",
@@ -36,5 +37,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
   }
 }

@@ -1,0 +1,44 @@
+version: "3.9"
+services:
+  flags-game-app:
+    build:
+      context: ./flags-game-app
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      - TZ="America/Argentina/Buenos_Aires"
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
+    volumes:
+      - "./flags-game-app:/home/app"
+    depends_on:
+      - flags-db
+    ports:
+      - "3000:3000"
+    
+  flags-server:
+    build:
+      context: ./flags-server
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      - TZ="America/Argentina/Buenos_Aires"
+      - PORT=5050
+    volumes:
+      - "./flags-server:/home/app"
+    depends_on:
+      - flags-db
+    ports:
+      - "5050:5050"
+
+  flags-db:
+    image: mongo
+    ports: 
+      - "27017:27017"
+    restart: always
+    volumes:
+      - db-data:/data/db
+      
+volumes: 
+  db-data:
+    driver: local

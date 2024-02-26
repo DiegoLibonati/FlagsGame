@@ -2,22 +2,11 @@
 
 ## Getting Started
 
-### For REACT JS
-
-1. Clone the repository
-2. Join to the correct path of the clone
-3. Install node_modules with npm install
-4. Use npm start to run the app page
-
-### For Flask
-
-1. Join to the correct path of the clone
-2. Run the server with python app.py
-
-### For MongoDB
-
-1. Start one window of CMD and run the command `mongod`
-2. Start another one window of CMD and run the command `mongo`
+1. Clone the repository with `git clone "repository link"`
+2. Go to the folder where you cloned your repository
+3. Run `docker-compose build --no-cache` in the terminal
+4. Once built, you must execute the command: `docker-compose up`
+5. You have to be standing in the folder containing the: `docker-compose.yml`
 
 ## Description
 
@@ -27,8 +16,10 @@ I made a web application with React JS and Flask for the api-rest, I used mongod
 
 1. REACT JS
 2. FLASK
-3. CSS
-4. MONGO DB
+3. PYTHON
+4. TYPESCRIPT
+5. CSS3
+6. MONGO DB
 
 ## Libraries used
 
