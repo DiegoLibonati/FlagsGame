@@ -1,4 +1,4 @@
-# Flags-App-Game
+# FlagsGame
 
 ## Getting Started
 
@@ -27,7 +27,7 @@ I made a web application with React JS and Flask for the api-rest, I used mongod
 
 ## Portfolio Link
 
-[`https://www.diegolibonati.com.ar/#/project/11`](https://www.diegolibonati.com.ar/#/project/11)
+[`https://www.diegolibonati.com.ar/#/project/FlagsGame`](https://www.diegolibonati.com.ar/#/project/FlagsGame)
 
 ## Video
 
