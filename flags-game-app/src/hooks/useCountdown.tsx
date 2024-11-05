@@ -1,69 +1,61 @@
-import { useState, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
+
 import { UseCountdown } from "../entities/entities";
 
-export const useCountdown = (timeleft: number, mode: string): UseCountdown => {
-  const [timer, setTimer] = useState<string>("00:00:10");
-  const Ref = useRef<NodeJS.Timeout | null>(null);
+import { parseZero } from "../helpers/parseZero";
 
-  const getTimeRemaining = (e: Date): Record<string, number> => {
-    const total = Date.parse(String(e)) - Date.parse(String(new Date()));
-    const seconds = Math.floor((total / 1000) % 60);
-    const minutes = Math.floor((total / 1000 / 60) % 60);
-    const hours = Math.floor((total / 1000 / 60 / 60) % 24);
-    return {
-      total,
-      hours,
-      minutes,
-      seconds,
-    };
-  };
+export const useCountdown = (timeleft: number): UseCountdown => {
+  const [secondsLeft, setSecondsLeft] = useState<number>(-1);
+  const [timerText, setTimerText] = useState<string>("00:00:00");
+  const [endTime, setEndTime] = useState<boolean>(false);
 
-  const startTimer = (e: Date): void => {
-    let { total, hours, minutes, seconds } = getTimeRemaining(e);
-    if (total >= 0) {
-      setTimer(
-        (hours > 9 ? hours : "0" + hours) +
-          ":" +
-          (minutes > 9 ? minutes : "0" + minutes) +
-          ":" +
-          (seconds > 9 ? seconds : "0" + seconds)
-      );
-    }
-  };
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  const clearTimer = (e: Date): void => {
-    if (mode === "hardcore") {
-      setTimer(`00:00:10`);
-    } else if (timeleft < 10) {
-      setTimer(`00:0${timeleft}:00`);
-    } else {
-      setTimer(`00:${timeleft}:00`);
-    }
+  const restASecond = (seconds: number) => {
+    if (endTime) return;
 
-    if (Ref.current) clearInterval(Ref.current);
-    const id = setInterval(() => {
-      startTimer(e);
+    timerRef.current = setTimeout(() => {
+      const newSecondsLeft = secondsLeft - 1;
+      setSecondsLeft(newSecondsLeft);
+      secondsToTimer(newSecondsLeft);
+
+      if (!newSecondsLeft) setEndTime(true);
     }, 1000);
-    Ref.current = id;
+
+    return () => clearTimeout(timerRef.current!);
   };
 
-  const getDeadTime = (): Date => {
-    let deadline = new Date();
+  const secondsToTimer = (seconds: number) => {
+    const hours = parseZero(Math.floor(seconds / 3600));
+    const minutes = parseZero(Math.floor((seconds % 3600) / 60));
+    const secs = parseZero(seconds % 60);
 
-    if (mode === "hardcore") {
-      deadline.setSeconds(deadline.getSeconds() + 0.18 * 60);
-    } else {
-      deadline.setSeconds(deadline.getSeconds() + timeleft * 60);
-    }
-    return deadline;
+    setSecondsLeft(seconds);
+    setTimerText(`${hours}:${minutes}:${secs}`);
   };
 
-  const onClickReset = (): void => {
-    clearTimer(getDeadTime());
+  const onCountdownReset = () => {
+    setTimerText("");
+    clearTimeout(timerRef.current!);
+    timerRef.current = null;
   };
+
+  useEffect(() => {
+    if (!timeleft) return;
+
+    secondsToTimer(timeleft);
+  }, [timeleft]);
+
+  useEffect(() => {
+    if (secondsLeft === -1) return;
+
+    restASecond(secondsLeft);
+  }, [secondsLeft]);
 
   return {
-    timer,
-    onClickReset,
+    timerText: timerText,
+    secondsLeft: secondsLeft,
+    endTime: endTime,
+    onCountdownReset: onCountdownReset,
   };
 };

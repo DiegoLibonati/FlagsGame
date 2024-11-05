@@ -1,107 +1,146 @@
-from flask import make_response, current_app, request
-from bson import json_util
-from werkzeug.security import check_password_hash, generate_password_hash
-from utils.utils import not_accepted
+from typing import Any
+
+from flask import make_response
+from flask import current_app 
+from flask import request
+from werkzeug.security import check_password_hash
+from werkzeug.security import generate_password_hash
+
+from utils.utils import get_list_users_by_sorted_score
+from utils.utils import get_list_modes
 
 
-def top_general() -> tuple:
-    top_ten_general = current_app.mongo.db.users.find({},{ "_id":0 ,"username": 1, "modes.general_score":1}).sort([("modes.0.general_score", -1)]).limit(10)
-    
-    response = json_util.dumps(top_ten_general)
+def top_general() -> dict[str, Any]:
+    mode = "general_score"
+    users = current_app.mongo.db.users.find()
+    data = get_list_users_by_sorted_score(users=users, mode_name_score=mode)
 
-    return make_response(
-        response,
-    200)
+    return make_response({
+        "message": "Successfully obtained the global top.",
+        "data": data
+    }, 200)
 
 
-def add_or_modify() -> tuple:
-    modes_keys = []
+def add_or_modify() -> dict[str, Any]:
+    method = request.method
 
     username = request.json['username'].strip()
     password = request.json['password'].strip()
     score_actual = request.json['score']
     mode_name = request.json['mode_name'].strip().lower()
 
-    username_db = current_app.mongo.db.users.find_one({"username": username})
+    if not username or not password or not score_actual or not mode_name:
+        return make_response({
+            "message": "The data entered are not valid.",
+            "fields": {
+                "username": username,
+                "password": password,
+                "score": score_actual,
+                "mode_name": mode_name
+            }
+        }, 400)
+    
     modes_db = current_app.mongo.db.modes.find()
+    modes_names = get_list_modes(modes=modes_db)
 
-    try:
+    if not mode_name in modes_names:
+        return make_response({
+            "message": "The mode entered does not exist in the database.",
+            "fields": {
+                "username": username,
+                "password": password,
+                "score": score_actual,
+                "mode_name": mode_name
+            }
+        }, 400)
+
+    username_db = current_app.mongo.db.users.find_one({"username": username})
+
+    # NOTE: PUT
+
+    if not username_db and method == "PUT":
+        return make_response({
+            "message": "No valid user was found based on the data entered.",
+            "fields": {
+                "username": username,
+                "password": password,
+                "score": score_actual,
+                "mode_name": mode_name
+            }
+        }, 400)
+    
+    if method == "PUT":
+        modes_keys = []
         user_db_password = username_db["password"]
         user_db_modes_played = username_db["modes"]
 
         for mode in user_db_modes_played:
-            for key, value in mode.items():
+            for key in mode.keys():
                 modes_keys.append(key)
-    except:
-        pass
+    
+    if username_db and method == "PUT" and not check_password_hash(user_db_password, password):
+        return make_response({
+            "message": "Password do not match with that username",
+            "fields": {
+                "username": username,
+                "password": password,
+                "score": score_actual,
+                "mode_name": mode_name
+            }
+        }, 400)
+    
+    if username_db and method == "PUT":
+        for index, mode_played in enumerate(user_db_modes_played):
+            for mode in mode_played.keys():
+                if mode == mode_name:
+                    new_general_score = (username_db["modes"][0]["general_score"] - username_db["modes"][index][mode_name]) + score_actual
+                    current_app.mongo.db.users.update_one({"username": username}, {"$set" : {f"modes.{index}.{mode}":score_actual, f"modes.0.general_score":new_general_score}})
 
-    if not username_db and request.method == "POST":
+        return make_response({
+            "message": "User successfully updated"
+        }, 201)
 
+
+    # NOTE: POST
+
+    if not username_db and method == "POST":
         modes = [{"general_score": score_actual}]
 
-        for mode in modes_db:
-            for key, value in mode.items():
-                if key == "name":
-                    value = str(value).lower()
-                    if value == mode_name:
-                        modes.append({str(value).lower(): score_actual})
-                    else:
-                        modes.append({str(value).lower(): 0})
+        for name in modes_names:
+            if name == mode_name:
+                modes.append({str(name).lower(): score_actual})
+            else:
+                modes.append({str(name).lower(): 0})
 
-        if username and password and (not username.isspace() and not password.isspace()):
-            current_app.mongo.db.users.insert_one({
-                'username': username,
-                'password': generate_password_hash(password),
-                'modes': modes
-            })
+        current_app.mongo.db.users.insert_one({
+            'username': username,
+            'password': generate_password_hash(password),
+            'modes': modes
+        })
 
-            response = json_util.dumps({"message":"User successfully added"},)
+        return make_response({
+            "message":"User successfully added"
+        }, 201)
+    
+    if username_db and method == "POST":
+        return make_response({
+            "message": "There is a user with that username.",
+            "fields": {
+                "username": username,
+                "password": password,
+                "score": score_actual,
+                "mode_name": mode_name
+            }
+        }, 400)
+    
+    return make_response({
+        "message": "No action was taken.",
+        "fields": {
+            "username": username,
+            "password": password,
+            "score": score_actual,
+            "mode_name": mode_name
+        }
+    }, 400)
 
-            return make_response(
-                response, 
-            201)
-
-        else:
-            
-            return not_accepted("Username or password invalid", 406)
-
-    elif username_db and request.method == "POST":
-
-        return not_accepted("There is a user with that username", 406)
-
-
-    elif username_db and request.method == "PUT" and mode_name in modes_keys:
-
-        if check_password_hash(user_db_password, password):
-
-            for index, mode_played in enumerate(user_db_modes_played):
-                for mode, _ in mode_played.items():
-                    if mode == mode_name:
-                        new_general_score = (username_db["modes"][0]["general_score"] - username_db["modes"][index][mode_name]) + score_actual
-                        current_app.mongo.db.users.update_one({"username": username}, {"$set" : {f"modes.{index}.{mode}":score_actual, f"modes.0.general_score":new_general_score}})
-
-                        response = json_util.dumps({"message":"User successfully updated"},)
-
-            return make_response(
-                response, 
-            201)
-        else:
-            return not_accepted("Password do not match with that username", 406)
-
-    elif username_db and request.method == "PUT" and not mode_name in modes_keys:
-        
-        new_general_score = score_actual + username_db["modes"][0]["general_score"]
-
-        if check_password_hash(user_db_password, password):
-
-            current_app.mongo.db.users.update_one({"username": username}, {"$push": {"modes":{mode_name: score_actual}, "$set": {"modes.0.general_score": new_general_score}}})
-
-        response = json_util.dumps({"message":"Successfully added mode"},)
-
-        return make_response(
-            response, 
-        201)
-
-    elif not username_db and request.method == "PUT":
-        return not_accepted("There is not a user with that username created", 406)
 

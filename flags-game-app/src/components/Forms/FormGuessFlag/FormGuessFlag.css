@@ -1,0 +1,39 @@
+.guess_container_form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-flow: column wrap;
+  width: 100%;
+  height: auto;
+}
+
+.guess_container_form input {
+  padding: 1rem;
+  width: 100%;
+  font-size: 1.5rem;
+  outline: none;
+  border: 0.1rem solid #fff;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+}
+
+.guess_container_form button {
+  padding: 1rem;
+  font-size: 2rem;
+  margin-top: 1rem;
+  border: none;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  cursor: pointer;
+}
+
+@media only screen and (min-width: 768px) {
+  .guess_container_form input {
+    width: 60rem;
+    font-size: 3rem;
+  }
+
+  .guess_container_form button {
+    font-size: 3rem;
+  }
+}

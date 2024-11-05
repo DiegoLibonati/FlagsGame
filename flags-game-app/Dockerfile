@@ -4,7 +4,7 @@ WORKDIR /home/app
 
 COPY package*.json ./
 
-RUN yarn install
+RUN yarn install --ignore-engines
 
 COPY . .
 

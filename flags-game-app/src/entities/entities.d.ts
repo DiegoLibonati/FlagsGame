@@ -1,49 +1,75 @@
 // Types
 
-export type FlagsContextT = {
-  navbar: boolean;
-  btnStart: boolean;
+export type FlagsContext = {
+  flags: Flag[];
   score: number;
-  flagsArr: Flag[];
-  topArr: User[];
-  actualMode: Mode | null;
-  flagsLoading: boolean;
-  modeLoading: boolean;
-  topLoading: boolean;
-  manageNavbar: () => void;
-  setBtnStart: React.Dispatch<React.SetStateAction<boolean>>;
-  setScore: React.Dispatch<React.SetStateAction<number>>;
-  setFlagsArr: React.Dispatch<React.SetStateAction<Flag[]>>;
-  setFlagsLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  setActualMode: React.Dispatch<React.SetStateAction<Mode | null>>;
-  setModeLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  setTopArr: React.Dispatch<React.SetStateAction<User[]>>;
-  setTopLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  currentFlagToGuess: Flag;
+  completeGuess: boolean;
+  handleSetFlags: (flags: Flag[]) => void;
+  handleSetScore: (score: number) => void;
+  handleClearFlags: () => void;
+  handleNextFlagToGuess: () => void;
+  handleClearCurrentFlagToGuess: () => void;
+  handleSetFlagToGuess: (flag: Flag) => void;
+};
+
+export type UiContext = {
+  navbar: boolean;
+  handleManageNavbar: () => void;
+};
+
+export type UsersContext = {
+  topUsers: User[];
+  handleSetTopUsers: (users: User[]) => void;
+  handleClearTopUsers: () => void;
+};
+
+export type ModesContext = {
+  modes: Mode[];
+  actualMode: Mode;
+  handleSetActualMode: (mode: Mode) => void;
+  handleSetModes: (modes: Mode[]) => void;
+  handleClearModes: () => void;
+  handleClearActualMode: () => void;
+};
+
+export type AlertContext = {
+  alert: Alert;
+  handleSetAlert: (alert: Alert) => void;
+  handleClearAlert: () => void;
+};
+
+export type Alert = {
+  type: string;
+  message: string;
 };
 
 export type Flag = {
-  _id?: {
-    $oid: string;
-  };
+  _id: string;
   image: string;
   name: string;
 };
 
 export type Mode = {
+  _id: string;
   name: string;
   description: string;
   timeleft: number;
+  multiplier: number;
 };
 
 export type User = {
+  _id: string;
   username: string;
   password: string;
-  modes: Mode[];
+  score: string;
 };
 
 export type UseCountdown = {
-  timer: string;
-  onClickReset: () => void;
+  timerText: string;
+  secondsLeft: number;
+  endTime: boolean;
+  onCountdownReset: () => void;
 };
 
 export type UseForm<T> = {
@@ -52,15 +78,25 @@ export type UseForm<T> = {
   onResetForm: () => void;
 };
 
-export type UseLogic = {
-  currentItem: Flag | null;
-  onSubmit: React.FormEventHandler<HTMLFormElement>;
-  setFinishGame: React.Dispatch<React.SetStateAction<boolean>>;
-};
-
 // Interfaces
 
 export interface FlagsProviderProps {
+  children: React.ReactNode;
+}
+
+export interface UiProviderProps {
+  children: React.ReactNode;
+}
+
+export interface UsersProviderProps {
+  children: React.ReactNode;
+}
+
+export interface ModesProviderProps {
+  children: React.ReactNode;
+}
+
+export interface AlertProviderProps {
   children: React.ReactNode;
 }
 
@@ -72,8 +108,6 @@ export interface HamburgerProps {
 export interface ListStatsProps {
   nametop: string;
   arrayTop: User[];
-  isLoadingTop: boolean;
-  actualMode: string;
 }
 
 export interface FlagProps {

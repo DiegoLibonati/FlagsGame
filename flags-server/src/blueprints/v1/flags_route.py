@@ -1,5 +1,6 @@
+from typing import Any
+
 from flask import Blueprint
-from flask_cors import cross_origin
 
 from controllers import flags_controller
 
@@ -8,17 +9,15 @@ flags_route = Blueprint("flags_route", __name__)
 
 
 @flags_route.route('/', methods = ['GET'])
-@cross_origin()
-def flags() -> tuple:
+def flags() -> dict[str, Any]:
     return flags_controller.flags()
 
 
 @flags_route.route('/newflag', methods=['POST'])
-def add_flag() -> tuple:
+def add_flag() -> dict[str, Any]:
     return flags_controller.add_flag()
 
 
 @flags_route.route('/<mode>', methods=["GET"])
-@cross_origin()
-def get_random_flags(mode: str) -> tuple:
+def get_random_flags(mode: str) -> dict[str, Any]:
     return flags_controller.get_random_flags(mode)

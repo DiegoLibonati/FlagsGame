@@ -1,0 +1,19 @@
+.section_btn_start {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: calc(100vh - 5rem);
+}
+
+.btn-start-game {
+  width: 15rem;
+  padding: 1rem;
+  font-size: 2rem;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  cursor: pointer;
+  border: none;
+  text-align: center;
+  text-decoration: none;
+}
