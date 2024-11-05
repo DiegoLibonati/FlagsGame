@@ -15,7 +15,7 @@ def parse_mode(mode: dict[str, Any]) -> dict[str, str]:
     return {key: str(value) if isinstance(value, ObjectId) else str(value) for key, value in mode.items()}
 
 
-def get_list_modes(modes: list[dict[str, Any]]) -> list[str]:
+def get_list_modes_names(modes: list[dict[str, Any]]) -> list[str]:
     return [mode.get('name').lower() for mode in modes]
 
 

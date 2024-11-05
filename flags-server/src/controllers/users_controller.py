@@ -7,7 +7,7 @@ from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
 
 from utils.utils import get_list_users_by_sorted_score
-from utils.utils import get_list_modes
+from utils.utils import get_list_modes_names
 
 
 def top_general() -> dict[str, Any]:
@@ -41,7 +41,7 @@ def add_or_modify() -> dict[str, Any]:
         }, 400)
     
     modes_db = current_app.mongo.db.modes.find()
-    modes_names = get_list_modes(modes=modes_db)
+    modes_names = get_list_modes_names(modes=modes_db)
 
     if not mode_name in modes_names:
         return make_response({
@@ -58,17 +58,6 @@ def add_or_modify() -> dict[str, Any]:
 
     # NOTE: PUT
 
-    if not username_db and method == "PUT":
-        return make_response({
-            "message": "No valid user was found based on the data entered.",
-            "fields": {
-                "username": username,
-                "password": password,
-                "score": score_actual,
-                "mode_name": mode_name
-            }
-        }, 400)
-    
     if method == "PUT":
         modes_keys = []
         user_db_password = username_db["password"]
@@ -77,61 +66,73 @@ def add_or_modify() -> dict[str, Any]:
         for mode in user_db_modes_played:
             for key in mode.keys():
                 modes_keys.append(key)
-    
-    if username_db and method == "PUT" and not check_password_hash(user_db_password, password):
-        return make_response({
-            "message": "Password do not match with that username",
-            "fields": {
-                "username": username,
-                "password": password,
-                "score": score_actual,
-                "mode_name": mode_name
-            }
-        }, 400)
-    
-    if username_db and method == "PUT":
-        for index, mode_played in enumerate(user_db_modes_played):
-            for mode in mode_played.keys():
-                if mode == mode_name:
-                    new_general_score = (username_db["modes"][0]["general_score"] - username_db["modes"][index][mode_name]) + score_actual
-                    current_app.mongo.db.users.update_one({"username": username}, {"$set" : {f"modes.{index}.{mode}":score_actual, f"modes.0.general_score":new_general_score}})
 
-        return make_response({
-            "message": "User successfully updated"
-        }, 201)
+        if not username_db:
+            return make_response({
+                "message": "No valid user was found based on the data entered.",
+                "fields": {
+                    "username": username,
+                    "password": password,
+                    "score": score_actual,
+                    "mode_name": mode_name
+                }
+            }, 400)
+    
+        if username_db and not check_password_hash(user_db_password, password):
+            return make_response({
+                "message": "Password do not match with that username",
+                "fields": {
+                    "username": username,
+                    "password": password,
+                    "score": score_actual,
+                    "mode_name": mode_name
+                }
+            }, 400)
+        
+        if username_db:
+            for index, mode_played in enumerate(user_db_modes_played):
+                for mode in mode_played.keys():
+                    if mode == mode_name:
+                        new_general_score = (username_db["modes"][0]["general_score"] - username_db["modes"][index][mode_name]) + score_actual
+                        current_app.mongo.db.users.update_one({"username": username}, {"$set" : {f"modes.{index}.{mode}":score_actual, f"modes.0.general_score":new_general_score}})
 
+            return make_response({
+                "message": "User successfully updated"
+            }, 201)
 
     # NOTE: POST
 
-    if not username_db and method == "POST":
-        modes = [{"general_score": score_actual}]
+    if method == "POST":
 
-        for name in modes_names:
-            if name == mode_name:
-                modes.append({str(name).lower(): score_actual})
-            else:
-                modes.append({str(name).lower(): 0})
+        if not username_db:
+            modes = [{"general_score": score_actual}]
 
-        current_app.mongo.db.users.insert_one({
-            'username': username,
-            'password': generate_password_hash(password),
-            'modes': modes
-        })
+            for name in modes_names:
+                if name == mode_name:
+                    modes.append({str(name).lower(): score_actual})
+                else:
+                    modes.append({str(name).lower(): 0})
 
-        return make_response({
-            "message":"User successfully added"
-        }, 201)
-    
-    if username_db and method == "POST":
-        return make_response({
-            "message": "There is a user with that username.",
-            "fields": {
-                "username": username,
-                "password": password,
-                "score": score_actual,
-                "mode_name": mode_name
-            }
-        }, 400)
+            current_app.mongo.db.users.insert_one({
+                'username': username,
+                'password': generate_password_hash(password),
+                'modes': modes
+            })
+
+            return make_response({
+                "message":"User successfully added"
+            }, 201)
+        
+        if username_db:
+            return make_response({
+                "message": "There is a user with that username.",
+                "fields": {
+                    "username": username,
+                    "password": password,
+                    "score": score_actual,
+                    "mode_name": mode_name
+                }
+            }, 400)
     
     return make_response({
         "message": "No action was taken.",

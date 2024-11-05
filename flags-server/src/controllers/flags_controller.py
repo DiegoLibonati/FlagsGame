@@ -5,7 +5,7 @@ from flask import current_app
 from flask import request
 
 from utils.utils import parse_flags
-from utils.utils import get_list_modes
+from utils.utils import get_list_modes_names
 
 
 def flags() -> dict[str, Any]:
@@ -49,7 +49,7 @@ def get_random_flags(mode: str) -> dict[str, Any]:
     mode_to_search = mode.lower()
 
     modes = current_app.mongo.db.modes.find({} , { "_id":0 ,"name": 1})
-    modes = get_list_modes(modes=modes)
+    modes = get_list_modes_names(modes=modes)
 
     if not mode_to_search or not modes or not mode_to_search in modes:
         return make_response({

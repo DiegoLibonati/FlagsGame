@@ -7,7 +7,7 @@ from flask import request
 
 from utils.utils import parse_mode
 from utils.utils import parse_modes
-from utils.utils import get_list_modes
+from utils.utils import get_list_modes_names
 from utils.utils import get_list_users_by_sorted_score
 
 
@@ -85,7 +85,7 @@ def top_mode(mode: str) -> dict[str, Any]:
     data = []
     mode_name = mode.lower()
     modes = current_app.mongo.db.modes.find({} , { "_id":0 ,"name": 1})
-    modes = get_list_modes(modes=modes)
+    modes = get_list_modes_names(modes=modes)
     users = current_app.mongo.db.users.find()
 
     if not modes or not mode_name in modes or not users:
