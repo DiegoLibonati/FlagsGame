@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
 import { useForm } from "../../../hooks/useForm";
 import { useFlagsContext } from "../../../context/FlagsContext/FlagsProvider";
@@ -31,7 +31,7 @@ export const FormGuessFlag = ({
     const inputValue = formState.name.toLowerCase();
 
     if (currentFlagName === inputValue) {
-      inputElement.style.borderColor = "white";
+      inputElement.style.borderColor = "green";
       onResetForm();
       handleSetScore(score + secondsLeft * actualMode.multiplier);
       handleNextFlagToGuess();
@@ -41,6 +41,20 @@ export const FormGuessFlag = ({
     inputElement.style.borderColor = "red";
     onResetForm();
   };
+
+  useEffect(() => {
+    const inputElement = inputRef.current!;
+
+    if (!inputElement) return;
+
+    const timeout = setTimeout(() => {
+      inputRef.current!.style.borderColor = "white";
+    }, 500);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [inputRef.current?.style?.borderColor]);
 
   return (
     <form className="guess_container_form" onSubmit={(e) => onSubmit(e)}>

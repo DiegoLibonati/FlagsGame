@@ -27,6 +27,8 @@ export const AlertProvider = ({ children }: AlertProviderProps) => {
   };
 
   useEffect(() => {
+    if (!alert.type) return;
+
     const timeout = setTimeout(() => {
       handleClearAlert();
     }, 2000);
@@ -34,7 +36,7 @@ export const AlertProvider = ({ children }: AlertProviderProps) => {
     return () => {
       clearTimeout(timeout);
     };
-  }, [alert]);
+  }, [alert.type]);
 
   return (
     <AlertContext.Provider

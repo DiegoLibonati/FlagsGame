@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import { addOrModifyUser } from "../../../api/addOrModifyUser";
 import { useForm } from "../../../hooks/useForm";
@@ -9,7 +9,6 @@ import "./FormRegisterUser.css";
 
 export const FormRegisterUser = (): JSX.Element => {
   const { mode } = useParams();
-  const navigate = useNavigate();
 
   const { score } = useFlagsContext();
   const { handleSetAlert } = useAlertContext();
@@ -25,28 +24,28 @@ export const FormRegisterUser = (): JSX.Element => {
   const onSendRequest = async (
     e: React.FormEvent<HTMLFormElement>
   ): Promise<void> => {
-    try {
-      e.preventDefault();
+    e.preventDefault();
 
-      const body = {
-        username: formState.username,
-        password: formState.password,
-        score: score,
-        mode_name: mode!,
-      };
-  
-      const result = await addOrModifyUser(body, "POST");
-  
-      const messageBody = await result.json();
-  
-      const { message } = messageBody;
-  
-      handleSetAlert({ type: "success", message: message });
-      onResetForm();
-      navigate("/");
-    } catch(e){
-      handleSetAlert({ type: "error", message: String(e) });
+    const body = {
+      username: formState.username,
+      password: formState.password,
+      score: score,
+      mode_name: mode!,
+    };
+
+    const result = await addOrModifyUser(body, "POST");
+
+    const messageBody = await result.json();
+
+    const { message } = messageBody;
+
+    if (!result.ok) {
+      handleSetAlert({ type: "error", message: message });
+      return;
     }
+
+    handleSetAlert({ type: "success", message: message });
+    onResetForm();
   };
 
   return (
