@@ -1,76 +1,42 @@
 import { useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { Loader } from "../../components/Loader/Loader";
 import { Flag as FlagComponent } from "../../components/Flag/Flag";
 import { FormGuessFlag } from "../../components/Forms/FormGuessFlag/FormGuessFlag";
 
-import { getRandomFlags } from "../../api/getRandomFlags";
-import { findMode } from "../../api/findMode";
 import { useCountdown } from "../../hooks/useCountdown";
 import { useFlagsContext } from "../../context/FlagsContext/FlagsProvider";
-import { useModesContext } from "../../context/ModesContext/ModesProvider";
+import { useModeContext } from "../../context/ModeContext/ModeProvider";
+import { useGameContext } from "../../context/GameContext/GameProvider";
 
 import "./GamePage.css";
 
 export const GamePage = (): JSX.Element => {
-  const { mode } = useParams();
   const navigate = useNavigate();
 
-  const {
-    flags,
-    score,
-    completeGuess,
-    currentFlagToGuess,
-    handleSetFlags,
-    handleClearFlags,
-    handleClearCurrentFlagToGuess,
-    handleSetFlagToGuess,
-  } = useFlagsContext()!;
-  const { actualMode, handleSetActualMode, handleClearActualMode } =
-    useModesContext();
+  const { flags } = useFlagsContext()!;
+  const { mode } = useModeContext();
+  const { completeGuess, currentFlagToGuess, score } = useGameContext();
 
   const { timerText, secondsLeft, endTime, onCountdownReset } = useCountdown(
-    actualMode && actualMode?.timeleft
+    mode.mode! && mode.mode?.timeleft
   );
 
-  const handleMode = async (): Promise<void> => {
-    const request = await findMode(mode!);
-
-    const data = await request.json();
-
-    handleSetActualMode(data.data);
-  };
-
-  const handleFlags = async (): Promise<void> => {
-    const request = await getRandomFlags(mode!);
-
-    const data = await request.json();
-
-    handleSetFlags(data.data);
-    handleSetFlagToGuess(data.data[0]);
-  };
-
   useEffect(() => {
-    handleFlags();
-    handleMode();
-
     return () => {
       onCountdownReset();
-      handleClearFlags();
-      handleClearCurrentFlagToGuess();
-      handleClearActualMode();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (endTime || completeGuess)
-      navigate(`/menu/${actualMode.name}/finishgame`);
+      navigate(`/menu/${mode.mode?.name}/finishgame`);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [endTime, completeGuess]);
 
-  if (!flags) {
+  if (flags.loading || !currentFlagToGuess) {
     return (
       <main>
         <Loader></Loader>

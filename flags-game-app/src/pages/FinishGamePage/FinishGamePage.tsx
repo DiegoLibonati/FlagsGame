@@ -3,14 +3,16 @@ import { useEffect } from "react";
 import { FormRegisterUser } from "../../components/Forms/FormRegisterUser/FormRegisterUser";
 import { FormUpdateUser } from "../../components/Forms/FormUpdateUser/FormUpdateUser";
 
-import { useFlagsContext } from "../../context/FlagsContext/FlagsProvider";
 import { useAlertContext } from "../../context/AlertContext/AlertProvider";
+import { useGameContext } from "../../context/GameContext/GameProvider";
 
 import "./FinishGamePage.css";
 
+// TODO: Separar estilos de alert // Componente Alert
+
 export const FinishGamePage = (): JSX.Element => {
   const { alert } = useAlertContext();
-  const { handleSetScore } = useFlagsContext()!;
+  const { handleSetScore } = useGameContext()!;
 
   useEffect(() => {
     return () => {
@@ -23,13 +25,13 @@ export const FinishGamePage = (): JSX.Element => {
     <main>
       <section className="send_points_container">
         <h4 className={`alert ${alert.type}`}>{alert.message}</h4>
-        <article className="send_points_container_mini">
+        <article className="send_points_container_mini register_article">
           <h2>If you DONT have a user register</h2>
 
           <FormRegisterUser></FormRegisterUser>
         </article>
 
-        <article className="send_points_container_mini">
+        <article className="send_points_container_mini update_article">
           <h2>If you HAVE a user register</h2>
 
           <FormUpdateUser></FormUpdateUser>

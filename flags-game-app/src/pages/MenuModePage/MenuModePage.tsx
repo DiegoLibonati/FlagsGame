@@ -1,78 +1,52 @@
-import { useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import { ListStats } from "../../components/ListStats/ListStats";
 import { Loader } from "../../components/Loader/Loader";
 
-import { getTopMode } from "../../api/getTopMode";
-import { findMode } from "../../api/findMode";
-import { useModesContext } from "../../context/ModesContext/ModesProvider";
 import { useUsersContext } from "../../context/UsersContext/UsersProvider";
+import { useModeContext } from "../../context/ModeContext/ModeProvider";
 
 import { BsChevronLeft } from "react-icons/bs";
 
 import "./MenuModePage.css";
 
 export const MenuModePage = (): JSX.Element => {
-  const { actualMode, handleSetActualMode, handleClearActualMode } =
-    useModesContext()!;
-  const { topUsers, handleSetTopUsers, handleClearTopUsers } =
-    useUsersContext();
+  const { topUsers } = useUsersContext();
+  const { mode } = useModeContext();
 
-  const { mode } = useParams();
-
-  const handleMode = async (): Promise<void> => {
-    const request = await findMode(mode!);
-
-    const data = await request.json();
-
-    handleSetActualMode(data.data);
-  };
-
-  const handleTopMode = async (): Promise<void> => {
-    const request = await getTopMode(mode!);
-
-    const data = await request.json();
-
-    handleSetTopUsers(data.data);
-  };
-
-  useEffect(() => {
-    handleTopMode();
-    handleMode();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mode]);
-
-  useEffect(() => {
-    return () => {
-      handleClearTopUsers();
-      handleClearActualMode();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  if (!actualMode) {
-    return <Loader></Loader>;
+  if (mode.loading) {
+    return (
+      <main>
+        <Loader></Loader>
+      </main>
+    );
   }
 
   return (
     <main>
-      <Link to="/menu">
+      <Link to="/menu" aria-label="go home">
         <BsChevronLeft id="go-back"></BsChevronLeft>
       </Link>
+
       <section className="mode_container">
-        <h1>{actualMode?.name} MODE</h1>
+        <h1>{mode.mode?.name} MODE</h1>
 
         <article className="mode_container_explain">
-          <p>{actualMode?.description}</p>
+          <p>{mode.mode?.description}</p>
 
-          <Link to={`/menu/${mode}/start`}>¡PLAY!</Link>
+          <Link to={`/menu/${mode.mode?.name}/start`} aria-label="play">
+            ¡PLAY!
+          </Link>
         </article>
 
-        <ListStats
-          nametop={`${mode!.toUpperCase()} TOP USERS`}
-          arrayTop={topUsers}
-        ></ListStats>
+        {topUsers.loading ? (
+          <Loader></Loader>
+        ) : (
+          <ListStats
+            nameTop={`${mode.mode?.name!.toUpperCase()} TOP USERS`}
+            arrayTop={topUsers.users!}
+          ></ListStats>
+        )}
       </section>
     </main>
   );
