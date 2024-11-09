@@ -1,16 +1,11 @@
 // Types
 
+// ** CONTEXTS **
 export type FlagsContext = {
-  flags: Flag[];
-  score: number;
-  currentFlagToGuess: Flag;
-  completeGuess: boolean;
+  flags: FlagsState;
   handleSetFlags: (flags: Flag[]) => void;
-  handleSetScore: (score: number) => void;
   handleClearFlags: () => void;
-  handleNextFlagToGuess: () => void;
-  handleClearCurrentFlagToGuess: () => void;
-  handleSetFlagToGuess: (flag: Flag) => void;
+  refreshFlags: () => void;
 };
 
 export type UiContext = {
@@ -19,18 +14,25 @@ export type UiContext = {
 };
 
 export type UsersContext = {
-  topUsers: User[];
-  handleSetTopUsers: (users: User[]) => void;
+  topUsers: TopUsersState;
+  handleSetTopUsers: (users: UserWithOutPassword[]) => void;
   handleClearTopUsers: () => void;
+  refreshGeneralTopUsers: () => void;
+  refreshModeTopUsers: () => void;
 };
 
 export type ModesContext = {
-  modes: Mode[];
-  actualMode: Mode;
-  handleSetActualMode: (mode: Mode) => void;
+  modes: ModesState;
   handleSetModes: (modes: Mode[]) => void;
   handleClearModes: () => void;
-  handleClearActualMode: () => void;
+  refreshModes: () => void;
+};
+
+export type ModeContext = {
+  mode: ModeState;
+  handleSetMode: (mode: Mode) => void;
+  handleClearMode: () => void;
+  refreshMode: () => void;
 };
 
 export type AlertContext = {
@@ -38,6 +40,39 @@ export type AlertContext = {
   handleSetAlert: (alert: Alert) => void;
   handleClearAlert: () => void;
 };
+
+export type GameContext = {
+  currentFlagToGuess: Flag | null;
+  completeGuess: boolean;
+  score: number;
+  handleNextFlagToGuess: () => void;
+  handleSetScore: (score: number) => void;
+};
+
+// ** CONTEXTS STATES **
+
+export type GeneralState = {
+  loading: boolean;
+  error: string | null;
+};
+
+export type TopUsersState = {
+  users: UserWithOutPassword[];
+} & GeneralState;
+
+export type ModesState = {
+  modes: Mode[];
+} & GeneralState;
+
+export type ModeState = {
+  mode: Mode | null;
+} & GeneralState;
+
+export type FlagsState = {
+  flags: Flag[];
+} & GeneralState;
+
+// ** GENERAL **
 
 export type Alert = {
   type: string;
@@ -62,55 +97,7 @@ export type User = {
   _id: string;
   username: string;
   password: string;
-  score: string;
+  score: number;
 };
 
-export type UseCountdown = {
-  timerText: string;
-  secondsLeft: number;
-  endTime: boolean;
-  onCountdownReset: () => void;
-};
-
-export type UseForm<T> = {
-  formState: T;
-  onInputChange: React.ChangeEventHandler<HTMLInputElement>;
-  onResetForm: () => void;
-};
-
-// Interfaces
-
-export interface FlagsProviderProps {
-  children: React.ReactNode;
-}
-
-export interface UiProviderProps {
-  children: React.ReactNode;
-}
-
-export interface UsersProviderProps {
-  children: React.ReactNode;
-}
-
-export interface ModesProviderProps {
-  children: React.ReactNode;
-}
-
-export interface AlertProviderProps {
-  children: React.ReactNode;
-}
-
-export interface HamburgerProps {
-  navbar: boolean;
-  manageNavbar: () => void;
-}
-
-export interface ListStatsProps {
-  nametop: string;
-  arrayTop: User[];
-}
-
-export interface FlagProps {
-  image: string;
-  name: string;
-}
+export type UserWithOutPassword = Omit<User, "password">;
