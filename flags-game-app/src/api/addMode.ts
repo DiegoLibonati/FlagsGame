@@ -1,4 +1,5 @@
-import {  Mode } from "../entities/entities";
+import { Mode } from "../entities/entities";
+
 import { apiRouteModes } from "./apiRoute";
 
 export const addMode = (body: Mode): Promise<Response> => {

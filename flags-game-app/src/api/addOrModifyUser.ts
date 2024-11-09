@@ -1,4 +1,3 @@
-import { User } from "../entities/entities";
 import { apiRouteUsers } from "./apiRoute";
 
 export const addOrModifyUser = (
