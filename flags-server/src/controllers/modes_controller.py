@@ -98,6 +98,7 @@ def top_mode(mode: str) -> dict[str, Any]:
         }, 400)
 
     data = get_list_users_by_sorted_score(users=users, mode_name_score=mode_name)
+    data = data[:10]
 
     return make_response({
         "message": "The top ten of the requested mode was obtained.",

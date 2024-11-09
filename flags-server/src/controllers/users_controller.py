@@ -14,6 +14,7 @@ def top_general() -> dict[str, Any]:
     mode = "general_score"
     users = current_app.mongo.db.users.find()
     data = get_list_users_by_sorted_score(users=users, mode_name_score=mode)
+    data = data[:10]
 
     return make_response({
         "message": "Successfully obtained the global top.",
@@ -59,14 +60,6 @@ def add_or_modify() -> dict[str, Any]:
     # NOTE: PUT
 
     if method == "PUT":
-        modes_keys = []
-        user_db_password = username_db["password"]
-        user_db_modes_played = username_db["modes"]
-
-        for mode in user_db_modes_played:
-            for key in mode.keys():
-                modes_keys.append(key)
-
         if not username_db:
             return make_response({
                 "message": "No valid user was found based on the data entered.",
@@ -77,6 +70,14 @@ def add_or_modify() -> dict[str, Any]:
                     "mode_name": mode_name
                 }
             }, 400)
+        
+        modes_keys = []
+        user_db_password = username_db["password"]
+        user_db_modes_played = username_db["modes"]
+
+        for mode in user_db_modes_played:
+            for key in mode.keys():
+                modes_keys.append(key)
     
         if username_db and not check_password_hash(user_db_password, password):
             return make_response({
