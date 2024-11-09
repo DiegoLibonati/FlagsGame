@@ -1,18 +1,19 @@
-import { ListStatsProps } from "../../entities/entities";
-
-import { Loader } from "../Loader/Loader";
+import { UserWithOutPassword } from "../../entities/entities";
 
 import "./ListStats.css";
 
+interface ListStatsProps {
+  nameTop: string;
+  arrayTop: UserWithOutPassword[];
+}
+
 export const ListStats = ({
-  nametop,
+  nameTop,
   arrayTop,
 }: ListStatsProps): JSX.Element => {
-  if (!arrayTop) return <Loader></Loader>;
-
   return (
     <article className="list_stats_container_top menu_mode_top">
-      <h2>{nametop}</h2>
+      <h2>{nameTop}</h2>
 
       <ul className="list_stats_container_top_list menu_mode_top_list">
         {arrayTop.map((top) => {

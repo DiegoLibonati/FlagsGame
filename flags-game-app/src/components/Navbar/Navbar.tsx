@@ -12,7 +12,9 @@ export const Navbar = (): JSX.Element => {
   return (
     <header className="header_container">
       <div className="header_container_logo">
-        <Link to="/">FlagsGame</Link>
+        <Link to="/" aria-label="title FlagsGame">
+          FlagsGame
+        </Link>
 
         <Hamburger
           navbar={navbar}
@@ -29,6 +31,7 @@ export const Navbar = (): JSX.Element => {
           <li>
             <NavLink
               to="/"
+              aria-label="home"
               className={({ isActive }) =>
                 isActive ? "nav-link active" : "nav-link"
               }
@@ -39,6 +42,7 @@ export const Navbar = (): JSX.Element => {
           <li>
             <NavLink
               to="/menu"
+              aria-label="menu"
               className={({ isActive }) =>
                 isActive ? "nav-link active" : "nav-link"
               }

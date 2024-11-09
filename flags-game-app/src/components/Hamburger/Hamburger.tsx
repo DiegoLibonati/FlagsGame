@@ -1,6 +1,9 @@
-import { HamburgerProps } from "../../entities/entities";
-
 import "./Hamburger.css";
+
+interface HamburgerProps {
+  navbar: boolean;
+  manageNavbar: () => void;
+}
 
 export const Hamburger = ({
   navbar,

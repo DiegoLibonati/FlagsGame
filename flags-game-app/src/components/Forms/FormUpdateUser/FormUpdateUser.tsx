@@ -1,8 +1,8 @@
 import { useParams } from "react-router-dom";
 
 import { addOrModifyUser } from "../../../api/addOrModifyUser";
-import { useFlagsContext } from "../../../context/FlagsContext/FlagsProvider";
 import { useAlertContext } from "../../../context/AlertContext/AlertProvider";
+import { useGameContext } from "../../../context/GameContext/GameProvider";
 import { useForm } from "../../../hooks/useForm";
 
 import "./FormUpdateUser.css";
@@ -10,7 +10,7 @@ import "./FormUpdateUser.css";
 export const FormUpdateUser = (): JSX.Element => {
   const { mode } = useParams();
 
-  const { score } = useFlagsContext();
+  const { score } = useGameContext();
   const { handleSetAlert } = useAlertContext();
 
   const { formState, onInputChange, onResetForm } = useForm<{
@@ -51,7 +51,7 @@ export const FormUpdateUser = (): JSX.Element => {
 
   return (
     <form
-      className="send_points_container_mini_form"
+      className="send_points_container_mini_form update_form"
       onSubmit={(e) => onSendRequest(e)}
     >
       <h3>Your score was: {score} PTS</h3>

@@ -1,8 +1,8 @@
 import { useEffect, useRef } from "react";
 
 import { useForm } from "../../../hooks/useForm";
-import { useFlagsContext } from "../../../context/FlagsContext/FlagsProvider";
-import { useModesContext } from "../../../context/ModesContext/ModesProvider";
+import { useModeContext } from "../../../context/ModeContext/ModeProvider";
+import { useGameContext } from "../../../context/GameContext/GameProvider";
 
 import "./FormGuessFlag.css";
 
@@ -16,8 +16,8 @@ export const FormGuessFlag = ({
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const { currentFlagToGuess, score, handleSetScore, handleNextFlagToGuess } =
-    useFlagsContext();
-  const { actualMode } = useModesContext();
+    useGameContext();
+  const { mode } = useModeContext();
 
   const { formState, onInputChange, onResetForm } = useForm<{ name: string }>({
     name: "",
@@ -33,7 +33,7 @@ export const FormGuessFlag = ({
     if (currentFlagName === inputValue) {
       inputElement.style.borderColor = "green";
       onResetForm();
-      handleSetScore(score + secondsLeft * actualMode.multiplier);
+      handleSetScore(score + secondsLeft * mode.mode?.multiplier!);
       handleNextFlagToGuess();
       return;
     }
@@ -62,10 +62,11 @@ export const FormGuessFlag = ({
         ref={inputRef}
         type="text"
         value={formState.name}
+        placeholder="Enter a Country Name..."
         onChange={(e) => onInputChange(e)}
         name="name"
       ></input>
-      <button>SUBMIT</button>
+      <button type="submit">SUBMIT</button>
     </form>
   );
 };
