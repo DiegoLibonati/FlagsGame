@@ -1,45 +1,93 @@
-import { useContext, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 
 import {
   ModesContext as ModesContextT,
-  ModesProviderProps,
   Mode,
+  ModesState,
 } from "../../entities/entities";
 
 import { ModesContext } from "./ModesContext";
+import { getModes } from "../../api/getModes";
+
+interface ModesProviderProps {
+  children: React.ReactNode;
+}
 
 export const ModesProvider = ({ children }: ModesProviderProps) => {
   // Modes
-  const [modes, setModes] = useState<Mode[] | null>(null);
+  const [modes, setModes] = useState<ModesState>({
+    modes: [],
+    error: null,
+    loading: false,
+  });
 
   const handleSetModes = (modes: Mode[]) => {
-    setModes(modes);
+    setModes((state) => ({
+      ...state,
+      modes: modes,
+    }));
   };
 
   const handleClearModes = () => {
-    setModes(null);
+    setModes({
+      modes: [],
+      error: null,
+      loading: false,
+    });
   };
 
-  // ActualMode
-  const [actualMode, setActualMode] = useState<Mode | null>(null);
-
-  const handleSetActualMode = (mode: Mode) => {
-    setActualMode(mode);
+  const handleStartFetchModes = () => {
+    setModes((state) => ({
+      ...state,
+      loading: true,
+      error: null,
+    }));
   };
 
-  const handleClearActualMode = () => {
-    setActualMode(null);
+  const handleEndFetchModes = () => {
+    setModes((state) => ({
+      ...state,
+      loading: false,
+    }));
   };
+
+  const handleSetErrorModes = (error: string) => {
+    setModes((state) => ({
+      ...state,
+      error: error,
+    }));
+  };
+
+  // Función para obtener modes
+  const fetchModes = useCallback(async () => {
+    try {
+      handleStartFetchModes();
+      const response = await getModes();
+      const data = await response.json();
+      handleSetModes(data.data);
+    } catch (error) {
+      handleSetErrorModes(String(error));
+    } finally {
+      handleEndFetchModes();
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!modes.modes.length) fetchModes();
+
+    return () => {
+      handleClearModes();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <ModesContext.Provider
       value={{
-        actualMode: actualMode!,
         modes: modes!,
-        handleSetActualMode: handleSetActualMode,
         handleSetModes: handleSetModes,
         handleClearModes: handleClearModes,
-        handleClearActualMode: handleClearActualMode,
+        refreshModes: fetchModes,
       }}
     >
       {children}

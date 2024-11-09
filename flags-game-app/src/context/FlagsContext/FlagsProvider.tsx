@@ -1,71 +1,97 @@
-import { useContext, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 import {
   Flag,
   FlagsContext as FlagsContextT,
-  FlagsProviderProps,
+  FlagsState,
 } from "../../entities/entities";
 
 import { FlagsContext } from "./FlagsContext";
+import { getRandomFlags } from "../../api/getRandomFlags";
+
+interface FlagsProviderProps {
+  children: React.ReactNode;
+}
 
 export const FlagsProvider = ({ children }: FlagsProviderProps) => {
+  // 3RD
+  const { mode: modeName } = useParams();
+
   // Flags
-  const [flags, setFlags] = useState<Flag[] | null>(null);
+  const [flags, setFlags] = useState<FlagsState>({
+    flags: [],
+    error: null,
+    loading: false,
+  });
 
   const handleSetFlags = (flags: Flag[]) => {
-    setFlags(flags);
+    setFlags((state) => ({
+      ...state,
+      flags: flags,
+    }));
   };
 
   const handleClearFlags = () => {
-    setFlags(null);
+    setFlags({
+      flags: [],
+      error: null,
+      loading: false,
+    });
   };
 
-  // Current Flag To Guess
-  const [currentFlagToGuess, setCurrentFlagToGuess] = useState<Flag | null>(
-    null
-  );
-  const [completeGuess, setCompleteGuess] = useState<boolean>(false);
-
-  const handleNextFlagToGuess = () => {
-    if (!currentFlagToGuess) return setCurrentFlagToGuess(flags![0]);
-
-    const indexOfFlag = flags?.indexOf(currentFlagToGuess)!;
-    const newIndexFlag = indexOfFlag + 1;
-
-    if (newIndexFlag === flags!.length) return setCompleteGuess(true);
-
-    setCurrentFlagToGuess(flags![newIndexFlag]);
+  const handleStartFetchFlags = () => {
+    setFlags((state) => ({
+      ...state,
+      loading: true,
+      error: null,
+    }));
   };
 
-  const handleSetFlagToGuess = (flag: Flag) => {
-    setCurrentFlagToGuess(flag);
+  const handleEndFetchFlags = () => {
+    setFlags((state) => ({
+      ...state,
+      loading: false,
+    }));
   };
 
-  const handleClearCurrentFlagToGuess = () => {
-    setCurrentFlagToGuess(null);
-    setCompleteGuess(false);
+  const handleSetErrorFlags = (error: string) => {
+    setFlags((state) => ({
+      ...state,
+      error: error,
+    }));
   };
 
-  // Score
-  const [score, setScore] = useState<number>(0);
+  // Función para obtener las flags
+  const fetchFlags = useCallback(async () => {
+    try {
+      handleStartFetchFlags();
+      const response = await getRandomFlags(modeName!);
+      const data = await response.json();
+      handleSetFlags(data.data);
+    } catch (error) {
+      handleSetErrorFlags(String(error));
+    } finally {
+      handleEndFetchFlags();
+    }
+  }, []);
 
-  const handleSetScore = (score: number) => {
-    setScore(score);
-  };
+  useEffect(() => {
+    fetchFlags();
+
+    return () => {
+      handleClearFlags();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <FlagsContext.Provider
       value={{
         flags: flags!,
-        score: score,
-        currentFlagToGuess: currentFlagToGuess!,
-        completeGuess: completeGuess,
         handleSetFlags: handleSetFlags,
-        handleSetScore: handleSetScore,
         handleClearFlags: handleClearFlags,
-        handleNextFlagToGuess: handleNextFlagToGuess,
-        handleClearCurrentFlagToGuess: handleClearCurrentFlagToGuess,
-        handleSetFlagToGuess: handleSetFlagToGuess,
+        refreshFlags: fetchFlags,
       }}
     >
       {children}

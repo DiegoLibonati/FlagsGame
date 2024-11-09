@@ -1,11 +1,12 @@
 import { useContext, useState } from "react";
 
-import {
-  UiContext as UiContextT,
-  UiProviderProps,
-} from "../../entities/entities";
+import { UiContext as UiContextT } from "../../entities/entities";
 
 import { UiContext } from "./UiContext";
+
+interface UiProviderProps {
+  children: React.ReactNode;
+}
 
 export const UiProvider = ({ children }: UiProviderProps) => {
   // NavBar

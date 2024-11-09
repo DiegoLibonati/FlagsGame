@@ -1,12 +1,12 @@
 import { useContext, useEffect, useState } from "react";
 
-import {
-  AlertContext as AlertContextT,
-  AlertProviderProps,
-  Alert,
-} from "../../entities/entities";
+import { AlertContext as AlertContextT, Alert } from "../../entities/entities";
 
 import { AlertContext } from "./AlertContext";
+
+interface AlertProviderProps {
+  children: React.ReactNode;
+}
 
 export const AlertProvider = ({ children }: AlertProviderProps) => {
   // Top
