@@ -21,3 +21,8 @@ def add_flag() -> dict[str, Any]:
 @flags_route.route('/<mode>', methods=["GET"])
 def get_random_flags(mode: str) -> dict[str, Any]:
     return flags_controller.get_random_flags(mode)
+
+
+@flags_route.route('/delete/<id>', methods=["DELETE"])
+def delete_flag(id: str) -> dict[str, Any]:
+    return flags_controller.delete_flag(id)

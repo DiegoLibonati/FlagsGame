@@ -1,4 +1,5 @@
 from typing import Any
+from bson import ObjectId
 
 from flask import make_response
 from flask import current_app 
@@ -19,8 +20,8 @@ def flags() -> dict[str, Any]:
 
 
 def add_flag() -> dict[str, Any]:
-    image = request.json['image']
-    name = request.json['name']
+    image = request.json.get('image', "")
+    name = request.json.get('name', "")
 
     image = image.strip()
     name = name.strip()
@@ -40,7 +41,7 @@ def add_flag() -> dict[str, Any]:
     flag['_id'] = str(result_insert.inserted_id)
 
     return make_response({
-        "message": "New flag added",
+        "message": "New flag added.",
         "fields": flag
     }, 201)
 
@@ -65,3 +66,18 @@ def get_random_flags(mode: str) -> dict[str, Any]:
         "message": "The flags were obtained randomly.",
         "data": data
     }, 200)
+
+
+def delete_flag(id: str) -> dict[str, Any]:
+    try:
+        current_app.mongo.db.flags.delete_one({
+            "_id": ObjectId(id)
+        })
+
+        return make_response({
+            "message": f"{id} was deleted."
+        }, 200)
+    except Exception as e:
+        return make_response({
+            "message": str(e)
+        }, 400)
