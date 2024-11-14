@@ -23,7 +23,25 @@ I made a web application with React JS and Flask for the api-rest, I used mongod
 
 ## Libraries used
 
-1. Pymongo
+### Frontend
+
+1. @testing-library/dom
+2. @types/jest
+3. @types/react
+4. @types/react-dom
+5. msw
+6. @testing-library/jest-dom
+7. @testing-library/react
+8. @testing-library/user-event
+9. react-icons 
+10. react-router-dom
+
+### Backend
+
+1. flask_pymongo
+2. werkzeug
+3. pytest
+4. pytest-env
 
 ## Portfolio Link
 
@@ -32,3 +50,20 @@ I made a web application with React JS and Flask for the api-rest, I used mongod
 ## Video
 
 https://user-images.githubusercontent.com/99032604/199865818-646e2a21-c6a4-42d6-976d-3b4861c5990c.mp4
+
+## Testing
+
+### Frontend
+
+1. Join to the correct path of the clone and join to: `flags-game-app`
+2. Execute: `yarn install`
+3. Execute: `yarn test`
+
+### Backend
+
+1. Join to the correct path of the clone and join to: `flags-server`
+2. Execute: `python -m venv venv`
+3. Execute in Windows: `venv\Scripts\activate`
+4. Execute: `pip install -r requirements.txt`
+5. Execute: `pip install -r requirements.test.txt`
+6. Execute: `pytest --log-cli-level=INFO`
