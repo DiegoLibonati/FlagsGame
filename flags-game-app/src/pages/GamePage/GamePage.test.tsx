@@ -10,7 +10,7 @@ import { GameProvider } from "../../context/GameContext/GameProvider";
 import { ModeProvider } from "../../context/ModeContext/ModeProvider";
 import { parseZero } from "../../helpers/parseZero";
 
-import { createServer } from "../../test/server";
+import { createServer } from "../../test/msw/server";
 import {
   FLAG_DATA_STATIC_TEST,
   FLAGS_DATA_STATIC_TEST,

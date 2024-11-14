@@ -6,7 +6,7 @@ import { HomePage } from "./HomePage";
 
 import { UsersProvider } from "../../context/UsersContext/UsersProvider";
 
-import { createServer } from "../../test/server";
+import { createServer } from "../../test/msw/server";
 import { USERS_TOP_STATIC_TEST } from "../../test/constants/constants";
 
 type RenderComponent = {

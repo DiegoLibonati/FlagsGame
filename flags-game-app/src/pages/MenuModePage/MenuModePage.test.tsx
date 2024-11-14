@@ -7,7 +7,7 @@ import { MenuModePage } from "./MenuModePage";
 import { UsersProvider } from "../../context/UsersContext/UsersProvider";
 import { ModeProvider } from "../../context/ModeContext/ModeProvider";
 
-import { createServer } from "../../test/server";
+import { createServer } from "../../test/msw/server";
 import {
   MODE_DATA_STATIC_TEST,
   USERS_TOP_STATIC_TEST,

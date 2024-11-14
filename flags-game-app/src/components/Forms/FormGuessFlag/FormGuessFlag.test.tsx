@@ -7,7 +7,7 @@ import { FlagsProvider } from "../../../context/FlagsContext/FlagsProvider";
 import { ModeProvider } from "../../../context/ModeContext/ModeProvider";
 import { GameProvider } from "../../../context/GameContext/GameProvider";
 
-import { createServer } from "../../../test/server";
+import { createServer } from "../../../test/msw/server";
 import {
   FLAG_DATA_STATIC_TEST,
   FLAGS_DATA_STATIC_TEST,

@@ -9,7 +9,7 @@ import { AlertContext } from "../../../context/AlertContext/AlertContext";
 import { FlagsProvider } from "../../../context/FlagsContext/FlagsProvider";
 import { GameProvider } from "../../../context/GameContext/GameProvider";
 
-import { createServer } from "../../../test/server";
+import { createServer } from "../../../test/msw/server";
 import {
   ALERT_PROVIDER_STATIC,
   FLAGS_DATA_STATIC_TEST,
