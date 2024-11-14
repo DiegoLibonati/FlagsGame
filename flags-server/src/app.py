@@ -25,7 +25,7 @@ def main() -> None:
     app.register_blueprint(users_route, url_prefix="/v1/users")
     
     # Configs
-    app.config["MONGO_URI"] = "mongodb://flags-db/flags"
+    app.config["MONGO_URI"] = os.getenv("MONGO_URI")
     app.config['JSON_AS_ASCII'] = False
     app.config["PORT"] = os.getenv("PORT")
 

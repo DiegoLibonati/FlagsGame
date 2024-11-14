@@ -24,6 +24,7 @@ services:
     environment:
       - TZ="America/Argentina/Buenos_Aires"
       - PORT=5050
+      - MONGO_URI=mongodb://host.docker.internal/flags
     volumes:
       - "./flags-server:/home/app"
     depends_on:
