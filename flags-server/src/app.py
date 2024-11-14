@@ -18,7 +18,8 @@ def add_cors_headers(response):
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
     return response
 
-def main() -> None:
+
+def init() -> None:
     # Load Routes
     app.register_blueprint(flags_route, url_prefix="/v1/flags")
     app.register_blueprint(modes_route, url_prefix="/v1/modes")
@@ -32,8 +33,8 @@ def main() -> None:
     # Mongo
     app.mongo = PyMongo(app)
 
-    app.run(debug=True, host = "0.0.0.0", port = app.config["PORT"])
-
+   
 if __name__ == "__main__":
-    main()
+    init()
+    app.run(debug=True, host = "0.0.0.0", port = app.config["PORT"])
     
