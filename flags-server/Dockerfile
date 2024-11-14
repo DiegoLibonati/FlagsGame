@@ -1,5 +1,7 @@
 FROM python:3.9
 
+ENV PYTHONPATH="/home/app"
+
 WORKDIR /home/app
 
 COPY requirements.txt .
