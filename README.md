@@ -5,8 +5,9 @@
 1. Clone the repository with `git clone "repository link"`
 2. Go to the folder where you cloned your repository
 3. Run `docker-compose build --no-cache` in the terminal
-4. Once built, you must execute the command: `docker-compose up`
-5. You have to be standing in the folder containing the: `docker-compose.yml`
+4. Once built, you must execute the command: `docker-compose up --force-recreate`
+
+NOTE: You have to be standing in the folder containing the: `docker-compose.yml`
 
 ## Description
 
