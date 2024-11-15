@@ -25,23 +25,41 @@ I made a web application with React JS and Flask for the api-rest, I used mongod
 
 ### Frontend
 
-1. @testing-library/dom
-2. @types/jest
-3. @types/react
-4. @types/react-dom
-5. msw
-6. @testing-library/jest-dom
-7. @testing-library/react
-8. @testing-library/user-event
-9. react-icons 
-10. react-router-dom
+```
+"@testing-library/jest-dom": "^6.6.2",
+"@testing-library/react": "^16.0.1",
+"@testing-library/user-event": "^14.5.2",
+"react": "^18.2.0",
+"react-dom": "^18.2.0",
+"react-icons": "^4.4.0",
+"react-router-dom": "^6.3.0",
+"react-scripts": "5.0.1",
+"web-vitals": "^2.1.4"
+
+"@testing-library/dom": "^10.4.0",
+"@types/jest": "^29.5.13",
+"@types/react": "^18.3.11",
+"@types/react-dom": "^18.3.1",
+"msw": "^2.6.0",
+"typescript": "^5.3.3"
+```
 
 ### Backend
 
-1. flask_pymongo
-2. werkzeug
-3. pytest
-4. pytest-env
+#### Requirements.txt
+
+```
+flask
+flask_pymongo
+werkzeug
+```
+
+#### Requirements.test.txt
+
+```
+pytest
+pytest-env
+```
 
 ## Portfolio Link
 
