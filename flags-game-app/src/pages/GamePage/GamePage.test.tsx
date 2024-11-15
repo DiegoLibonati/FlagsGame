@@ -10,12 +10,12 @@ import { GameProvider } from "../../context/GameContext/GameProvider";
 import { ModeProvider } from "../../context/ModeContext/ModeProvider";
 import { parseZero } from "../../helpers/parseZero";
 
-import { createServer } from "../../test/msw/server";
+import { createServer } from "../../tests/msw/server";
 import {
   FLAG_DATA_STATIC_TEST,
   FLAGS_DATA_STATIC_TEST,
   MODE_DATA_STATIC_TEST,
-} from "../../test/constants/constants";
+} from "../../tests/constants/constants";
 
 type RenderComponent = {
   container: HTMLElement;

@@ -6,8 +6,8 @@ import { HomePage } from "./HomePage";
 
 import { UsersProvider } from "../../context/UsersContext/UsersProvider";
 
-import { createServer } from "../../test/msw/server";
-import { USERS_TOP_STATIC_TEST } from "../../test/constants/constants";
+import { createServer } from "../../tests/msw/server";
+import { USERS_TOP_STATIC_TEST } from "../../tests/constants/constants";
 
 type RenderComponent = {
   container: HTMLElement;

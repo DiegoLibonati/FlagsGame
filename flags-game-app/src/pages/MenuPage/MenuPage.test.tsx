@@ -6,8 +6,8 @@ import { MenuPage } from "./MenuPage";
 
 import { ModesProvider } from "../../context/ModesContext/ModesProvider";
 
-import { createServer } from "../../test/msw/server";
-import { MODES_DATA_STATIC_TEST } from "../../test/constants/constants";
+import { createServer } from "../../tests/msw/server";
+import { MODES_DATA_STATIC_TEST } from "../../tests/constants/constants";
 
 type RenderComponent = {
   container: HTMLElement;

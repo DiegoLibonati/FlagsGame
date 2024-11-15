@@ -9,11 +9,11 @@ import { AlertContext } from "../../../context/AlertContext/AlertContext";
 import { GameProvider } from "../../../context/GameContext/GameProvider";
 import { FlagsProvider } from "../../../context/FlagsContext/FlagsProvider";
 
-import { createServer } from "../../../test/msw/server";
+import { createServer } from "../../../tests/msw/server";
 import {
   ALERT_PROVIDER_STATIC,
   FLAGS_DATA_STATIC_TEST,
-} from "../../../test/constants/constants";
+} from "../../../tests/constants/constants";
 
 type RenderComponent = {
   container: HTMLElement;
