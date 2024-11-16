@@ -1,5 +1,4 @@
 import { useCallback, useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 
 import {
   Flag,
@@ -15,9 +14,6 @@ interface FlagsProviderProps {
 }
 
 export const FlagsProvider = ({ children }: FlagsProviderProps) => {
-  // 3RD
-  const { mode: modeName } = useParams();
-
   // Flags
   const [flags, setFlags] = useState<FlagsState>({
     flags: [],
@@ -66,7 +62,7 @@ export const FlagsProvider = ({ children }: FlagsProviderProps) => {
   const fetchFlags = useCallback(async () => {
     try {
       handleStartFetchFlags();
-      const response = await getRandomFlags(modeName!);
+      const response = await getRandomFlags(5);
       const data = await response.json();
       handleSetFlags(data.data);
     } catch (error) {

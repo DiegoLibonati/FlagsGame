@@ -11,7 +11,7 @@ type HandleConfig = {
 
 export const createServer = (handlerConfig: HandleConfig[]): void => {
   const handlers: RequestHandler[] = handlerConfig.map((handleConfig) => {
-    return http[handleConfig.method](handleConfig.path, () => {
+    return http[handleConfig.method](handleConfig.path, (req) => {
       return HttpResponse.json(handleConfig.res(), {
         status: handleConfig.status ?? 200,
       });

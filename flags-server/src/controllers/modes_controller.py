@@ -1,14 +1,13 @@
 from typing import Any
-from bson import json_util
 
 from flask import make_response
 from flask import current_app 
 from flask import request
 
-from utils.utils import parse_mode
-from utils.utils import parse_modes
-from utils.utils import get_list_modes_names
-from utils.utils import get_list_users_by_sorted_score
+from src.utils.utils import parse_mode
+from src.utils.utils import parse_modes
+from src.utils.utils import get_list_modes_names
+from src.utils.utils import get_list_users_by_sorted_score
 
 
 def get_modes() -> dict[str, Any]:

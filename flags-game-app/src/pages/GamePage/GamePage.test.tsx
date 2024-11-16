@@ -25,7 +25,7 @@ const currentPath = `/menu/${MODE_DATA_STATIC_TEST.name}/game`;
 
 createServer([
   {
-    path: `/v1/flags/:mode`,
+    path: `/v1/flags/random/:quantity`,
     method: "get",
     res: () => {
       return {

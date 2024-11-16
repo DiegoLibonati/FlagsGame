@@ -23,7 +23,7 @@ type RenderComponent = {
 
 createServer([
   {
-    path: "/v1/flags/:mode",
+    path: "/v1/flags/random/:quantity",
     method: "get",
     res: () => {
       return {

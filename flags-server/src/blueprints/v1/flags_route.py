@@ -2,7 +2,7 @@ from typing import Any
 
 from flask import Blueprint
 
-from controllers import flags_controller
+from src.controllers import flags_controller
 
 
 flags_route = Blueprint("flags_route", __name__)
@@ -18,9 +18,9 @@ def add_flag() -> dict[str, Any]:
     return flags_controller.add_flag()
 
 
-@flags_route.route('/<mode>', methods=["GET"])
-def get_random_flags(mode: str) -> dict[str, Any]:
-    return flags_controller.get_random_flags(mode)
+@flags_route.route('/random/<quantity>', methods=["GET"])
+def get_random_flags(quantity: str) -> dict[str, Any]:
+    return flags_controller.get_random_flags(quantity)
 
 
 @flags_route.route('/delete/<id>', methods=["DELETE"])

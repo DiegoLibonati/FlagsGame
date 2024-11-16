@@ -2,7 +2,7 @@ from typing import Any
 
 from flask import Blueprint
 
-from controllers import users_controller
+from src.controllers import users_controller
 
 
 users_route = Blueprint("users_route", __name__)

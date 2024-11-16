@@ -42,7 +42,7 @@ const renderComponent = async (): Promise<RenderComponent> => {
 describe("General Tests", () => {
   createServer([
     {
-      path: "/v1/flags/:mode",
+      path: "/v1/flags/random/:quantity",
       method: "get",
       res: () => {
         return {
@@ -92,7 +92,7 @@ describe("Result is ok. AddOrModifyUser Service", () => {
 
   createServer([
     {
-      path: "/v1/flags/:mode",
+      path: "/v1/flags/random/:quantity",
       method: "get",
       res: () => {
         return {
@@ -158,7 +158,7 @@ describe("Result is NOT ok. AddOrModifyUser Service", () => {
 
   createServer([
     {
-      path: "/v1/flags/:mode",
+      path: "/v1/flags/random/:quantity",
       method: "get",
       res: () => {
         return {

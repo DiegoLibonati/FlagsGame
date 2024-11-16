@@ -6,8 +6,8 @@ from flask import request
 from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
 
-from utils.utils import get_list_users_by_sorted_score
-from utils.utils import get_list_modes_names
+from src.utils.utils import get_list_users_by_sorted_score
+from src.utils.utils import get_list_modes_names
 
 
 def top_general() -> dict[str, Any]:

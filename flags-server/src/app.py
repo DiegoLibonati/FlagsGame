@@ -3,9 +3,9 @@ import os
 from flask import Flask
 from flask_pymongo import PyMongo
 
-from blueprints.v1.flags_route import flags_route
-from blueprints.v1.modes_route import modes_route
-from blueprints.v1.users_route import users_route
+from src.blueprints.v1.flags_route import flags_route
+from src.blueprints.v1.modes_route import modes_route
+from src.blueprints.v1.users_route import users_route
 
 
 app = Flask(__name__)

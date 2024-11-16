@@ -76,7 +76,7 @@ const asyncRenderComponent = async (): Promise<RenderComponent> => {
 describe("General Tests", () => {
   createServer([
     {
-      path: `/v1/flags/:mode`,
+      path: `/v1/flags/random/:quantity`,
       method: "get",
       res: () => {
         return {
@@ -107,7 +107,7 @@ describe("General Tests", () => {
 describe("Register Form", () => {
   createServer([
     {
-      path: "/v1/flags/:mode",
+      path: "/v1/flags/random/:quantity",
       method: "get",
       res: () => {
         return {
@@ -160,7 +160,7 @@ describe("Register Form - Result ok in addOrModifyUser service", () => {
 
   createServer([
     {
-      path: "/v1/flags/:mode",
+      path: "/v1/flags/random/:quantity",
       method: "get",
       res: () => {
         return {
@@ -241,7 +241,7 @@ describe("Register Form - Result not ok in addOrModifyUser service", () => {
 
   createServer([
     {
-      path: "/v1/flags/:mode",
+      path: "/v1/flags/random/:quantity",
       method: "get",
       res: () => {
         return {
@@ -320,7 +320,7 @@ describe("Register Form - Result not ok in addOrModifyUser service", () => {
 describe("Update Form", () => {
   createServer([
     {
-      path: "/v1/flags/:mode",
+      path: "/v1/flags/random/:quantity",
       method: "get",
       res: () => {
         return {
@@ -373,7 +373,7 @@ describe("Update Form - Result ok in addOrModifyUser service", () => {
 
   createServer([
     {
-      path: "/v1/flags/:mode",
+      path: "/v1/flags/random/:quantity",
       method: "get",
       res: () => {
         return {
@@ -454,7 +454,7 @@ describe("Update Form - Result not ok in addOrModifyUser service", () => {
 
   createServer([
     {
-      path: "/v1/flags/:mode",
+      path: "/v1/flags/random/:quantity",
       method: "get",
       res: () => {
         return {

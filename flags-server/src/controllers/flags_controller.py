@@ -5,13 +5,20 @@ from flask import make_response
 from flask import current_app 
 from flask import request
 
-from utils.utils import parse_flags
-from utils.utils import get_list_modes_names
+from src.models.Flag import Flag
+from src.models.FlagManager import FlagManager
+from src.data_access.flags_repository import FlagRepository
 
 
 def flags() -> dict[str, Any]:
-    documents = current_app.mongo.db.flags.find()
-    data = parse_flags(documents)
+    flag_manager = FlagManager()
+    documents = FlagRepository().get_all_flags()
+
+    for doc in documents:
+        flag = Flag(**doc)
+        flag_manager.add_flag(flag=flag)
+
+    data = flag_manager.parse_flags()
 
     return make_response({
         "message": "The flags were successfully obtained.",
@@ -23,44 +30,46 @@ def add_flag() -> dict[str, Any]:
     image = request.json.get('image', "")
     name = request.json.get('name', "")
 
-    image = image.strip()
-    name = name.strip()
-
-    flag = {
-        'image': image,
-        'name': name,
-    }
-
-    if not image or not name:
+    if not name or not image:
         return make_response({
             "message": f"The flag could not be added because the fields are not valid.",
-            "fields": flag
+            "data": None
         }, 400)
+    
+    flag = Flag(
+        name=name,
+        image=image
+    )
 
-    result_insert = current_app.mongo.db.flags.insert_one(flag)
-    flag['_id'] = str(result_insert.inserted_id)
+    inserted_id = FlagRepository().insert_flag(flag=flag.to_dict())
+    flag.set_flag_id(id=str(inserted_id))
 
     return make_response({
         "message": "New flag added.",
-        "fields": flag
+        "data": flag.to_dict()
     }, 201)
 
 
-def get_random_flags(mode: str) -> dict[str, Any]:
-    mode_to_search = mode.lower()
+def get_random_flags(quantity: str) -> dict[str, Any]:
+    try:
+        quantity = int(quantity)
 
-    modes = current_app.mongo.db.modes.find({} , { "_id":0 ,"name": 1})
-    modes = get_list_modes_names(modes=modes)
+        if quantity <= 0:
+            raise ValueError("Quantity must be greater than zero.")
+    except ValueError:
+            return make_response({
+                "message": "Invalid quantity. It must be a positive integer.",
+                "data": []
+            }, 400)
 
-    if not mode_to_search or not modes or not mode_to_search in modes:
-        return make_response({
-            "message": "The flags could not be obtained randomly.",
-            "data": []
-        }, 400)
+    flag_manager = FlagManager()
+    documents = FlagRepository().get_random_flags(quantity=quantity)
 
-    documents = current_app.mongo.db.flags.aggregate([ { "$sample": {"size": 5} } ])
+    for doc in documents:
+        flag = Flag(**doc)
+        flag_manager.add_flag(flag=flag)        
 
-    data = parse_flags(documents)
+    data = flag_manager.parse_flags()
 
     return make_response({
         "message": "The flags were obtained randomly.",
@@ -70,14 +79,28 @@ def get_random_flags(mode: str) -> dict[str, Any]:
 
 def delete_flag(id: str) -> dict[str, Any]:
     try:
-        current_app.mongo.db.flags.delete_one({
-            "_id": ObjectId(id)
-        })
+        object_id = ObjectId(id)
+        document = FlagRepository().get_flag(flag_id=object_id)
+
+        if not document: 
+            return make_response({
+                "message": f"No flag found with id: {id}.",
+                "data": None
+            }, 404)
+        
+        flag = Flag(
+            _id = document.get("_id"),
+            name = document.get("name"),
+            image = document.get("image"),
+        )
+
+        FlagRepository().delete_flag_by_id(flag_id=flag.id)
 
         return make_response({
-            "message": f"{id} was deleted."
+            "message": f"Flag with id: {id} was deleted.",
+            "data": flag.to_dict()
         }, 200)
-    except Exception as e:
+    except Exception as e: 
         return make_response({
-            "message": str(e)
+            "message": f"Error deleting flag: {str(e)}"
         }, 400)
