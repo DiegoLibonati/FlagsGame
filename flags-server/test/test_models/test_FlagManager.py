@@ -15,11 +15,12 @@ def test_flag_manager_parse_flags(flag_manager_model: FlagManager, flag_model: F
     assert flag_manager_model.flags
     assert flag_model in flag_manager_model.flags
 
-    parsed_flags = flag_manager_model.parse_flags()
+    parsed_flags = flag_manager_model.parse_items()
 
     assert isinstance(parsed_flags, list)
 
     for flag in parsed_flags:
         assert isinstance(flag, dict)
+        assert flag.get("_id") == TEST_FLAG_MOCK.get("_id")
         assert flag.get("name") == TEST_FLAG_MOCK.get("name")
         assert flag.get("image") == TEST_FLAG_MOCK.get("image")

@@ -1,22 +1,28 @@
-from src.models.Flag import Flag
+from typing import Any
 
-class FlagManager:
+from src.models.Flag import Flag
+from src.models.Manager import Manager
+
+
+class FlagManager(Manager[Flag]):
     def __init__(self) -> None:
-        self.__flags: list[Flag] = []
+        super().__init__(items=[], initializer=Flag)
 
     @property
     def flags(self) -> list[Flag]:
-        return self.__flags
+        return self.items
     
     def add_flag(self, flag: Flag) -> None:
         if not flag or not isinstance(flag, Flag): raise TypeError("You must enter a valid flag in order to add it.")
 
-        self.__flags.append(flag)
+        super()._add_item(item=flag)
 
-    def parse_flags(self) -> list[dict[str, str]]:
-        return [flag.to_dict() for flag in self.flags]
+    def add_flags(self, flags: list[dict[str, Any]]) -> None:
+        if not flags or not isinstance(flags, list): raise TypeError("You must enter a valid flags to add its.")
+
+        super()._add_items(items=flags)
 
     def __str__(self) -> str:
-        return f"\n----- FLAGMANAGER START -----\n\
-        Flags: {self.flags}\
-        \n----- FLAGMANAGER END -----\n"
+        return f"\n----- FLAGMANAGER START -----\n" \
+        f"Flags: {self.parse_items()}\n" \
+        f"----- FLAGMANAGER END -----\n"

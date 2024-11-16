@@ -13,11 +13,9 @@ def flags() -> dict[str, Any]:
     flag_manager = FlagManager()
     documents = FlagRepository().get_all_flags()
 
-    for doc in documents:
-        flag = Flag(**doc)
-        flag_manager.add_flag(flag=flag)
+    flag_manager.add_flags(flags=documents)
 
-    data = flag_manager.parse_flags()
+    data = flag_manager.parse_items()
 
     return make_response({
         "message": "The flags were successfully obtained.",
@@ -64,11 +62,9 @@ def get_random_flags(quantity: str) -> dict[str, Any]:
     flag_manager = FlagManager()
     documents = FlagRepository().get_random_flags(quantity=quantity)
 
-    for doc in documents:
-        flag = Flag(**doc)
-        flag_manager.add_flag(flag=flag)        
+    flag_manager.add_flags(flags=documents)      
 
-    data = flag_manager.parse_flags()
+    data = flag_manager.parse_items()
 
     return make_response({
         "message": "The flags were obtained randomly.",

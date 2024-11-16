@@ -1,18 +1,22 @@
 from typing import Any
 
 from flask import make_response
-from flask import current_app 
 from flask import request
 
-from src.utils.utils import parse_mode
-from src.utils.utils import parse_modes
-from src.utils.utils import get_list_modes_names
-from src.utils.utils import get_list_users_by_sorted_score
+from src.data_access.modes_repository import ModeRepository
+from src.data_access.users_repository import UserRepository
+from src.models.Mode import Mode
+from src.models.UserManager import UserManager
+from src.models.ModeManager import ModeManager
 
 
 def get_modes() -> dict[str, Any]:
-    modes = current_app.mongo.db.modes.find()
-    data = parse_modes(modes)
+    mode_manager = ModeManager()
+    modes = ModeRepository().get_all_modes()
+
+    mode_manager.add_modes(modes=modes)
+
+    data = mode_manager.parse_items()
 
     return make_response({
         "message": "Successfully obtained modes.",
@@ -23,25 +27,20 @@ def get_modes() -> dict[str, Any]:
 def find_mode(name : str) -> dict[str, Any]:
     if not name:
         return make_response({
-            "message": "A game mode with this name was not found, please enter valid fields.",
-            "fields": {
-                "name": name
-            },
+            "message": f"A game mode with name {name} was not found, please enter valid fields.",
             "data": None
         }, 400)
 
-    mode = current_app.mongo.db.modes.find_one({"name": {"$regex": f"^{name}$", "$options": "i"}})
+    mode = ModeRepository().get_mode(name=name)
 
     if not mode:
         return make_response({
-            "message": "A game mode with this name was not found, please enter valid fields.",
-            "fields": {
-                "name": name
-            },
+            "message": f"A game mode with name {name} was not found, please enter valid fields.",
             "data": None
         }, 400)
 
-    data = parse_mode(mode)
+    mode = Mode(**mode)
+    data = mode.to_dict()
 
     return make_response({
         "message": "Successfully obtained the requested mode.",
@@ -50,54 +49,61 @@ def find_mode(name : str) -> dict[str, Any]:
 
 
 def add_mode() -> dict[str, Any]:
-    name = request.json['name']
-    description = request.json['description']
-    timeleft = request.json['timeleft']
-    multiplier = request.json['multiplier']
-
-    name = name.strip()
-    description = description.strip()
-
-    mode = {
-        'name': name,
-        'description': description,
-        'timeleft': timeleft,
-        'multiplier': multiplier,
-    }
+    name = request.json.get('name', "").strip()
+    description = request.json.get('description', "").strip()
+    timeleft = request.json.get('timeleft')
+    multiplier = request.json.get('multiplier')
 
     if not name or not description or not timeleft or not multiplier:
         return make_response({
             "message": f"The mode could not be added because the fields entered are not valid.",
-            "fields": mode
+            "data": None
         }, 400)
 
-    result_insert = current_app.mongo.db.modes.insert_one(mode)
-    mode['_id'] = str(result_insert.inserted_id)
+    id_mode = ModeRepository().insert_mode(mode={
+        'name': name,
+        'description': description,
+        'timeleft': timeleft,
+        'multiplier': multiplier,
+    })
+
+    mode = Mode(
+        _id = id_mode,
+        name = name,
+        description = description,
+        multiplier = multiplier,
+        timeleft = timeleft
+    )
+    data = mode.to_dict()
 
     return make_response({
-        "message": f"Successfully created new mode",
-        "fields": mode
+        "message": f"Successfully created new mode.",
+        "data": data
     }, 201)
 
 
 def top_mode(mode: str) -> dict[str, Any]:
-    data = []
+    mode_manager = ModeManager()
     mode_name = mode.lower()
-    modes = current_app.mongo.db.modes.find({} , { "_id":0 ,"name": 1})
-    modes = get_list_modes_names(modes=modes)
-    users = current_app.mongo.db.users.find()
 
-    if not modes or not mode_name in modes or not users:
+    modes = ModeRepository().get_all_modes()
+
+    mode_manager.add_modes(modes=modes)
+
+    mode_names = mode_manager.get_modes_names()
+
+    if not modes or not mode_name in mode_names:
         return make_response({ 
             "message": "The top could not be obtained as requested.",
-            "fields": {
-                "mode": mode,
-            },
             "data": []
         }, 400)
+    
+    user_manager = UserManager()
+    users = UserRepository().get_all_users() 
 
-    data = get_list_users_by_sorted_score(users=users, mode_name_score=mode_name)
-    data = data[:10]
+    user_manager.add_users(users=users)
+
+    data = user_manager.get_users_top_ten(mode_name=mode_name)
 
     return make_response({
         "message": "The top ten of the requested mode was obtained.",

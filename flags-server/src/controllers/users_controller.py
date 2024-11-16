@@ -1,20 +1,22 @@
 from typing import Any
 
 from flask import make_response
-from flask import current_app 
 from flask import request
-from werkzeug.security import check_password_hash
-from werkzeug.security import generate_password_hash
 
-from src.utils.utils import get_list_users_by_sorted_score
-from src.utils.utils import get_list_modes_names
+from src.models.User import User
+from src.models.UserManager import UserManager
+from src.models.ModeManager import ModeManager
+from src.data_access.modes_repository import ModeRepository
+from src.data_access.users_repository import UserRepository
 
 
 def top_general() -> dict[str, Any]:
-    mode = "general_score"
-    users = current_app.mongo.db.users.find()
-    data = get_list_users_by_sorted_score(users=users, mode_name_score=mode)
-    data = data[:10]
+    users = UserRepository().get_all_users()
+    user_manager = UserManager()
+
+    user_manager.add_users(users=users)
+
+    data = user_manager.get_users_top_ten(mode_name="general")
 
     return make_response({
         "message": "Successfully obtained the global top.",
@@ -25,124 +27,83 @@ def top_general() -> dict[str, Any]:
 def add_or_modify() -> dict[str, Any]:
     method = request.method
 
-    username = request.json['username'].strip()
-    password = request.json['password'].strip()
-    score_actual = request.json['score']
-    mode_name = request.json['mode_name'].strip().lower()
+    username = request.json.get('username').strip()
+    password = request.json.get('password').strip()
+    score_actual = request.json.get('score')
+    mode_name = request.json.get('mode_name').strip().lower()
 
     if not username or not password or not score_actual or not mode_name:
         return make_response({
             "message": "The data entered are not valid.",
-            "fields": {
-                "username": username,
-                "password": password,
-                "score": score_actual,
-                "mode_name": mode_name
-            }
+            "data": None
         }, 400)
     
-    modes_db = current_app.mongo.db.modes.find()
-    modes_names = get_list_modes_names(modes=modes_db)
+    modes = ModeRepository().get_all_modes()
+
+    mode_manager = ModeManager()
+    mode_manager.add_modes(modes=modes)
+    
+    modes_names = mode_manager.get_modes_names()
 
     if not mode_name in modes_names:
         return make_response({
             "message": "The mode entered does not exist in the database.",
-            "fields": {
-                "username": username,
-                "password": password,
-                "score": score_actual,
-                "mode_name": mode_name
-            }
+            "data": None
         }, 400)
 
-    username_db = current_app.mongo.db.users.find_one({"username": username})
+    user = UserRepository().get_user_by_username(username=username) 
 
     # NOTE: PUT
 
     if method == "PUT":
-        if not username_db:
+        if not user:
             return make_response({
                 "message": "No valid user was found based on the data entered.",
-                "fields": {
-                    "username": username,
-                    "password": password,
-                    "score": score_actual,
-                    "mode_name": mode_name
-                }
-            }, 400)
+                "data": None
+            }, 404)
         
-        modes_keys = []
-        user_db_password = username_db["password"]
-        user_db_modes_played = username_db["modes"]
+        user = User(**user)
 
-        for mode in user_db_modes_played:
-            for key in mode.keys():
-                modes_keys.append(key)
-    
-        if username_db and not check_password_hash(user_db_password, password):
+        if not user.valid_password(password=password):
             return make_response({
                 "message": "Password do not match with that username",
-                "fields": {
-                    "username": username,
-                    "password": password,
-                    "score": score_actual,
-                    "mode_name": mode_name
-                }
+                "data": None
             }, 400)
         
-        if username_db:
-            for index, mode_played in enumerate(user_db_modes_played):
-                for mode in mode_played.keys():
-                    if mode == mode_name:
-                        new_general_score = (username_db["modes"][0]["general_score"] - username_db["modes"][index][mode_name]) + score_actual
-                        current_app.mongo.db.users.update_one({"username": username}, {"$set" : {f"modes.{index}.{mode}":score_actual, f"modes.0.general_score":new_general_score}})
+        user.update_scores(mode_name=mode_name, score=score_actual)
 
-            return make_response({
-                "message": "User successfully updated"
-            }, 201)
+        UserRepository().update_user_by_username(username=username, values={"scores": user.scores, "total_score": user.total_score})
+
+        return make_response({
+            "message": "User successfully updated",
+            "data": user.to_dict()
+        }, 201)
 
     # NOTE: POST
 
     if method == "POST":
 
-        if not username_db:
-            modes = [{"general_score": score_actual}]
+        if not user:
+            scores = {"general": score_actual, mode_name: score_actual}
 
-            for name in modes_names:
-                if name == mode_name:
-                    modes.append({str(name).lower(): score_actual})
-                else:
-                    modes.append({str(name).lower(): 0})
+            user = User(_id=None, username=username, password=password, scores=scores, total_score=score_actual)
 
-            current_app.mongo.db.users.insert_one({
-                'username': username,
-                'password': generate_password_hash(password),
-                'modes': modes
-            })
+            UserRepository().insert_user(user=user)
 
             return make_response({
-                "message":"User successfully added"
+                "message":"User successfully added",
+                "data": user.to_dict()
             }, 201)
         
-        if username_db:
+        if user:
             return make_response({
                 "message": "There is a user with that username.",
-                "fields": {
-                    "username": username,
-                    "password": password,
-                    "score": score_actual,
-                    "mode_name": mode_name
-                }
+                "data": User(**user).to_dict()
             }, 400)
     
     return make_response({
         "message": "No action was taken.",
-        "fields": {
-            "username": username,
-            "password": password,
-            "score": score_actual,
-            "mode_name": mode_name
-        }
+        "data": None
     }, 400)
 
 

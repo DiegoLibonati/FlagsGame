@@ -1,14 +1,12 @@
 from bson import ObjectId
 
-class Flag:
+from src.models.MongoObject import MongoObject
+
+class Flag(MongoObject):
     def __init__(self, _id: ObjectId, name: str, image: str) -> None:
-        self.__id = _id
+        super().__init__(_id=_id)
         self.__name = name
         self.__image = image
-
-    @property
-    def id(self) -> ObjectId:
-        return self.__id
 
     @property
     def name(self) -> str:
@@ -30,8 +28,8 @@ class Flag:
         }
     
     def __str__(self) -> str:
-        return f"\n----- FLAG START -----\n\
-        Id: {self.id}\n\
-        Name: {self.name}\n\
-        Image: {self.image}\
-        \n----- FLAG END -----\n"
+        return f"\n----- FLAG START -----\n" \
+        f"Id: {self.id}\n" \
+        f"Name: {self.name}\n" \
+        f"Image: {self.image}\n" \
+        f"----- FLAG END -----\n"
