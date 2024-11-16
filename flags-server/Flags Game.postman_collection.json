@@ -1,0 +1,330 @@
+{
+	"info": {
+		"_postman_id": "e3a8be0c-51ba-4501-b8b7-3cfecb42ff42",
+		"name": "Flags Game",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27611586"
+	},
+	"item": [
+		{
+			"name": "Flags",
+			"item": [
+				{
+					"name": "Get Flags",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{APP_URL}}/flags",
+							"host": [
+								"{{APP_URL}}"
+							],
+							"path": [
+								"flags"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Flags Random",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{APP_URL}}/flags/random/2",
+							"host": [
+								"{{APP_URL}}"
+							],
+							"path": [
+								"flags",
+								"random",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Flag",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Francia\",\r\n    \"image\": \"https://cdn.pixabay.com/photo/2021/06/06/04/00/flag-6314238_640.jpg\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APP_URL}}/flags/newflag",
+							"host": [
+								"{{APP_URL}}"
+							],
+							"path": [
+								"flags",
+								"newflag"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Flag By Id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{APP_URL}}/flags/delete/673773206d0e53d0d63f3341",
+							"host": [
+								"{{APP_URL}}"
+							],
+							"path": [
+								"flags",
+								"delete",
+								"673773206d0e53d0d63f3341"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Modes",
+			"item": [
+				{
+					"name": "Get Modes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{APP_URL}}/modes",
+							"host": [
+								"{{APP_URL}}"
+							],
+							"path": [
+								"modes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Mode",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{APP_URL}}/modes/findmode/Normal",
+							"host": [
+								"{{APP_URL}}"
+							],
+							"path": [
+								"modes",
+								"findmode",
+								"Normal"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Mode",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Hell\",\r\n    \"description\": \"You must guess the most available flags in 5 seconds.\",\r\n    \"timeleft\": 5,\r\n    \"multiplier\": 1000\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APP_URL}}/modes/newmode",
+							"host": [
+								"{{APP_URL}}"
+							],
+							"path": [
+								"modes",
+								"newmode"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Top Ten Mode",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{APP_URL}}/modes/mode/top/normal",
+							"host": [
+								"{{APP_URL}}"
+							],
+							"path": [
+								"modes",
+								"mode",
+								"top",
+								"normal"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Mode",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{APP_URL}}/modes/delete/6738271773d585ba953ca214",
+							"host": [
+								"{{APP_URL}}"
+							],
+							"path": [
+								"modes",
+								"delete",
+								"6738271773d585ba953ca214"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Add User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"Die13\",\r\n    \"password\": \"123456\",\r\n    \"score\": 255,\r\n    \"mode_name\": \"Normal\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APP_URL}}/users/addormodify",
+							"host": [
+								"{{APP_URL}}"
+							],
+							"path": [
+								"users",
+								"addormodify"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"Die\",\r\n    \"password\": \"1234\",\r\n    \"score\": 400,\r\n    \"mode_name\": \"Hard\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{APP_URL}}/users/addormodify",
+							"host": [
+								"{{APP_URL}}"
+							],
+							"path": [
+								"users",
+								"addormodify"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Top Ten",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{APP_URL}}/users/top/general",
+							"host": [
+								"{{APP_URL}}"
+							],
+							"path": [
+								"users",
+								"top",
+								"general"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{APP_URL}}/users/delete/6738c223c5f4b5adb808a95d",
+							"host": [
+								"{{APP_URL}}"
+							],
+							"path": [
+								"users",
+								"delete",
+								"6738c223c5f4b5adb808a95d"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "APP_URL",
+			"value": "http://localhost:5050/v1",
+			"type": "string"
+		}
+	]
+}
