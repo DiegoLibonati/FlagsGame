@@ -1,5 +1,3 @@
-import re
-
 from bson import ObjectId
 
 from src.models.Flag import Flag
@@ -8,13 +6,9 @@ from test.conftest import TEST_FLAG_MOCK
 
 
 def test_flag_model(flag_model: Flag) -> None:
-    
     assert flag_model.id == ObjectId(TEST_FLAG_MOCK.get("_id"))
     assert flag_model.name == TEST_FLAG_MOCK.get("name")
     assert flag_model.image == TEST_FLAG_MOCK.get("image")
-
-    assert not re.search(r'\s', flag_model.name)
-    assert not re.search(r'\s', flag_model.image)
 
 def test_flag_is_valid(flag_model: Flag) -> None:
     assert flag_model.is_valid

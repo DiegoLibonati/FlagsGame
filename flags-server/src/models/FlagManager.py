@@ -17,6 +17,6 @@ class FlagManager:
         return [flag.to_dict() for flag in self.flags]
 
     def __str__(self) -> str:
-        return f"\n----- FLAG START -----\n\
+        return f"\n----- FLAGMANAGER START -----\n\
         Flags: {self.flags}\
-        \n----- FLAG END -----\n"
+        \n----- FLAGMANAGER END -----\n"

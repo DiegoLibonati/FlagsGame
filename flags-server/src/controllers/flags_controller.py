@@ -26,9 +26,9 @@ def flags() -> dict[str, Any]:
 
 
 def add_flag() -> dict[str, Any]:
-    image = request.json.get('image', "")
-    name = request.json.get('name', "")
-
+    image = request.json.get('image', "").strip()
+    name = request.json.get('name', "").strip()
+    
     if not name or not image:
         return make_response({
             "message": f"The flag could not be added because the fields are not valid.",

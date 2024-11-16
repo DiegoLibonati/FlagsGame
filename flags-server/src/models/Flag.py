@@ -6,8 +6,6 @@ class Flag:
         self.__name = name
         self.__image = image
 
-        self.parse_flag()
-
     @property
     def id(self) -> ObjectId:
         return self.__id
@@ -23,10 +21,6 @@ class Flag:
     @property
     def is_valid(self) -> bool:
         return bool(self.id and self.name and self.image)
-
-    def parse_flag(self) -> None:
-        self.__name = self.name.strip()
-        self.__image = self.image.strip()
     
     def to_dict(self) -> dict[str, str]:
         return {
