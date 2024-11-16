@@ -152,7 +152,7 @@ def not_valid_flag_model() -> Flag:
 def mode_model() -> Mode:
     TEST_MODE_MOCK_COPY = TEST_MODE_MOCK.copy()
     TEST_MODE_MOCK_COPY["_id"] = ObjectId(TEST_MODE_MOCK_COPY["_id"])
-    return Flag(**TEST_MODE_MOCK_COPY)
+    return Mode(**TEST_MODE_MOCK_COPY)
 
 
 @pytest.fixture(scope="session")
