@@ -13,8 +13,10 @@ from flask.testing import FlaskClient
 from src.app import app as api_app
 from src.app import init
 from src.models.Flag import Flag
+from src.models.Mode import Mode
 from src.models.FlagManager import FlagManager
 from src.data_access.flags_repository import FlagRepository
+from src.data_access.modes_repository import ModeRepository
 
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -73,11 +75,15 @@ WRONG_ID_FLAG = "asd"
 # MOCK MODES
 TEST_MODE_NAME_MOCK = "Normal"
 TEST_MODE_MOCK = {
+    "_id": "673773206d0e53d0d63f3342",
     "description": "You must guess the most available flags in 10023 seconds.",
     "multiplier": 1000,
     "name": "Test",
     "timeleft": 2500
 }
+NOT_FOUND_ID_MODE = "673773206d0e53d0d63f3342"
+WRONG_ID_MODE = "asd"
+
 
 # FLAKS FIXTURES
 @pytest.fixture(scope="session")
@@ -124,15 +130,29 @@ def flag_repository() -> FlagRepository:
     return FlagRepository()
 
 
+@pytest.fixture(scope="session")
+def mode_repository() -> ModeRepository:
+    return ModeRepository()
+
+
 # CLASS
 @pytest.fixture(scope="session")
 def flag_model() -> Flag:
-    return Flag(_id=ObjectId(TEST_FLAG_MOCK.get("_id")), name=TEST_FLAG_MOCK.get("name"), image=TEST_FLAG_MOCK.get("image"))
+    TEST_FLAG_MOCK_COPY = TEST_FLAG_MOCK.copy()
+    TEST_FLAG_MOCK_COPY["_id"] = ObjectId(TEST_FLAG_MOCK_COPY["_id"])
+    return Flag(**TEST_FLAG_MOCK_COPY)
 
 
 @pytest.fixture(scope="session")
 def not_valid_flag_model() -> Flag:
     return Flag(_id=ObjectId(TEST_FLAG_MOCK.get("_id")), name="", image=TEST_FLAG_MOCK.get("image"))
+
+
+@pytest.fixture(scope="session")
+def mode_model() -> Mode:
+    TEST_MODE_MOCK_COPY = TEST_MODE_MOCK.copy()
+    TEST_MODE_MOCK_COPY["_id"] = ObjectId(TEST_MODE_MOCK_COPY["_id"])
+    return Flag(**TEST_MODE_MOCK_COPY)
 
 
 @pytest.fixture(scope="session")
@@ -146,6 +166,13 @@ def test_flag() -> dict[str, str]:
     TEST_FLAG_COPY = TEST_FLAG_MOCK.copy()
     del TEST_FLAG_COPY["_id"]
     return TEST_FLAG_COPY
+
+
+@pytest.fixture(scope="session")
+def test_mode() -> dict[str, str]:
+    TEST_MODE_COPY = TEST_MODE_MOCK.copy()
+    del TEST_MODE_COPY["_id"]
+    return TEST_MODE_COPY
 
 
 @pytest.fixture(scope="session")
