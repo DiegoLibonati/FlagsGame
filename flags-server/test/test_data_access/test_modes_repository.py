@@ -25,7 +25,7 @@ def test_get_all_modes(mode_repository: ModeRepository) -> None:
 
 
 @pytest.mark.usefixtures("mongo_test_db", "app_context")
-def test_insert_get_by_id_delete_flag(mode_repository: ModeRepository, test_mode: dict[str, str]) -> None:
+def test_insert_get_by_id_delete_mode(mode_repository: ModeRepository, test_mode: dict[str, str]) -> None:
     mode_id = mode_repository.insert_mode(mode=test_mode)
 
     assert mode_id
@@ -54,7 +54,7 @@ def test_insert_get_by_id_delete_flag(mode_repository: ModeRepository, test_mode
 
 
 @pytest.mark.usefixtures("mongo_test_db", "app_context")
-def test_insert_get_by_name_delete_flag(mode_repository: ModeRepository, test_mode: dict[str, str]) -> None:
+def test_insert_get_by_name_delete_mode(mode_repository: ModeRepository, test_mode: dict[str, str]) -> None:
     mode_id = mode_repository.insert_mode(mode=test_mode)
 
     assert mode_id
