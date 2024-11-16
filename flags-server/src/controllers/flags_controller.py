@@ -2,7 +2,6 @@ from typing import Any
 from bson import ObjectId
 
 from flask import make_response
-from flask import current_app 
 from flask import request
 
 from src.models.Flag import Flag
@@ -36,13 +35,13 @@ def add_flag() -> dict[str, Any]:
             "data": None
         }, 400)
     
+    inserted_id = FlagRepository().insert_flag(flag={"name": name, "image": image})
+    
     flag = Flag(
+        _id=ObjectId(inserted_id),
         name=name,
         image=image
     )
-
-    inserted_id = FlagRepository().insert_flag(flag=flag.to_dict())
-    flag.set_flag_id(id=str(inserted_id))
 
     return make_response({
         "message": "New flag added.",
@@ -88,11 +87,7 @@ def delete_flag(id: str) -> dict[str, Any]:
                 "data": None
             }, 404)
         
-        flag = Flag(
-            _id = document.get("_id"),
-            name = document.get("name"),
-            image = document.get("image"),
-        )
+        flag = Flag(**document)
 
         FlagRepository().delete_flag_by_id(flag_id=flag.id)
 

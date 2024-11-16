@@ -37,7 +37,7 @@ def test_add_flag(flask_client: Flask, test_flag: dict[str, str]) -> None:
     assert data
 
     assert flag
-    assert data == flag.to_dict()
+    assert flag.to_dict() == data
 
     test_delete_flag(flask_client=flask_client, inserted_flag_id=inserted_flag_id)
 
@@ -170,9 +170,9 @@ def test_delete_flag(flask_client: Flask, inserted_flag_id: str) -> None:
     assert status_code == 200
     assert message == f"Flag with id: {inserted_flag_id} was deleted."
     assert isinstance(data, dict)
-    assert data.get("_id")
-    assert data.get("name")
-    assert data.get("image")
+    assert data.get("_id") == inserted_flag_id
+    assert data.get("name") == TEST_FLAG_MOCK.get("name")
+    assert data.get("image") == TEST_FLAG_MOCK.get("image")
 
 
 @pytest.mark.usefixtures("mongo_test_db")

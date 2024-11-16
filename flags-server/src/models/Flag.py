@@ -1,12 +1,10 @@
-from typing import Union
 from bson import ObjectId
 
 class Flag:
-    def __init__(self, name: str, image: str, _id: ObjectId = None) -> None:
+    def __init__(self, _id: ObjectId, name: str, image: str) -> None:
+        self.__id = _id
         self.__name = name
         self.__image = image
-
-        self.__id = _id
 
         self.parse_flag()
 
@@ -24,30 +22,22 @@ class Flag:
     
     @property
     def is_valid(self) -> bool:
-        return bool(self.name and self.image)
-    
-    def set_flag_id(self, id: Union[str, ObjectId]) -> None:
-        try:
-            self.__id = id if isinstance(id, ObjectId) else ObjectId(id)
-        except Exception as e:
-            raise ValueError(f"Invalid ID format: {id}.") from e
+        return bool(self.id and self.name and self.image)
 
     def parse_flag(self) -> None:
         self.__name = self.name.strip()
         self.__image = self.image.strip()
     
     def to_dict(self) -> dict[str, str]:
-        flag_dict = {
+        return {
+            "_id": str(self.id),
             "name": self.name,
             "image": self.image
         }
-
-        if self.id: flag_dict["_id"] = str(self.id)
-
-        return flag_dict
     
     def __str__(self) -> str:
         return f"\n----- FLAG START -----\n\
+        Id: {self.id}\n\
         Name: {self.name}\n\
         Image: {self.image}\
         \n----- FLAG END -----\n"

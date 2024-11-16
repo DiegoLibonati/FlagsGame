@@ -2,7 +2,7 @@ import subprocess
 import time
 import logging
 
-from typing import Any
+from bson import ObjectId
 
 import pytest
 
@@ -19,15 +19,21 @@ from src.data_access.flags_repository import FlagRepository
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-
+# BLUEPRINTS
 PREFIX_FLAGS_BP = "/v1/flags"
 PREFIX_MODES_BP = "/v1/modes"
 PREFIX_USERS_BP = "/v1/users"
 
+# MOCK FLAGS
 TEST_FLAG_MOCK = {
+    "_id": "673773206d0e53d0d63f3341",
     "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVnagHgbpRUO82-sIOEi3TX1N3wUGSlRWKZQ&s",
     "name": "test_flag"
 }
+NOT_FOUND_ID_FLAG = "673773206d0e53d0d63f3341"
+WRONG_ID_FLAG = "asd"
+
+# MOCK MODES
 TEST_MODE_NAME_MOCK = "Normal"
 TEST_MODE_MOCK = {
     "description": "You must guess the most available flags in 10023 seconds.",
@@ -35,10 +41,8 @@ TEST_MODE_MOCK = {
     "name": "Test",
     "timeleft": 2500
 }
-NOT_FOUND_ID_FLAG = "673773206d0e53d0d63f3341"
-WRONG_ID_FLAG = "asd"
 
-
+# FLAKS FIXTURES
 @pytest.fixture(scope="session")
 def flask_app() -> Flask:
     app = api_app
@@ -51,6 +55,13 @@ def flask_client(flask_app: Flask) -> FlaskClient:
     return flask_app.test_client()
 
 
+@pytest.fixture
+def app_context(flask_app) -> None:
+    with flask_app.app_context():
+        yield
+
+
+# MONGO FIXTURES
 @pytest.fixture(scope="session")
 def mongo_test_db() -> None:
     subprocess.run(
@@ -69,25 +80,22 @@ def mongo_test_db() -> None:
         text=True,
     )
 
-@pytest.fixture
-def app_context(flask_app) -> None:
-    with flask_app.app_context():
-        yield
 
-
+# REPOSITORIES - SERVICES
 @pytest.fixture(scope="session")
 def flag_repository() -> FlagRepository:
     return FlagRepository()
 
 
+# CLASS
 @pytest.fixture(scope="session")
 def flag_model() -> Flag:
-    return Flag(name=TEST_FLAG_MOCK.get("name"), image=TEST_FLAG_MOCK.get("image"))
+    return Flag(_id=ObjectId(TEST_FLAG_MOCK.get("_id")), name=TEST_FLAG_MOCK.get("name"), image=TEST_FLAG_MOCK.get("image"))
 
 
 @pytest.fixture(scope="session")
 def not_valid_flag_model() -> Flag:
-    return Flag(name="", image=TEST_FLAG_MOCK.get("image"))
+    return Flag(_id=ObjectId(TEST_FLAG_MOCK.get("_id")), name="", image=TEST_FLAG_MOCK.get("image"))
 
 
 @pytest.fixture(scope="session")
@@ -95,47 +103,15 @@ def flag_manager_model() -> FlagManager:
     return FlagManager()
 
 
-@pytest.fixture(scope="session")
-def flags() -> list[Flag]:
-    return [
-        {
-            "_id": "67267fd72e10fe5f0af5d706",
-            "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVnagHgbpRUO82-sIOEi3TX1N3wUGSlRWKZQ&s",
-            "name": "Argentina"
-        },
-        {
-            "_id": "672680152e10fe5f0af5d707",
-            "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Flag_of_Brazil.svg/1200px-Flag_of_Brazil.svg.png",
-            "name": "Brasil"
-        },
-        {
-            "_id": "6726819e0291c4ae90b6798c",
-            "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQt5fAr3G2SRs1TaR3jSiGhYPOdxu4mj8sBtg&s",
-            "name": "Peru"
-        },
-        {
-            "_id": "672681ac0291c4ae90b6798d",
-            "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyiYirHiGCymBqqOjCzm5A71AuealRFxjiUA&s",
-            "name": "Canada"
-        },
-        {
-            "_id": "672681bf0291c4ae90b6798e",
-            "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-bu9g_Be9LrSEFgXHGT0jX11SCVgzZNaOfA&s",
-            "name": "Estados Unidos"
-        },
-        {
-            "_id": "6728cc43d19b644f5bc6e495",
-            "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQilbazSxXoEzGPXF0J5Oy3FzGUAgxuMu7upg&s",
-            "name": "Colombia"
-        }
-    ]
-
-
+# MOCKS CONSTANTS
 @pytest.fixture(scope="session")
 def test_flag() -> dict[str, str]:
-    return TEST_FLAG_MOCK
+    TEST_FLAG_COPY = TEST_FLAG_MOCK.copy()
+    del TEST_FLAG_COPY["_id"]
+    return TEST_FLAG_COPY
 
 
+# SAVE DOCS MONGO
 @pytest.fixture(scope="function")
 def inserted_flag_id(flask_client: Flask, test_flag: dict[str, str]) -> str:
     """Fixture to insert a flag and return its ID."""
