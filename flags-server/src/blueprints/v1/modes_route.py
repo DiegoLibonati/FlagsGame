@@ -26,3 +26,8 @@ def add_mode() -> dict[str, Any]:
 @modes_route.route('/mode/top/<mode>', methods=['GET'])
 def top_mode(mode: str) -> dict[str, Any]:
     return modes_controller.top_mode(mode)
+
+
+@modes_route.route('/delete/<id>', methods=["DELETE"])
+def delete_mode(id: str) -> dict[str, Any]:
+    return modes_controller.delete_mode(id)

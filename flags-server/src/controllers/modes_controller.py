@@ -1,4 +1,5 @@
 from typing import Any
+from bson import ObjectId
 
 from flask import make_response
 from flask import request
@@ -31,7 +32,7 @@ def find_mode(name : str) -> dict[str, Any]:
             "data": None
         }, 400)
 
-    mode = ModeRepository().get_mode(name=name)
+    mode = ModeRepository().get_mode_by_name(name=name)
 
     if not mode:
         return make_response({
@@ -109,3 +110,28 @@ def top_mode(mode: str) -> dict[str, Any]:
         "message": "The top ten of the requested mode was obtained.",
         "data": data
     }, 200)
+
+
+def delete_mode(id: str) -> dict[str, Any]:
+    try:
+        object_id = ObjectId(id)
+        document = ModeRepository().get_mode_by_id(mode_id=object_id)
+
+        if not document: 
+            return make_response({
+                "message": f"No mode found with id: {id}.",
+                "data": None
+            }, 404)
+        
+        mode = Mode(**document)
+
+        ModeRepository().delete_mode_by_id(mode_id=mode.id)
+
+        return make_response({
+            "message": f"Mode with id: {id} was deleted.",
+            "data": mode.to_dict()
+        }, 200)
+    except Exception as e: 
+        return make_response({
+            "message": f"Error deleting mode: {str(e)}"
+        }, 400)

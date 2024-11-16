@@ -1,4 +1,5 @@
 from typing import Any
+from bson import ObjectId
 
 from flask import make_response
 from flask import request
@@ -107,3 +108,26 @@ def add_or_modify() -> dict[str, Any]:
     }, 400)
 
 
+def delete_user(id: str) -> dict[str, Any]:
+    try:
+        object_id = ObjectId(id)
+        document = UserRepository().get_user_by_id(user_id=object_id)
+
+        if not document: 
+            return make_response({
+                "message": f"No user found with id: {id}.",
+                "data": None
+            }, 404)
+        
+        user = User(**document)
+
+        UserRepository().delete_user_by_id(user_id=user.id)
+
+        return make_response({
+            "message": f"User with id: {id} was deleted.",
+            "data": user.to_dict()
+        }, 200)
+    except Exception as e: 
+        return make_response({
+            "message": f"Error deleting user: {str(e)}"
+        }, 400)
