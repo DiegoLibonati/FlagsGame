@@ -38,7 +38,7 @@ def find_mode(name : str) -> dict[str, Any]:
         return make_response({
             "message": f"A game mode with name {name} was not found, please enter valid fields.",
             "data": None
-        }, 400)
+        }, 404)
 
     mode = Mode(**mode)
     data = mode.to_dict()
@@ -97,7 +97,7 @@ def top_mode(mode: str) -> dict[str, Any]:
         return make_response({ 
             "message": "The top could not be obtained as requested.",
             "data": []
-        }, 400)
+        }, 404)
     
     user_manager = UserManager()
     users = UserRepository().get_all_users() 
