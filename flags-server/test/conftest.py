@@ -12,6 +12,7 @@ from flask.testing import FlaskClient
 
 from src.app import app as api_app
 from src.app import init
+from src.models.Encrypt import Encrypt
 from src.models.Flag import Flag
 from src.models.Mode import Mode
 from src.models.User import User
@@ -25,6 +26,7 @@ from test.constants import TEST_FLAGS_MOCK
 from test.constants import TEST_MODE_MOCK
 from test.constants import TEST_USER_MOCK
 from test.constants import PREFIX_FLAGS_BP
+from test.constants import PASSWORD
 
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -110,6 +112,11 @@ def user_model() -> User:
     TEST_USER_MOCK_COPY = TEST_USER_MOCK.copy()
     TEST_USER_MOCK_COPY["_id"] = ObjectId(TEST_USER_MOCK_COPY["_id"])
     return User(**TEST_USER_MOCK_COPY)
+
+
+@pytest.fixture(scope="session")
+def encrypt_model() -> Encrypt:
+    return Encrypt(password=PASSWORD)
 
 
 @pytest.fixture(scope="session")
