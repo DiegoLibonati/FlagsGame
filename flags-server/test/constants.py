@@ -58,6 +58,29 @@ TEST_MODE_MOCK = {
     "name": "Test",
     "timeleft": 2500
 }
+TEST_MODES_MOCK = [
+    {
+        "_id": "672687090bcd13f7c9a88ac3",
+        "description": "You must guess the most available flags in 90 seconds.",
+        "multiplier": 10,
+        "name": "Normal",
+        "timeleft": 90
+    },
+    {
+        "_id": "6726874dde5266d8ba53ae77",
+        "description": "You must guess the most available flags in 60 seconds.",
+        "multiplier": 25,
+        "name": "Hard",
+        "timeleft": 60
+    },
+    {
+        "_id": "67268757de5266d8ba53ae78",
+        "description": "You must guess the most available flags in 25 seconds.",
+        "multiplier": 100,
+        "name": "Hardcore",
+        "timeleft": 25
+    }
+]
 NOT_FOUND_ID_MODE = "673773206d0e53d0d63f3342"
 WRONG_ID_MODE = "asd"
 
@@ -72,6 +95,38 @@ TEST_USER_MOCK = {
     },
     "total_score": 25
 }
+TEST_USERS_MOCK = [
+    {
+        "_id": "673773206d0e53d0d63f3347",
+        "username": "DieTest1",
+        "password": "1234",
+        "scores": {
+            "general": 75,
+            "normal": 75
+        },
+        "total_score": 75
+    },
+    {
+        "_id": "673773206d0e53d0d63f3345",
+        "username": "DieTest2",
+        "password": "1234",
+        "scores": {
+            "general": 25,
+            "normal": 25
+        },
+        "total_score": 25
+    },
+    {
+        "_id": "673773206d0e53d0d63f3123",
+        "username": "DieTest3",
+        "password": "1234",
+        "scores": {
+            "general": 50,
+            "normal": 50
+        },
+        "total_score": 50
+    }
+]
 NOT_FOUND_ID_USER = "673773206d0e53d0d63f3343"
 WRONG_ID_USER = "asd"
 

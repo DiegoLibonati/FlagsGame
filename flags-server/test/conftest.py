@@ -2,6 +2,7 @@ import subprocess
 import time
 import logging
 
+from typing import Any
 from bson import ObjectId
 
 import pytest
@@ -17,6 +18,8 @@ from src.models.Flag import Flag
 from src.models.Mode import Mode
 from src.models.User import User
 from src.models.FlagManager import FlagManager
+from src.models.ModeManager import ModeManager
+from src.models.UserManager import UserManager
 from src.data_access.flags_repository import FlagRepository
 from src.data_access.modes_repository import ModeRepository
 from src.data_access.users_repository import UserRepository
@@ -24,7 +27,9 @@ from src.data_access.users_repository import UserRepository
 from test.constants import TEST_FLAG_MOCK
 from test.constants import TEST_FLAGS_MOCK
 from test.constants import TEST_MODE_MOCK
+from test.constants import TEST_MODES_MOCK
 from test.constants import TEST_USER_MOCK
+from test.constants import TEST_USERS_MOCK
 from test.constants import PREFIX_FLAGS_BP
 from test.constants import PASSWORD
 
@@ -124,6 +129,16 @@ def flag_manager_model() -> FlagManager:
     return FlagManager()
 
 
+@pytest.fixture(scope="session")
+def mode_manager_model() -> ModeManager:
+    return ModeManager()
+
+
+@pytest.fixture(scope="session")
+def user_manager_model() -> UserManager:
+    return UserManager()
+
+
 # MOCKS CONSTANTS
 @pytest.fixture(scope="session")
 def test_flag() -> dict[str, str]:
@@ -149,6 +164,16 @@ def test_user() -> dict[str, str]:
 @pytest.fixture(scope="session")
 def test_flags() -> dict[str, str]:
     return TEST_FLAGS_MOCK
+
+
+@pytest.fixture(scope="session")
+def test_modes() -> dict[str, Any]:
+    return TEST_MODES_MOCK
+
+
+@pytest.fixture(scope="session")
+def test_users() -> dict[str, Any]:
+    return TEST_USERS_MOCK
 
 
 # SAVE DOCS MONGO

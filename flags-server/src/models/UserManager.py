@@ -22,7 +22,7 @@ class UserManager(Manager[User]):
 
         super()._add_items(items=users)
 
-    def get_users_top_ten(self, mode_name: str): 
+    def get_users_top_ten(self, mode_name: str) -> dict[str, Any]: 
         data = []
     
         for user in self.users:
