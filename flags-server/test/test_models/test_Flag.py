@@ -2,13 +2,17 @@ from bson import ObjectId
 
 from src.models.Flag import Flag
 
-from test.conftest import TEST_FLAG_MOCK
+from test.constants import TEST_FLAG_MOCK
 
 
 def test_flag_model(flag_model: Flag) -> None:
-    assert flag_model.id == ObjectId(TEST_FLAG_MOCK.get("_id"))
-    assert flag_model.name == TEST_FLAG_MOCK.get("name")
-    assert flag_model.image == TEST_FLAG_MOCK.get("image")
+    _id = TEST_FLAG_MOCK.get("_id")
+    name = TEST_FLAG_MOCK.get("name")
+    image = TEST_FLAG_MOCK.get("image")
+
+    assert flag_model.id == ObjectId(_id)
+    assert flag_model.name == name
+    assert flag_model.image == image
 
 def test_flag_is_valid(flag_model: Flag) -> None:
     assert flag_model.is_valid

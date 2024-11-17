@@ -3,8 +3,6 @@ from bson import ObjectId
 
 from flask import current_app
 
-from src.models.User import User
-
 
 class UserRepository:
     @staticmethod
@@ -20,8 +18,8 @@ class UserRepository:
         return current_app.mongo.db.users.find_one({"_id": user_id})
 
     @staticmethod
-    def insert_user(user: User) -> str:
-        result = current_app.mongo.db.users.insert_one({'username': user.username, 'password': user.password_hashed, 'scores': user.scores, 'total_score': user.total_score})
+    def insert_user(user: dict[str, Any]) -> str:
+        result = current_app.mongo.db.users.insert_one(user)
         return str(result.inserted_id)
     
     @staticmethod

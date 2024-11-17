@@ -7,10 +7,9 @@ from flask import Response
 
 from src.models.Flag import Flag
 
-from test.conftest import PREFIX_FLAGS_BP
-from test.conftest import TEST_FLAG_MOCK
-from test.conftest import NOT_FOUND_ID_FLAG
-from test.conftest import WRONG_ID_FLAG
+from test.constants import PREFIX_FLAGS_BP
+from test.constants import NOT_FOUND_ID_FLAG
+from test.constants import WRONG_ID_FLAG
 
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -39,11 +38,11 @@ def test_add_flag(flask_client: Flask, test_flag: dict[str, str]) -> None:
     assert flag
     assert flag.to_dict() == data
 
-    test_delete_flag(flask_client=flask_client, inserted_flag_id=inserted_flag_id)
+    test_delete_flag(flask_client=flask_client, inserted_flag_id=inserted_flag_id, test_flag=test_flag)
 
 
 @pytest.mark.usefixtures("mongo_test_db")
-def test_add_wrong_flag(flask_client: Flask) -> None:
+def test_add_flag_with_wrong_flag(flask_client: Flask) -> None:
     wrong_flag = {
         "image": "",
         "name": ""
@@ -66,7 +65,10 @@ def test_add_wrong_flag(flask_client: Flask) -> None:
 
 
 @pytest.mark.usefixtures("mongo_test_db")
-def test_get_flags(flask_client: Flask, inserted_flag_id: str) -> None:
+def test_get_flags(flask_client: Flask, inserted_flag_id: str, test_flag: dict[str, str]) -> None:
+    name = test_flag.get("name")
+    image = test_flag.get("image")
+
     response: Response = flask_client.get(
         f"{PREFIX_FLAGS_BP}/",
     )
@@ -85,10 +87,10 @@ def test_get_flags(flask_client: Flask, inserted_flag_id: str) -> None:
         flag = Flag(**flag)
 
         if flag.id == inserted_flag_id:
-            assert flag.name == TEST_FLAG_MOCK.get("name")
-            assert flag.image == TEST_FLAG_MOCK.get("image")
+            assert flag.name == name
+            assert flag.image == image
             
-            test_delete_flag(flask_client=flask_client, inserted_flag_id=inserted_flag_id)
+            test_delete_flag(flask_client=flask_client, inserted_flag_id=inserted_flag_id, test_flag=test_flag)
             continue
 
         assert flag
@@ -118,7 +120,7 @@ def test_get_random_flags(flask_client: Flask) -> None:
 
 
 @pytest.mark.usefixtures("mongo_test_db")
-def test_get_random_flags_invalid_int(flask_client: Flask) -> None:
+def test_get_random_flags_with_invalid_int_passing_str(flask_client: Flask) -> None:
     quantity = "asd"
 
     response: Response = flask_client.get(
@@ -138,7 +140,7 @@ def test_get_random_flags_invalid_int(flask_client: Flask) -> None:
 
 
 @pytest.mark.usefixtures("mongo_test_db")
-def test_get_random_flags_invalid_int_two(flask_client: Flask) -> None:
+def test_get_random_flags_with_invalid_int_passing_negative(flask_client: Flask) -> None:
     quantity = -1
 
     response: Response = flask_client.get(
@@ -158,7 +160,10 @@ def test_get_random_flags_invalid_int_two(flask_client: Flask) -> None:
 
 
 @pytest.mark.usefixtures("mongo_test_db")
-def test_delete_flag(flask_client: Flask, inserted_flag_id: str) -> None:
+def test_delete_flag(flask_client: Flask, inserted_flag_id: str, test_flag: dict[str, str]) -> None:
+    name = test_flag.get("name")
+    image = test_flag.get("image")
+
     response: Response = flask_client.delete(f"{PREFIX_FLAGS_BP}/delete/{inserted_flag_id}")
 
     result = response.json
@@ -170,13 +175,14 @@ def test_delete_flag(flask_client: Flask, inserted_flag_id: str) -> None:
     assert status_code == 200
     assert message == f"Flag with id: {inserted_flag_id} was deleted."
     assert isinstance(data, dict)
+
     assert data.get("_id") == inserted_flag_id
-    assert data.get("name") == TEST_FLAG_MOCK.get("name")
-    assert data.get("image") == TEST_FLAG_MOCK.get("image")
+    assert data.get("name") == name
+    assert data.get("image") == image
 
 
 @pytest.mark.usefixtures("mongo_test_db")
-def test_delete_not_found_flag(flask_client: Flask) -> None:
+def test_delete_flag_with_not_found_id(flask_client: Flask) -> None:
     response: Response = flask_client.delete(f"{PREFIX_FLAGS_BP}/delete/{NOT_FOUND_ID_FLAG}")
 
     result = response.json
@@ -192,7 +198,7 @@ def test_delete_not_found_flag(flask_client: Flask) -> None:
 
 
 @pytest.mark.usefixtures("mongo_test_db")
-def test_delete_wrong_flag(flask_client: Flask) -> None:
+def test_delete_flag_with_wrong_id(flask_client: Flask) -> None:
     response: Response = flask_client.delete(f"{PREFIX_FLAGS_BP}/delete/{WRONG_ID_FLAG}")
 
     result = response.json

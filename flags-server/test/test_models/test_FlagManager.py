@@ -3,7 +3,7 @@ import logging
 from src.models.Flag import Flag
 from src.models.FlagManager import FlagManager
 
-from test.conftest import NOT_FOUND_ID_FLAG
+from test.constants import NOT_FOUND_ID_FLAG
 
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -17,7 +17,7 @@ def test_flag_manager_add_flag(flag_manager_model: FlagManager, flag_model: Flag
     assert flag_manager_model.flags
     assert flag_model in flag_manager_model.flags
 
-def test_flag_manager_add_flags(flag_manager_model: FlagManager, test_flags: list[Flag]) -> None:
+def test_flag_manager_add_flags(flag_manager_model: FlagManager, test_flags: dict[str, str]) -> None:
     flag_manager_model.add_flags(flags=test_flags)
 
     assert flag_manager_model.flags

@@ -5,8 +5,6 @@ import pytest
 from src.models.Flag import Flag
 from src.data_access.flags_repository import FlagRepository
 
-from test.conftest import TEST_FLAG_MOCK
-
 
 @pytest.mark.usefixtures("mongo_test_db", "app_context")
 def test_get_all_flags(flag_repository: FlagRepository) -> None:
@@ -15,15 +13,23 @@ def test_get_all_flags(flag_repository: FlagRepository) -> None:
     assert isinstance(flags, list)
 
     if flags:
-        flag = Flag(**flags[0])
+        first_flag = flags[0]
+        _id = flags[0].get("_id")
+        name = flags[0].get("name")
+        image = flags[0].get("image")
 
-        assert flag.id == flags[0].get("_id")
-        assert flag.name == flags[0].get("name")
-        assert flag.image == flags[0].get("image")
+        flag = Flag(**first_flag)
+
+        assert flag.id == _id
+        assert flag.name == name
+        assert flag.image == image
 
 
 @pytest.mark.usefixtures("mongo_test_db", "app_context")
-def test_insert_get_delete_flag(flag_repository: FlagRepository, test_flag: dict[str, str]) -> None:
+def test_insert_and_get_and_delete_flag(flag_repository: FlagRepository, test_flag: dict[str, str]) -> None:
+    name = test_flag.get("name")
+    image = test_flag.get("image")
+
     flag_id = flag_repository.insert_flag(flag=test_flag)
 
     assert flag_id
@@ -39,8 +45,8 @@ def test_insert_get_delete_flag(flag_repository: FlagRepository, test_flag: dict
     assert flag
 
     assert flag.id == flag_id
-    assert flag.name == TEST_FLAG_MOCK.get("name")
-    assert flag.image == TEST_FLAG_MOCK.get("image")
+    assert flag.name == name
+    assert flag.image == image
 
     flag_repository.delete_flag_by_id(flag_id=flag_id)
 
@@ -57,11 +63,16 @@ def test_get_random_flags_by_quantity(flag_repository: FlagRepository) -> None:
     assert isinstance(flags, list)
 
     if flags:
-        flag = Flag(**flags[0])
+        first_flag = flags[0]
+        _id = flags[0].get("_id")
+        name = flags[0].get("name")
+        image = flags[0].get("image")
 
-        assert flag.id == flags[0].get("_id")
-        assert flag.name == flags[0].get("name")
-        assert flag.image == flags[0].get("image")
+        flag = Flag(**first_flag)
+
+        assert flag.id == _id
+        assert flag.name == name
+        assert flag.image == image
 
     assert len(flags) >= 0 and len(flags) <= quantity
     

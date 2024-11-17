@@ -4,6 +4,7 @@ from bson import ObjectId
 from flask import make_response
 from flask import request
 
+from src.models.Encrypt import Encrypt
 from src.models.User import User
 from src.models.UserManager import UserManager
 from src.models.ModeManager import ModeManager
@@ -64,8 +65,8 @@ def add_or_modify() -> dict[str, Any]:
             }, 404)
         
         user = User(**user)
-
-        if not user.valid_password(password=password):
+        
+        if not Encrypt(password=password).valid_password(pwhash=user.password):
             return make_response({
                 "message": "Password do not match with that username",
                 "data": None
@@ -87,13 +88,13 @@ def add_or_modify() -> dict[str, Any]:
         if not user:
             scores = {"general": score_actual, mode_name: score_actual}
 
-            user = User(_id=None, username=username, password=password, scores=scores, total_score=score_actual)
+            UserRepository().insert_user(user={'username': username, 'password': Encrypt(password=password).password_hashed, 'scores': scores, 'total_score': scores.get("general")})
 
-            UserRepository().insert_user(user=user)
+            user = UserRepository().get_user_by_username(username=username) 
 
             return make_response({
                 "message":"User successfully added",
-                "data": user.to_dict()
+                "data": User(**user).to_dict()
             }, 201)
         
         if user:

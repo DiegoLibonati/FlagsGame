@@ -14,75 +14,20 @@ from src.app import app as api_app
 from src.app import init
 from src.models.Flag import Flag
 from src.models.Mode import Mode
+from src.models.User import User
 from src.models.FlagManager import FlagManager
 from src.data_access.flags_repository import FlagRepository
 from src.data_access.modes_repository import ModeRepository
+from src.data_access.users_repository import UserRepository
+
+from test.constants import TEST_FLAG_MOCK
+from test.constants import TEST_FLAGS_MOCK
+from test.constants import TEST_MODE_MOCK
+from test.constants import TEST_USER_MOCK
+from test.constants import PREFIX_FLAGS_BP
 
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
-# BLUEPRINTS
-PREFIX_FLAGS_BP = "/v1/flags"
-PREFIX_MODES_BP = "/v1/modes"
-PREFIX_USERS_BP = "/v1/users"
-
-# MOCK FLAGS
-TEST_FLAG_MOCK = {
-    "_id": "673773206d0e53d0d63f3341",
-    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVnagHgbpRUO82-sIOEi3TX1N3wUGSlRWKZQ&s",
-    "name": "test_flag"
-}
-TEST_FLAGS_MOCK = [
-    {
-        "_id": "67267fd72e10fe5f0af5d706",
-        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVnagHgbpRUO82-sIOEi3TX1N3wUGSlRWKZQ&s",
-        "name": "Argentina"
-    },
-    {
-        "_id": "672680152e10fe5f0af5d707",
-        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Flag_of_Brazil.svg/1200px-Flag_of_Brazil.svg.png",
-        "name": "Brasil"
-    },
-    {
-        "_id": "6726819e0291c4ae90b6798c",
-        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQt5fAr3G2SRs1TaR3jSiGhYPOdxu4mj8sBtg&s",
-        "name": "Peru"
-    },
-    {
-        "_id": "672681ac0291c4ae90b6798d",
-        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyiYirHiGCymBqqOjCzm5A71AuealRFxjiUA&s",
-        "name": "Canada"
-    },
-    {
-        "_id": "672681bf0291c4ae90b6798e",
-        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-bu9g_Be9LrSEFgXHGT0jX11SCVgzZNaOfA&s",
-        "name": "Estados Unidos"
-    },
-    {
-        "_id": "6728cc43d19b644f5bc6e495",
-        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQilbazSxXoEzGPXF0J5Oy3FzGUAgxuMu7upg&s",
-        "name": "Colombia"
-    },
-    {
-        "_id": "6738a4c6ca44bc6236c37cc4",
-        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVnagHgbpRUO82-sIOEi3TX1N3wUGSlRWKZQ&s",
-        "name": "test_flag"
-    }
-]
-NOT_FOUND_ID_FLAG = "673773206d0e53d0d63f3341"
-WRONG_ID_FLAG = "asd"
-
-# MOCK MODES
-TEST_MODE_NAME_MOCK = "Normal"
-TEST_MODE_MOCK = {
-    "_id": "673773206d0e53d0d63f3342",
-    "description": "You must guess the most available flags in 10023 seconds.",
-    "multiplier": 1000,
-    "name": "Test",
-    "timeleft": 2500
-}
-NOT_FOUND_ID_MODE = "673773206d0e53d0d63f3342"
-WRONG_ID_MODE = "asd"
 
 
 # FLAKS FIXTURES
@@ -135,6 +80,11 @@ def mode_repository() -> ModeRepository:
     return ModeRepository()
 
 
+@pytest.fixture(scope="session")
+def user_repository() -> UserRepository:
+    return UserRepository()
+
+
 # CLASS
 @pytest.fixture(scope="session")
 def flag_model() -> Flag:
@@ -156,6 +106,13 @@ def mode_model() -> Mode:
 
 
 @pytest.fixture(scope="session")
+def user_model() -> User:
+    TEST_USER_MOCK_COPY = TEST_USER_MOCK.copy()
+    TEST_USER_MOCK_COPY["_id"] = ObjectId(TEST_USER_MOCK_COPY["_id"])
+    return User(**TEST_USER_MOCK_COPY)
+
+
+@pytest.fixture(scope="session")
 def flag_manager_model() -> FlagManager:
     return FlagManager()
 
@@ -173,6 +130,13 @@ def test_mode() -> dict[str, str]:
     TEST_MODE_COPY = TEST_MODE_MOCK.copy()
     del TEST_MODE_COPY["_id"]
     return TEST_MODE_COPY
+
+
+@pytest.fixture(scope="session")
+def test_user() -> dict[str, str]:
+    TEST_USER_COPY = TEST_USER_MOCK.copy()
+    del TEST_USER_COPY["_id"]
+    return TEST_USER_COPY
 
 
 @pytest.fixture(scope="session")

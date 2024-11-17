@@ -1,10 +1,8 @@
 from functools import reduce
 from bson import ObjectId
 
-from werkzeug.security import check_password_hash
-from werkzeug.security import generate_password_hash
-
 from src.models.MongoObject import MongoObject
+
 
 class User(MongoObject):
     def __init__(self, _id: ObjectId, username: str, password: str, scores: dict[str, int], total_score: int) -> None:
@@ -29,10 +27,6 @@ class User(MongoObject):
     @property
     def total_score(self) -> int:
         return self.__total_score
-    
-    @property 
-    def password_hashed(self) -> str:
-        return generate_password_hash(self.password)
    
     def to_dict(self) -> dict[str, str]:
         return {
@@ -41,9 +35,6 @@ class User(MongoObject):
             "scores": self.scores,
             "total_score": self.total_score
         }
-    
-    def valid_password(self, password: str) -> bool:
-        return check_password_hash(self.password, password)
     
     def update_scores(self, mode_name: str, score: int) -> None:
             self.__scores[mode_name] = score
