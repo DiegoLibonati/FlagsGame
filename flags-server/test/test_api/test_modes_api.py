@@ -3,7 +3,7 @@ import pytest
 from flask import Flask
 from flask import Response
 
-from test.constants import PREFIX_MODES_BP
+from test.constants import BLUEPRINTS
 from test.constants import NOT_FOUND_ID_MODE
 from test.constants import NOT_FOUND_NAME_MODE
 from test.constants import WRONG_ID_MODE
@@ -17,7 +17,7 @@ def test_add_mode(flask_client: Flask, test_mode: dict[str, str]) -> None:
     timeleft = test_mode.get("timeleft")
 
     response: Response = flask_client.post(
-        f"{PREFIX_MODES_BP}/newmode",
+        f"{BLUEPRINTS['modes']}/newmode",
         json=test_mode
     )
 
@@ -42,7 +42,7 @@ def test_add_mode_with_wrong_mode(flask_client: Flask, test_mode: dict[str, str]
     timeleft = test_mode.get("timeleft")
 
     response: Response = flask_client.post(
-        f"{PREFIX_MODES_BP}/newmode",
+        f"{BLUEPRINTS['modes']}/newmode",
         json={
             "name": name,
             "description": description,
@@ -69,7 +69,7 @@ def test_get_modes(flask_client: Flask, test_mode: dict[str, str]) -> None:
     timeleft = test_mode.get("timeleft")
 
     response: Response = flask_client.get(
-        f"{PREFIX_MODES_BP}/",
+        f"{BLUEPRINTS['modes']}/",
     )
 
     result = response.json
@@ -100,7 +100,7 @@ def test_find_mode(flask_client: Flask, test_mode: dict[str, str]) -> None:
     timeleft = test_mode.get("timeleft")
 
     response: Response = flask_client.get(
-        f"{PREFIX_MODES_BP}/findmode/{name}",
+        f"{BLUEPRINTS['modes']}/findmode/{name}",
     )
 
     result = response.json
@@ -121,7 +121,7 @@ def test_find_mode(flask_client: Flask, test_mode: dict[str, str]) -> None:
 @pytest.mark.usefixtures("mongo_test_db")
 def test_find_mode_not_name(flask_client: Flask) -> None:
     response: Response = flask_client.get(
-        f"{PREFIX_MODES_BP}/findmode/",
+        f"{BLUEPRINTS['modes']}/findmode/",
     )
 
     status_code = response.status_code
@@ -131,7 +131,7 @@ def test_find_mode_not_name(flask_client: Flask) -> None:
 @pytest.mark.usefixtures("mongo_test_db")
 def test_find_mode_not_found_mode(flask_client: Flask) -> None:
     response: Response = flask_client.get(
-        f"{PREFIX_MODES_BP}/findmode/{NOT_FOUND_NAME_MODE}",
+        f"{BLUEPRINTS['modes']}/findmode/{NOT_FOUND_NAME_MODE}",
     )
 
     result = response.json
@@ -149,7 +149,7 @@ def test_get_mode_top(flask_client: Flask, test_mode: dict[str, str]) -> None:
     name = test_mode.get("name")
 
     response: Response = flask_client.get(
-        f"{PREFIX_MODES_BP}/mode/top/{name}",
+        f"{BLUEPRINTS['modes']}/mode/top/{name}",
     )
 
     result = response.json
@@ -178,7 +178,7 @@ def test_get_mode_top(flask_client: Flask, test_mode: dict[str, str]) -> None:
 @pytest.mark.usefixtures("mongo_test_db")
 def test_get_mode_not_found_mode_name(flask_client: Flask) -> None:
     response: Response = flask_client.get(
-        f"{PREFIX_MODES_BP}/mode/top/{NOT_FOUND_NAME_MODE}",
+        f"{BLUEPRINTS['modes']}/mode/top/{NOT_FOUND_NAME_MODE}",
     )
 
     result = response.json
@@ -199,14 +199,14 @@ def test_delete_mode(flask_client: Flask, test_mode: dict[str, str]) -> None:
     timeleft = test_mode.get("timeleft")
 
     response: Response = flask_client.get(
-        f"{PREFIX_MODES_BP}/findmode/{name}",
+        f"{BLUEPRINTS['modes']}/findmode/{name}",
     )
 
     result = response.json
     id_to_delete = result["data"].get("_id")
 
     response: Response = flask_client.delete(
-        f"{PREFIX_MODES_BP}/delete/{id_to_delete}",
+        f"{BLUEPRINTS['modes']}/delete/{id_to_delete}",
     )
 
     result = response.json
@@ -227,7 +227,7 @@ def test_delete_mode(flask_client: Flask, test_mode: dict[str, str]) -> None:
 
 @pytest.mark.usefixtures("mongo_test_db")
 def test_delete_mode_with_not_found_id(flask_client: Flask) -> None:
-    response: Response = flask_client.delete(f"{PREFIX_MODES_BP}/delete/{NOT_FOUND_ID_MODE}")
+    response: Response = flask_client.delete(f"{BLUEPRINTS['modes']}/delete/{NOT_FOUND_ID_MODE}")
 
     result = response.json
     status_code = response.status_code
@@ -241,7 +241,7 @@ def test_delete_mode_with_not_found_id(flask_client: Flask) -> None:
 
 @pytest.mark.usefixtures("mongo_test_db")
 def test_delete_mode_with_wrong_id(flask_client: Flask) -> None:
-    response: Response = flask_client.delete(f"{PREFIX_MODES_BP}/delete/{WRONG_ID_MODE}")
+    response: Response = flask_client.delete(f"{BLUEPRINTS['modes']}/delete/{WRONG_ID_MODE}")
 
     result = response.json
     status_code = response.status_code

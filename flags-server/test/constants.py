@@ -1,7 +1,10 @@
 # BLUEPRINTS
-PREFIX_FLAGS_BP = "/v1/flags"
-PREFIX_MODES_BP = "/v1/modes"
-PREFIX_USERS_BP = "/v1/users"
+BLUEPRINTS = {
+    "flags": "/v1/flags",
+    "modes": "/v1/modes",
+    "users": "/v1/users"
+}
+
 
 # MOCK FLAGS
 TEST_FLAG_MOCK = {

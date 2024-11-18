@@ -5,7 +5,7 @@ import pytest
 from flask import Flask
 from flask import Response
 
-from test.constants import PREFIX_FLAGS_BP
+from test.constants import BLUEPRINTS
 from test.constants import NOT_FOUND_ID_FLAG
 from test.constants import WRONG_ID_FLAG
 
@@ -19,7 +19,7 @@ def test_add_flag(flask_client: Flask, test_flag: dict[str, str]) -> None:
     image = test_flag.get("image")
 
     response: Response = flask_client.post(
-        f"{PREFIX_FLAGS_BP}/newflag",
+        f"{BLUEPRINTS['flags']}/newflag",
         json=test_flag,
     )
 
@@ -44,7 +44,7 @@ def test_add_flag_with_wrong_flag(flask_client: Flask) -> None:
     }
 
     response: Response = flask_client.post(
-        f"{PREFIX_FLAGS_BP}/newflag",
+        f"{BLUEPRINTS['flags']}/newflag",
         json=wrong_flag,
     )
 
@@ -64,7 +64,7 @@ def test_get_flags(flask_client: Flask, test_flag: dict[str, str]) -> None:
     image = test_flag.get("image")
 
     response: Response = flask_client.get(
-        f"{PREFIX_FLAGS_BP}/",
+        f"{BLUEPRINTS['flags']}/",
     )
 
     result = response.json
@@ -90,7 +90,7 @@ def test_get_random_flags(flask_client: Flask) -> None:
     quantity = 5
 
     response: Response = flask_client.get(
-        f"{PREFIX_FLAGS_BP}/random/{quantity}",
+        f"{BLUEPRINTS['flags']}/random/{quantity}",
     )
 
     result = response.json
@@ -115,7 +115,7 @@ def test_get_random_flags_with_invalid_int_passing_str(flask_client: Flask) -> N
     quantity = "asd"
 
     response: Response = flask_client.get(
-        f"{PREFIX_FLAGS_BP}/random/{quantity}",
+        f"{BLUEPRINTS['flags']}/random/{quantity}",
     )
 
     result = response.json
@@ -134,7 +134,7 @@ def test_get_random_flags_with_invalid_int_passing_negative(flask_client: Flask)
     quantity = -1
 
     response: Response = flask_client.get(
-        f"{PREFIX_FLAGS_BP}/random/{quantity}",
+        f"{BLUEPRINTS['flags']}/random/{quantity}",
     )
 
     result = response.json
@@ -154,7 +154,7 @@ def test_delete_flag(flask_client: Flask, test_flag: dict[str, str]) -> None:
     image = test_flag.get("image")
 
     response: Response = flask_client.get(
-        f"{PREFIX_FLAGS_BP}/",
+        f"{BLUEPRINTS['flags']}/",
     )
 
     result = response.json
@@ -164,7 +164,7 @@ def test_delete_flag(flask_client: Flask, test_flag: dict[str, str]) -> None:
 
     id_to_delete = flag_to_delete.get("_id")
 
-    response: Response = flask_client.delete(f"{PREFIX_FLAGS_BP}/delete/{id_to_delete}")
+    response: Response = flask_client.delete(f"{BLUEPRINTS['flags']}/delete/{id_to_delete}")
 
     result = response.json
     status_code = response.status_code
@@ -182,7 +182,7 @@ def test_delete_flag(flask_client: Flask, test_flag: dict[str, str]) -> None:
 
 @pytest.mark.usefixtures("mongo_test_db")
 def test_delete_flag_with_not_found_id(flask_client: Flask) -> None:
-    response: Response = flask_client.delete(f"{PREFIX_FLAGS_BP}/delete/{NOT_FOUND_ID_FLAG}")
+    response: Response = flask_client.delete(f"{BLUEPRINTS['flags']}/delete/{NOT_FOUND_ID_FLAG}")
 
     result = response.json
     status_code = response.status_code
@@ -197,7 +197,7 @@ def test_delete_flag_with_not_found_id(flask_client: Flask) -> None:
 
 @pytest.mark.usefixtures("mongo_test_db")
 def test_delete_flag_with_wrong_id(flask_client: Flask) -> None:
-    response: Response = flask_client.delete(f"{PREFIX_FLAGS_BP}/delete/{WRONG_ID_FLAG}")
+    response: Response = flask_client.delete(f"{BLUEPRINTS['flags']}/delete/{WRONG_ID_FLAG}")
 
     result = response.json
     status_code = response.status_code

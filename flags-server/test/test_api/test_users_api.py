@@ -5,7 +5,7 @@ from flask import Response
 
 from src.data_access.users_repository import UserRepository
 
-from test.constants import PREFIX_USERS_BP
+from test.constants import BLUEPRINTS
 from test.constants import SCORES_USER_UPDATE_MOCK
 from test.constants import WRONG_USERNAME_USER
 from test.constants import WRONG_PASSWORD_USER
@@ -21,7 +21,7 @@ def test_add_user(flask_client: Flask, test_user_request: dict[str, str]) -> Non
     mode_name = test_user_request.get("mode_name")
 
     response: Response = flask_client.post(
-        f"{PREFIX_USERS_BP}/addormodify",
+        f"{BLUEPRINTS['users']}/addormodify",
         json=test_user_request
     )
 
@@ -46,7 +46,7 @@ def test_try_to_add_user_again(flask_client: Flask, test_user_request: dict[str,
     mode_name = test_user_request.get("mode_name")
 
     response: Response = flask_client.post(
-        f"{PREFIX_USERS_BP}/addormodify",
+        f"{BLUEPRINTS['users']}/addormodify",
         json=test_user_request
     )
 
@@ -72,7 +72,7 @@ def test_modify_user(flask_client: Flask, test_user_request: dict[str, str]) -> 
     mode_name = "hard"
 
     response: Response = flask_client.put(
-        f"{PREFIX_USERS_BP}/addormodify",
+        f"{BLUEPRINTS['users']}/addormodify",
         json={
             "username": username,
             "password": password,
@@ -103,7 +103,7 @@ def test_try_to_modify_user_without_user(flask_client: Flask, test_user_request:
     mode_name = test_user_request.get("mode_name")
 
     response: Response = flask_client.put(
-        f"{PREFIX_USERS_BP}/addormodify",
+        f"{BLUEPRINTS['users']}/addormodify",
         json={
             "username": username,
             "password": password,
@@ -130,7 +130,7 @@ def test_try_to_modify_user_with_wrong_password(flask_client: Flask, test_user_r
     mode_name = test_user_request.get("mode_name")
 
     response: Response = flask_client.put(
-        f"{PREFIX_USERS_BP}/addormodify",
+        f"{BLUEPRINTS['users']}/addormodify",
         json={
             "username": username,
             "password": password,
@@ -152,7 +152,7 @@ def test_try_to_modify_user_with_wrong_password(flask_client: Flask, test_user_r
 @pytest.mark.usefixtures("mongo_test_db")
 def test_add_or_modify_user_with_wrong_user(flask_client: Flask) -> None:
     response: Response = flask_client.post(
-        f"{PREFIX_USERS_BP}/addormodify",
+        f"{BLUEPRINTS['users']}/addormodify",
         json={
             "username": "asd",
             "password": "1234",
@@ -174,7 +174,7 @@ def test_add_or_modify_user_with_wrong_user(flask_client: Flask) -> None:
 @pytest.mark.usefixtures("mongo_test_db")
 def test_add_or_modify_user_with_wrong_mode_name(flask_client: Flask) -> None:
     response: Response = flask_client.post(
-        f"{PREFIX_USERS_BP}/addormodify",
+        f"{BLUEPRINTS['users']}/addormodify",
         json={
             "username": "asd",
             "password": "1234",
@@ -196,7 +196,7 @@ def test_add_or_modify_user_with_wrong_mode_name(flask_client: Flask) -> None:
 @pytest.mark.usefixtures("mongo_test_db")
 def test_get_top_general(flask_client: Flask) -> None:
     response: Response = flask_client.get(
-        f"{PREFIX_USERS_BP}/top/general"
+        f"{BLUEPRINTS['users']}/top/general"
     )
 
     result = response.json
@@ -226,7 +226,7 @@ def test_delete_user(flask_client: Flask, test_user_request: dict[str, str], use
     id_to_delete = user.get("_id")
 
     response: Response = flask_client.delete(
-        f"{PREFIX_USERS_BP}/delete/{id_to_delete}",
+        f"{BLUEPRINTS['users']}/delete/{id_to_delete}",
     )
 
     result = response.json
@@ -246,7 +246,7 @@ def test_delete_user(flask_client: Flask, test_user_request: dict[str, str], use
 
 @pytest.mark.usefixtures("mongo_test_db")
 def test_delete_user_with_not_found_id(flask_client: Flask) -> None:
-    response: Response = flask_client.delete(f"{PREFIX_USERS_BP}/delete/{NOT_FOUND_ID_USER}")
+    response: Response = flask_client.delete(f"{BLUEPRINTS['users']}/delete/{NOT_FOUND_ID_USER}")
 
     result = response.json
     status_code = response.status_code
@@ -260,7 +260,7 @@ def test_delete_user_with_not_found_id(flask_client: Flask) -> None:
 
 @pytest.mark.usefixtures("mongo_test_db")
 def test_delete_user_with_wrong_id(flask_client: Flask) -> None:
-    response: Response = flask_client.delete(f"{PREFIX_USERS_BP}/delete/{WRONG_ID_USER}")
+    response: Response = flask_client.delete(f"{BLUEPRINTS['users']}/delete/{WRONG_ID_USER}")
 
     result = response.json
     status_code = response.status_code
