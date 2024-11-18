@@ -74,8 +74,10 @@ export type FlagsState = {
 
 // ** GENERAL **
 
+export type AlertType = Alert["type"]
+
 export type Alert = {
-  type: string;
+  type: "alert-auth-error" | "alert-auth-success" | "";
   message: string;
 };
 

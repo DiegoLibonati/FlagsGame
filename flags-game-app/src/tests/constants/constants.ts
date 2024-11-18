@@ -133,8 +133,8 @@ export const FIRST_USER_TOP_STATIC: UserWithOutPassword = USERS_TOP_STATIC_TEST[
 
 export const ALERT_PROVIDER_STATIC: AlertContext = {
   alert: {
-    message: "Success",
-    type: "success",
+    message: "",
+    type: "",
   },
   handleClearAlert: jest.fn(),
   handleSetAlert: jest.fn(),

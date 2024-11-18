@@ -1,4 +1,5 @@
-import { useParams } from "react-router-dom";
+import { useRef } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { addOrModifyUser } from "../../../api/addOrModifyUser";
 import { useForm } from "../../../hooks/useForm";
@@ -8,10 +9,13 @@ import { useAlertContext } from "../../../context/AlertContext/AlertProvider";
 import "./FormRegisterUser.css";
 
 export const FormRegisterUser = (): JSX.Element => {
+  const redirectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   const { mode } = useParams();
+  const navigate = useNavigate();
 
   const { score } = useGameContext();
-  const { handleSetAlert } = useAlertContext();
+  const { alert, handleSetAlert } = useAlertContext();
 
   const { formState, onInputChange, onResetForm } = useForm<{
     username: string;
@@ -40,13 +44,17 @@ export const FormRegisterUser = (): JSX.Element => {
     const { message } = messageBody;
 
     if (!result.ok) {
-      handleSetAlert({ type: "error", message: message });
+      handleSetAlert({ type: "alert-auth-error", message: message });
       onResetForm();
       return;
     }
 
-    handleSetAlert({ type: "success", message: message });
+    handleSetAlert({ type: "alert-auth-success", message: message });
     onResetForm();
+
+    redirectTimeoutRef.current = setTimeout(() => {
+      navigate("/");
+    }, 2000);
   };
 
   return (
@@ -69,7 +77,15 @@ export const FormRegisterUser = (): JSX.Element => {
         name="password"
         onChange={(e) => onInputChange(e)}
       ></input>
-      <button type="submit">Send and register</button>
+      <button
+        type="submit"
+        disabled={
+          alert.type === "alert-auth-error" ||
+          alert.type === "alert-auth-success"
+        }
+      >
+        Send and register
+      </button>
     </form>
   );
 };

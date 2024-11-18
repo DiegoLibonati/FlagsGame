@@ -145,7 +145,7 @@ describe("Result is ok. AddOrModifyUser Service", () => {
 
     expect(ALERT_PROVIDER_STATIC.handleSetAlert).toHaveBeenCalledTimes(1);
     expect(ALERT_PROVIDER_STATIC.handleSetAlert).toHaveBeenCalledWith({
-      type: "success",
+      type: "alert-auth-success",
       message: messageService,
     });
     expect(inputUsername).not.toHaveValue();
@@ -211,7 +211,7 @@ describe("Result is NOT ok. AddOrModifyUser Service", () => {
 
     expect(ALERT_PROVIDER_STATIC.handleSetAlert).toHaveBeenCalledTimes(1);
     expect(ALERT_PROVIDER_STATIC.handleSetAlert).toHaveBeenCalledWith({
-      type: "error",
+      type: "alert-auth-error",
       message: messageService,
     });
     expect(inputUsername).not.toHaveValue();

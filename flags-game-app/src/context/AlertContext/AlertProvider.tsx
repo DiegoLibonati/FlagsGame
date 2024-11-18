@@ -15,6 +15,7 @@ export const AlertProvider = ({ children }: AlertProviderProps) => {
     type: "",
   });
 
+
   const handleSetAlert = (alert: Alert) => {
     setAlert(alert);
   };
