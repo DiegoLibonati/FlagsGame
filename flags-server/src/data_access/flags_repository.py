@@ -1,28 +1,26 @@
 from typing import Any
 from bson import ObjectId
 
-from flask import current_app
+from flask_pymongo.wrappers import Database
 
 
 class FlagRepository:
-    @staticmethod
-    def get_all_flags() -> list[dict[str, Any]]:
-        return list(current_app.mongo.db.flags.find())
-    
-    @staticmethod
-    def get_flag(flag_id: ObjectId) -> dict[str, Any]:
-        return current_app.mongo.db.flags.find_one({"_id": flag_id})
+    def __init__(self, db: Database) -> None:
+        self.db = db
 
-    @staticmethod
-    def insert_flag(flag: dict[str, Any]) -> str:
-        result = current_app.mongo.db.flags.insert_one(flag)
+    def get_all_flags(self) -> list[dict[str, Any]]:
+        return list(self.db.flags.find())
+    
+    def get_flag(self, flag_id: ObjectId) -> dict[str, Any]:
+        return self.db.flags.find_one({"_id": flag_id})
+
+    def insert_flag(self, flag: dict[str, Any]) -> str:
+        result = self.db.flags.insert_one(flag)
         return str(result.inserted_id)
 
-    @staticmethod
-    def get_random_flags(quantity: int) -> list[dict[str, Any]]:
-        return list(current_app.mongo.db.flags.aggregate([{"$sample": {"size": quantity}}]))
+    def get_random_flags(self, quantity: int) -> list[dict[str, Any]]:
+        return list(self.db.flags.aggregate([{"$sample": {"size": quantity}}]))
 
-    @staticmethod
-    def delete_flag_by_id(flag_id: ObjectId) -> bool:
-        result = current_app.mongo.db.flags.delete_one({"_id": flag_id})
+    def delete_flag_by_id(self, flag_id: ObjectId) -> bool:
+        result = self.db.flags.delete_one({"_id": flag_id})
         return bool(result.deleted_count)

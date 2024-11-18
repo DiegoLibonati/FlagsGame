@@ -7,7 +7,7 @@ from src.models.Encrypt import Encrypt
 from src.data_access.users_repository import UserRepository
 
 
-@pytest.mark.usefixtures("mongo_test_db", "app_context")
+@pytest.mark.usefixtures("mongo_test_db")
 def test_get_all_users(user_repository: UserRepository) -> None:
     users = user_repository.get_all_users()
 
@@ -23,7 +23,7 @@ def test_get_all_users(user_repository: UserRepository) -> None:
         assert first_user.get("total_score")
         assert first_user.get("password")
 
-@pytest.mark.usefixtures("mongo_test_db", "app_context")
+@pytest.mark.usefixtures("mongo_test_db")
 def test_insert_and_get_and_delete_user_by_id(user_repository: UserRepository, test_user: dict[str, str]) -> None:
     username = test_user.get("username")
     encrypt = Encrypt(password=test_user.get("password"))
@@ -59,7 +59,7 @@ def test_insert_and_get_and_delete_user_by_id(user_repository: UserRepository, t
 
     assert not user
 
-@pytest.mark.usefixtures("mongo_test_db", "app_context")
+@pytest.mark.usefixtures("mongo_test_db")
 def test_insert_and_get_and_delete_user_by_username(user_repository: UserRepository, test_user: dict[str, str]) -> None:
     username = test_user.get("username")
     encrypt = Encrypt(password=test_user.get("password"))
@@ -95,7 +95,7 @@ def test_insert_and_get_and_delete_user_by_username(user_repository: UserReposit
 
     assert not user
 
-@pytest.mark.usefixtures("mongo_test_db", "app_context")
+@pytest.mark.usefixtures("mongo_test_db")
 def test_update_existing_mode_of_user(user_repository: UserRepository, test_user: dict[str, str]) -> None:
     username = test_user.get("username")
     encrypt = Encrypt(password=test_user.get("password"))
@@ -143,7 +143,7 @@ def test_update_existing_mode_of_user(user_repository: UserRepository, test_user
 
     assert not user
 
-@pytest.mark.usefixtures("mongo_test_db", "app_context")
+@pytest.mark.usefixtures("mongo_test_db")
 def test_update_not_existing_mode_of_user(user_repository: UserRepository, test_user: dict[str, str]) -> None:
     username = test_user.get("username")
     encrypt = Encrypt(password=test_user.get("password"))

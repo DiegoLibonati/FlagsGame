@@ -30,6 +30,7 @@ from test.constants import TEST_MODE_MOCK
 from test.constants import TEST_MODES_MOCK
 from test.constants import TEST_USER_MOCK
 from test.constants import TEST_USERS_MOCK
+from test.constants import TEST_USER_MOCK_REQUEST
 from test.constants import PASSWORD
 
 
@@ -47,13 +48,7 @@ def flask_app() -> Flask:
 @pytest.fixture(scope="session")
 def flask_client(flask_app: Flask) -> FlaskClient:
     return flask_app.test_client()
-
-
-@pytest.fixture
-def app_context(flask_app) -> None:
-    with flask_app.app_context():
-        yield
-
+    
 
 # MONGO FIXTURES
 @pytest.fixture(scope="session")
@@ -77,18 +72,18 @@ def mongo_test_db() -> None:
 
 # REPOSITORIES - SERVICES
 @pytest.fixture(scope="session")
-def flag_repository() -> FlagRepository:
-    return FlagRepository()
+def flag_repository(flask_app: Flask) -> FlagRepository:
+    return FlagRepository(db=flask_app.mongo.db)
 
 
 @pytest.fixture(scope="session")
-def mode_repository() -> ModeRepository:
-    return ModeRepository()
+def mode_repository(flask_app: Flask) -> ModeRepository:
+    return ModeRepository(db=flask_app.mongo.db)
 
 
 @pytest.fixture(scope="session")
-def user_repository() -> UserRepository:
-    return UserRepository()
+def user_repository(flask_app: Flask) -> UserRepository:
+    return UserRepository(db=flask_app.mongo.db)
 
 
 # CLASS
@@ -159,6 +154,9 @@ def test_user() -> dict[str, str]:
     del TEST_USER_COPY["_id"]
     return TEST_USER_COPY
 
+@pytest.fixture(scope="session")
+def test_user_request() -> dict[str, str]:
+    return TEST_USER_MOCK_REQUEST
 
 @pytest.fixture(scope="session")
 def test_flags() -> dict[str, str]:

@@ -1,28 +1,26 @@
 from typing import Any
 from bson import ObjectId
 
-from flask import current_app
+from flask_pymongo.wrappers import Database
 
 
 class ModeRepository:
-    @staticmethod
-    def get_all_modes() -> list[dict[str, Any]]:
-        return list(current_app.mongo.db.modes.find())
+    def __init__(self, db: Database) -> None:
+        self.db = db
 
-    @staticmethod
-    def get_mode_by_name(name: str) -> dict[str, Any]:
-        return current_app.mongo.db.modes.find_one({"name": {"$regex": f"^{name}$", "$options": "i"}})
+    def get_all_modes(self) -> list[dict[str, Any]]:
+        return list(self.db.modes.find())
+
+    def get_mode_by_name(self, name: str) -> dict[str, Any]:
+        return self.db.modes.find_one({"name": {"$regex": f"^{name}$", "$options": "i"}})
     
-    @staticmethod
-    def get_mode_by_id(mode_id: ObjectId) -> dict[str, Any]:
-        return current_app.mongo.db.modes.find_one({"_id": mode_id})
+    def get_mode_by_id(self, mode_id: ObjectId) -> dict[str, Any]:
+        return self.db.modes.find_one({"_id": mode_id})
     
-    @staticmethod
-    def insert_mode(mode: dict[str, Any]) -> str:
-        result = current_app.mongo.db.modes.insert_one(mode)
+    def insert_mode(self, mode: dict[str, Any]) -> str:
+        result = self.db.modes.insert_one(mode)
         return str(result.inserted_id)
 
-    @staticmethod
-    def delete_mode_by_id(mode_id: ObjectId) -> bool:
-        result = current_app.mongo.db.modes.delete_one({"_id": mode_id})
+    def delete_mode_by_id(self, mode_id: ObjectId) -> bool:
+        result = self.db.modes.delete_one({"_id": mode_id})
         return bool(result.deleted_count)

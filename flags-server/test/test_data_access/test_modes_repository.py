@@ -5,7 +5,7 @@ import pytest
 from src.data_access.modes_repository import ModeRepository
 
 
-@pytest.mark.usefixtures("mongo_test_db", "app_context")
+@pytest.mark.usefixtures("mongo_test_db")
 def test_get_all_modes(mode_repository: ModeRepository) -> None:
     modes = mode_repository.get_all_modes()
 
@@ -21,7 +21,7 @@ def test_get_all_modes(mode_repository: ModeRepository) -> None:
         assert first_mode.get("multiplier")
         assert first_mode.get("timeleft")
 
-@pytest.mark.usefixtures("mongo_test_db", "app_context")
+@pytest.mark.usefixtures("mongo_test_db")
 def test_insert_and_get_and_delete_mode_by_id(mode_repository: ModeRepository, test_mode: dict[str, str]) -> None:
     name = test_mode.get("name")
     description = test_mode.get("description")
@@ -53,7 +53,7 @@ def test_insert_and_get_and_delete_mode_by_id(mode_repository: ModeRepository, t
     assert not mode
 
 
-@pytest.mark.usefixtures("mongo_test_db", "app_context")
+@pytest.mark.usefixtures("mongo_test_db")
 def test_insert_and_get_and_delete_mode_by_name(mode_repository: ModeRepository, test_mode: dict[str, str]) -> None:
     name = test_mode.get("name")
     description = test_mode.get("description")

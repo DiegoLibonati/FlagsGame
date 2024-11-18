@@ -5,7 +5,7 @@ import pytest
 from src.data_access.flags_repository import FlagRepository
 
 
-@pytest.mark.usefixtures("mongo_test_db", "app_context")
+@pytest.mark.usefixtures("mongo_test_db")
 def test_get_all_flags(flag_repository: FlagRepository) -> None:
     flags = flag_repository.get_all_flags()
 
@@ -18,7 +18,7 @@ def test_get_all_flags(flag_repository: FlagRepository) -> None:
         assert first_flag.get("name")
         assert first_flag.get("image")
 
-@pytest.mark.usefixtures("mongo_test_db", "app_context")
+@pytest.mark.usefixtures("mongo_test_db")
 def test_insert_and_get_and_delete_flag(flag_repository: FlagRepository, test_flag: dict[str, str]) -> None:
     name = test_flag.get("name")
     image = test_flag.get("image")
@@ -45,7 +45,7 @@ def test_insert_and_get_and_delete_flag(flag_repository: FlagRepository, test_fl
 
     assert not flag
 
-@pytest.mark.usefixtures("mongo_test_db", "app_context")
+@pytest.mark.usefixtures("mongo_test_db")
 def test_get_random_flags_by_quantity(flag_repository: FlagRepository) -> None:
     quantity = 2
     flags = flag_repository.get_random_flags(quantity=quantity)

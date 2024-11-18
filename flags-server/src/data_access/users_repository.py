@@ -1,32 +1,29 @@
 from typing import Any
 from bson import ObjectId
 
-from flask import current_app
+from flask_pymongo.wrappers import Database
 
 
 class UserRepository:
-    @staticmethod
-    def get_all_users() -> list[dict[str, Any]]:
-        return list(current_app.mongo.db.users.find())
+    def __init__(self, db: Database) -> None:
+        self.db = db
 
-    @staticmethod
-    def get_user_by_username(username: str) -> dict[str, Any]:
-        return current_app.mongo.db.users.find_one({"username": username})
+    def get_all_users(self) -> list[dict[str, Any]]:
+        return list(self.db.users.find())
+
+    def get_user_by_username(self, username: str) -> dict[str, Any]:
+        return self.db.users.find_one({"username": username})
     
-    @staticmethod
-    def get_user_by_id(user_id: ObjectId) -> dict[str, Any]:
-        return current_app.mongo.db.users.find_one({"_id": user_id})
+    def get_user_by_id(self, user_id: ObjectId) -> dict[str, Any]:
+        return self.db.users.find_one({"_id": user_id})
 
-    @staticmethod
-    def insert_user(user: dict[str, Any]) -> str:
-        result = current_app.mongo.db.users.insert_one(user)
+    def insert_user(self, user: dict[str, Any]) -> str:
+        result = self.db.users.insert_one(user)
         return str(result.inserted_id)
     
-    @staticmethod
-    def update_user_by_username(username: str, values: dict[str, Any]) -> str:
-        return current_app.mongo.db.users.update_one({'username': username}, {'$set': values})
+    def update_user_by_username(self, username: str, values: dict[str, Any]) -> str:
+        return self.db.users.update_one({'username': username}, {'$set': values})
     
-    @staticmethod
-    def delete_user_by_id(user_id: ObjectId) -> bool:
-        result = current_app.mongo.db.users.delete_one({"_id": user_id})
+    def delete_user_by_id(self, user_id: ObjectId) -> bool:
+        result = self.db.users.delete_one({"_id": user_id})
         return bool(result.deleted_count)

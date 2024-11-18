@@ -226,7 +226,7 @@ def test_delete_mode(flask_client: Flask, test_mode: dict[str, str]) -> None:
     assert data.get("timeleft") == timeleft
 
 @pytest.mark.usefixtures("mongo_test_db")
-def test_delete_flag_with_not_found_id(flask_client: Flask) -> None:
+def test_delete_mode_with_not_found_id(flask_client: Flask) -> None:
     response: Response = flask_client.delete(f"{PREFIX_MODES_BP}/delete/{NOT_FOUND_ID_MODE}")
 
     result = response.json
@@ -240,7 +240,7 @@ def test_delete_flag_with_not_found_id(flask_client: Flask) -> None:
     assert not data
 
 @pytest.mark.usefixtures("mongo_test_db")
-def test_delete_flag_with_wrong_id(flask_client: Flask) -> None:
+def test_delete_mode_with_wrong_id(flask_client: Flask) -> None:
     response: Response = flask_client.delete(f"{PREFIX_MODES_BP}/delete/{WRONG_ID_MODE}")
 
     result = response.json

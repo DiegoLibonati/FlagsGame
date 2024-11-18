@@ -96,6 +96,12 @@ TEST_USER_MOCK = {
     },
     "total_score": 25
 }
+TEST_USER_MOCK_REQUEST = {
+    "username": "DieTest",
+    "password": "jose",
+    "score": 1000,
+    "mode_name": "normal"
+}
 TEST_USERS_MOCK = [
     {
         "_id": "673773206d0e53d0d63f3347",
@@ -128,8 +134,17 @@ TEST_USERS_MOCK = [
         "total_score": 50
     }
 ]
+SCORES_USER_UPDATE_MOCK = {
+    "general": 200,
+    "normal": 75,
+    "hard": 25,
+    "supertest": 100
+}
 NOT_FOUND_ID_USER = "673773206d0e53d0d63f3343"
 WRONG_ID_USER = "asd"
+WRONG_MODE_USER = "asd"
+WRONG_USERNAME_USER = "asd"
+WRONG_PASSWORD_USER = "asd"
 
 # MOCK ENCRYPT
 PASSWORD="1234"

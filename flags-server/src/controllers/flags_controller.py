@@ -2,6 +2,7 @@ from typing import Any
 from bson import ObjectId
 
 from flask import make_response
+from flask import current_app
 from flask import request
 
 from src.models.Flag import Flag
@@ -11,9 +12,9 @@ from src.data_access.flags_repository import FlagRepository
 
 def flags() -> dict[str, Any]:
     flag_manager = FlagManager()
-    documents = FlagRepository().get_all_flags()
+    flags = FlagRepository(db=current_app.mongo.db).get_all_flags()
 
-    flag_manager.add_flags(flags=documents)
+    if flags: flag_manager.add_flags(flags=flags)
 
     data = flag_manager.parse_items()
 
@@ -33,7 +34,7 @@ def add_flag() -> dict[str, Any]:
             "data": None
         }, 400)
     
-    inserted_id = FlagRepository().insert_flag(flag={"name": name, "image": image})
+    inserted_id = FlagRepository(db=current_app.mongo.db).insert_flag(flag={"name": name, "image": image})
     
     flag = Flag(
         _id=ObjectId(inserted_id),
@@ -60,9 +61,9 @@ def get_random_flags(quantity: str) -> dict[str, Any]:
             }, 400)
 
     flag_manager = FlagManager()
-    documents = FlagRepository().get_random_flags(quantity=quantity)
+    flags = FlagRepository(db=current_app.mongo.db).get_random_flags(quantity=quantity)
 
-    flag_manager.add_flags(flags=documents)      
+    if flags: flag_manager.add_flags(flags=flags)      
 
     data = flag_manager.parse_items()
 
@@ -75,7 +76,7 @@ def get_random_flags(quantity: str) -> dict[str, Any]:
 def delete_flag(id: str) -> dict[str, Any]:
     try:
         object_id = ObjectId(id)
-        document = FlagRepository().get_flag(flag_id=object_id)
+        document = FlagRepository(db=current_app.mongo.db).get_flag(flag_id=object_id)
 
         if not document: 
             return make_response({
@@ -85,7 +86,7 @@ def delete_flag(id: str) -> dict[str, Any]:
         
         flag = Flag(**document)
 
-        FlagRepository().delete_flag_by_id(flag_id=flag.id)
+        FlagRepository(db=current_app.mongo.db).delete_flag_by_id(flag_id=flag.id)
 
         return make_response({
             "message": f"Flag with id: {id} was deleted.",

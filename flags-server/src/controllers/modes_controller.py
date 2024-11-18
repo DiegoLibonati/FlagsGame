@@ -2,6 +2,7 @@ from typing import Any
 from bson import ObjectId
 
 from flask import make_response
+from flask import current_app
 from flask import request
 
 from src.data_access.modes_repository import ModeRepository
@@ -13,9 +14,9 @@ from src.models.ModeManager import ModeManager
 
 def get_modes() -> dict[str, Any]:
     mode_manager = ModeManager()
-    modes = ModeRepository().get_all_modes()
+    modes = ModeRepository(db=current_app.mongo.db).get_all_modes()
 
-    mode_manager.add_modes(modes=modes)
+    if modes: mode_manager.add_modes(modes=modes)
 
     data = mode_manager.parse_items()
 
@@ -32,7 +33,7 @@ def find_mode(name : str) -> dict[str, Any]:
             "data": None
         }, 400)
 
-    mode = ModeRepository().get_mode_by_name(name=name)
+    mode = ModeRepository(db=current_app.mongo.db).get_mode_by_name(name=name)
 
     if not mode:
         return make_response({
@@ -61,7 +62,7 @@ def add_mode() -> dict[str, Any]:
             "data": None
         }, 400)
 
-    id_mode = ModeRepository().insert_mode(mode={
+    id_mode = ModeRepository(db=current_app.mongo.db).insert_mode(mode={
         'name': name,
         'description': description,
         'timeleft': timeleft,
@@ -87,9 +88,9 @@ def top_mode(mode: str) -> dict[str, Any]:
     mode_manager = ModeManager()
     mode_name = mode.lower()
 
-    modes = ModeRepository().get_all_modes()
+    modes = ModeRepository(db=current_app.mongo.db).get_all_modes()
 
-    mode_manager.add_modes(modes=modes)
+    if modes: mode_manager.add_modes(modes=modes)
 
     mode_names = mode_manager.get_modes_names()
 
@@ -100,9 +101,9 @@ def top_mode(mode: str) -> dict[str, Any]:
         }, 404)
     
     user_manager = UserManager()
-    users = UserRepository().get_all_users() 
+    users = UserRepository(db=current_app.mongo.db).get_all_users() 
 
-    user_manager.add_users(users=users)
+    if users: user_manager.add_users(users=users)
 
     data = user_manager.get_users_top_ten(mode_name=mode_name)
 
@@ -115,7 +116,7 @@ def top_mode(mode: str) -> dict[str, Any]:
 def delete_mode(id: str) -> dict[str, Any]:
     try:
         object_id = ObjectId(id)
-        document = ModeRepository().get_mode_by_id(mode_id=object_id)
+        document = ModeRepository(db=current_app.mongo.db).get_mode_by_id(mode_id=object_id)
 
         if not document: 
             return make_response({
@@ -125,7 +126,7 @@ def delete_mode(id: str) -> dict[str, Any]:
         
         mode = Mode(**document)
 
-        ModeRepository().delete_mode_by_id(mode_id=mode.id)
+        ModeRepository(db=current_app.mongo.db).delete_mode_by_id(mode_id=mode.id)
 
         return make_response({
             "message": f"Mode with id: {id} was deleted.",
