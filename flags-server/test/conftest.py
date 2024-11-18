@@ -30,7 +30,6 @@ from test.constants import TEST_MODE_MOCK
 from test.constants import TEST_MODES_MOCK
 from test.constants import TEST_USER_MOCK
 from test.constants import TEST_USERS_MOCK
-from test.constants import PREFIX_FLAGS_BP
 from test.constants import PASSWORD
 
 
@@ -174,17 +173,3 @@ def test_modes() -> dict[str, Any]:
 @pytest.fixture(scope="session")
 def test_users() -> dict[str, Any]:
     return TEST_USERS_MOCK
-
-
-# SAVE DOCS MONGO
-@pytest.fixture(scope="function")
-def inserted_flag_id(flask_client: Flask, test_flag: dict[str, str]) -> str:
-    """Fixture to insert a flag and return its ID."""
-    response: Response = flask_client.post(
-        f"{PREFIX_FLAGS_BP}/newflag",
-        json=test_flag,
-    )
-    result = response.json
-    flag = result.get("data")
-    return flag.get("_id")
-

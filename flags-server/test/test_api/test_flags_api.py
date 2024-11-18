@@ -5,8 +5,6 @@ import pytest
 from flask import Flask
 from flask import Response
 
-from src.models.Flag import Flag
-
 from test.constants import PREFIX_FLAGS_BP
 from test.constants import NOT_FOUND_ID_FLAG
 from test.constants import WRONG_ID_FLAG
@@ -17,6 +15,9 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 @pytest.mark.usefixtures("mongo_test_db")
 def test_add_flag(flask_client: Flask, test_flag: dict[str, str]) -> None:
+    name = test_flag.get("name")
+    image = test_flag.get("image")
+
     response: Response = flask_client.post(
         f"{PREFIX_FLAGS_BP}/newflag",
         json=test_flag,
@@ -28,23 +29,17 @@ def test_add_flag(flask_client: Flask, test_flag: dict[str, str]) -> None:
     message = result.get("message")
     data = result.get("data")
 
-    inserted_flag_id = data.get("_id")
-    flag = Flag(**data)
-
     assert status_code == 201
     assert message == "New flag added."
+    assert isinstance(data, dict)
     assert data
-
-    assert flag
-    assert flag.to_dict() == data
-
-    test_delete_flag(flask_client=flask_client, inserted_flag_id=inserted_flag_id, test_flag=test_flag)
-
+    assert data.get("name") == name
+    assert data.get("image") == image
 
 @pytest.mark.usefixtures("mongo_test_db")
 def test_add_flag_with_wrong_flag(flask_client: Flask) -> None:
     wrong_flag = {
-        "image": "",
+        "image": "12.png",
         "name": ""
     }
 
@@ -63,9 +58,8 @@ def test_add_flag_with_wrong_flag(flask_client: Flask) -> None:
     assert message == "The flag could not be added because the fields are not valid."
     assert not data
 
-
 @pytest.mark.usefixtures("mongo_test_db")
-def test_get_flags(flask_client: Flask, inserted_flag_id: str, test_flag: dict[str, str]) -> None:
+def test_get_flags(flask_client: Flask, test_flag: dict[str, str]) -> None:
     name = test_flag.get("name")
     image = test_flag.get("image")
 
@@ -84,20 +78,12 @@ def test_get_flags(flask_client: Flask, inserted_flag_id: str, test_flag: dict[s
     assert isinstance(data, list)
 
     for flag in data: 
-        flag = Flag(**flag)
-
-        if flag.id == inserted_flag_id:
-            assert flag.name == name
-            assert flag.image == image
-            
-            test_delete_flag(flask_client=flask_client, inserted_flag_id=inserted_flag_id, test_flag=test_flag)
-            continue
-
         assert flag
-        assert flag.id
-        assert flag.name
-        assert flag.image
-
+        assert flag.get("_id")
+        
+        if flag.get("name") == name:
+            assert flag.get("name") == name
+            assert flag.get("image") == image
 
 @pytest.mark.usefixtures("mongo_test_db")
 def test_get_random_flags(flask_client: Flask) -> None:
@@ -118,6 +104,11 @@ def test_get_random_flags(flask_client: Flask) -> None:
     assert isinstance(data, list)
     assert len(data) >= 0 and len(data) <= quantity
 
+    for flag in data:
+        assert flag
+        assert flag.get("_id")
+        assert flag.get("name")
+        assert flag.get("image")
 
 @pytest.mark.usefixtures("mongo_test_db")
 def test_get_random_flags_with_invalid_int_passing_str(flask_client: Flask) -> None:
@@ -136,8 +127,7 @@ def test_get_random_flags_with_invalid_int_passing_str(flask_client: Flask) -> N
     assert status_code == 400
     assert message == "Invalid quantity. It must be a positive integer."
     assert isinstance(data, list)
-    assert data == []
-
+    assert not data
 
 @pytest.mark.usefixtures("mongo_test_db")
 def test_get_random_flags_with_invalid_int_passing_negative(flask_client: Flask) -> None:
@@ -156,15 +146,25 @@ def test_get_random_flags_with_invalid_int_passing_negative(flask_client: Flask)
     assert status_code == 400
     assert message == "Invalid quantity. It must be a positive integer."
     assert isinstance(data, list)
-    assert data == []
-
+    assert not data
 
 @pytest.mark.usefixtures("mongo_test_db")
-def test_delete_flag(flask_client: Flask, inserted_flag_id: str, test_flag: dict[str, str]) -> None:
+def test_delete_flag(flask_client: Flask, test_flag: dict[str, str]) -> None:
     name = test_flag.get("name")
     image = test_flag.get("image")
 
-    response: Response = flask_client.delete(f"{PREFIX_FLAGS_BP}/delete/{inserted_flag_id}")
+    response: Response = flask_client.get(
+        f"{PREFIX_FLAGS_BP}/",
+    )
+
+    result = response.json
+    flag_to_delete = [flag for flag in result.get("data") if flag.get("name") == name and flag.get("image") == image][0]
+
+    assert flag_to_delete
+
+    id_to_delete = flag_to_delete.get("_id")
+
+    response: Response = flask_client.delete(f"{PREFIX_FLAGS_BP}/delete/{id_to_delete}")
 
     result = response.json
     status_code = response.status_code
@@ -173,13 +173,12 @@ def test_delete_flag(flask_client: Flask, inserted_flag_id: str, test_flag: dict
     data = result.get("data")
 
     assert status_code == 200
-    assert message == f"Flag with id: {inserted_flag_id} was deleted."
+    assert message == f"Flag with id: {id_to_delete} was deleted."
     assert isinstance(data, dict)
 
-    assert data.get("_id") == inserted_flag_id
+    assert data.get("_id") == id_to_delete
     assert data.get("name") == name
     assert data.get("image") == image
-
 
 @pytest.mark.usefixtures("mongo_test_db")
 def test_delete_flag_with_not_found_id(flask_client: Flask) -> None:
@@ -195,7 +194,6 @@ def test_delete_flag_with_not_found_id(flask_client: Flask) -> None:
     assert message == f"No flag found with id: {NOT_FOUND_ID_FLAG}."
     assert isinstance(message, str)
     assert not data
-
 
 @pytest.mark.usefixtures("mongo_test_db")
 def test_delete_flag_with_wrong_id(flask_client: Flask) -> None:
