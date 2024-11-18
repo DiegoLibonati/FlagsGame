@@ -2,7 +2,6 @@ from bson import ObjectId
 
 import pytest
 
-from src.models.Flag import Flag
 from src.data_access.flags_repository import FlagRepository
 
 
@@ -14,16 +13,10 @@ def test_get_all_flags(flag_repository: FlagRepository) -> None:
 
     if flags:
         first_flag = flags[0]
-        _id = flags[0].get("_id")
-        name = flags[0].get("name")
-        image = flags[0].get("image")
-
-        flag = Flag(**first_flag)
-
-        assert flag.id == _id
-        assert flag.name == name
-        assert flag.image == image
-
+        assert first_flag
+        assert first_flag.get("_id")
+        assert first_flag.get("name")
+        assert first_flag.get("image")
 
 @pytest.mark.usefixtures("mongo_test_db", "app_context")
 def test_insert_and_get_and_delete_flag(flag_repository: FlagRepository, test_flag: dict[str, str]) -> None:
@@ -40,20 +33,17 @@ def test_insert_and_get_and_delete_flag(flag_repository: FlagRepository, test_fl
     assert isinstance(flag_id, ObjectId)
 
     flag = flag_repository.get_flag(flag_id=flag_id)
-    flag = Flag(**flag)
 
     assert flag
-
-    assert flag.id == flag_id
-    assert flag.name == name
-    assert flag.image == image
+    assert ObjectId(flag.get("_id")) == flag_id
+    assert flag.get("name") == name
+    assert flag.get("image") == image
 
     flag_repository.delete_flag_by_id(flag_id=flag_id)
 
     flag = flag_repository.get_flag(flag_id=flag_id)
 
     assert not flag
-
 
 @pytest.mark.usefixtures("mongo_test_db", "app_context")
 def test_get_random_flags_by_quantity(flag_repository: FlagRepository) -> None:
@@ -64,15 +54,9 @@ def test_get_random_flags_by_quantity(flag_repository: FlagRepository) -> None:
 
     if flags:
         first_flag = flags[0]
-        _id = flags[0].get("_id")
-        name = flags[0].get("name")
-        image = flags[0].get("image")
-
-        flag = Flag(**first_flag)
-
-        assert flag.id == _id
-        assert flag.name == name
-        assert flag.image == image
+        assert first_flag.get("_id")
+        assert first_flag.get("name")
+        assert first_flag.get("image")
 
     assert len(flags) >= 0 and len(flags) <= quantity
     

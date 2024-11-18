@@ -2,7 +2,6 @@ from bson import ObjectId
 
 import pytest
 
-from src.models.Mode import Mode
 from src.data_access.modes_repository import ModeRepository
 
 
@@ -15,20 +14,12 @@ def test_get_all_modes(mode_repository: ModeRepository) -> None:
     if modes:
         first_mode = modes[0]
 
-        _id = first_mode.get("_id")
-        name = first_mode.get("name")
-        description = first_mode.get("description")
-        multiplier = first_mode.get("multiplier")
-        timeleft = first_mode.get("timeleft")
-
-        mode = Mode(**first_mode)
-
-        assert mode.id == _id
-        assert mode.name == name
-        assert mode.description == description
-        assert mode.multiplier == multiplier
-        assert mode.timeleft == timeleft
-
+        assert first_mode
+        assert first_mode.get("_id")
+        assert first_mode.get("name")
+        assert first_mode.get("description")
+        assert first_mode.get("multiplier")
+        assert first_mode.get("timeleft")
 
 @pytest.mark.usefixtures("mongo_test_db", "app_context")
 def test_insert_and_get_and_delete_mode_by_id(mode_repository: ModeRepository, test_mode: dict[str, str]) -> None:
@@ -47,14 +38,13 @@ def test_insert_and_get_and_delete_mode_by_id(mode_repository: ModeRepository, t
     assert isinstance(mode_id, ObjectId)
 
     mode = mode_repository.get_mode_by_id(mode_id=mode_id)
-    mode = Mode(**mode)
 
     assert mode
-    assert mode.id == mode_id
-    assert mode.name == name
-    assert mode.description == description
-    assert mode.multiplier == multiplier
-    assert mode.timeleft == timeleft
+    assert ObjectId(mode.get("_id")) == mode_id
+    assert mode.get("name") == name
+    assert mode.get("description") == description
+    assert mode.get("multiplier") == multiplier
+    assert mode.get("timeleft") == timeleft
 
     mode_repository.delete_mode_by_id(mode_id=mode_id)
 
@@ -80,15 +70,13 @@ def test_insert_and_get_and_delete_mode_by_name(mode_repository: ModeRepository,
     assert isinstance(mode_id, ObjectId)
 
     mode = mode_repository.get_mode_by_name(name=name)
-    mode = Mode(**mode)
 
     assert mode
-
-    assert mode.id == mode_id
-    assert mode.name == name
-    assert mode.description == description
-    assert mode.multiplier == multiplier
-    assert mode.timeleft == timeleft
+    assert ObjectId(mode.get("_id")) == mode_id
+    assert mode.get("name") == name
+    assert mode.get("description") == description
+    assert mode.get("multiplier") == multiplier
+    assert mode.get("timeleft") == timeleft
 
     mode_repository.delete_mode_by_id(mode_id=mode_id)
 
