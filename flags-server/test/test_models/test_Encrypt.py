@@ -1,6 +1,6 @@
 from src.models.Encrypt import Encrypt
 
-from test.constants import HASH_PASSWORD
+from test.constants import ENCRYPT_MOCK
 
 
 def test_init_encrypt(encrypt_model: Encrypt) -> None:
@@ -11,7 +11,7 @@ def test_init_encrypt(encrypt_model: Encrypt) -> None:
     assert isinstance(encrypt_model.password_hashed, str)
 
 def test_valid_password_encrypt(encrypt_model: Encrypt) -> None:
-    assert encrypt_model.valid_password(pwhash=HASH_PASSWORD)
+    assert encrypt_model.valid_password(pwhash=ENCRYPT_MOCK['hashpw'])
 
 def test_not_valid_password_encrypt(encrypt_model: Encrypt) -> None:
     assert not encrypt_model.valid_password(pwhash="pepe")

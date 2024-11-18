@@ -7,7 +7,7 @@ import pytest
 from src.models.Flag import Flag
 from src.models.FlagManager import FlagManager
 
-from test.constants import NOT_FOUND_ID_FLAG
+from test.constants import FLAG_MOCK
 
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -36,7 +36,7 @@ def test_add_flags(flag_manager_model: FlagManager, test_flags: dict[str, str]) 
     assert flag_manager_model.flags
     
     for flag in flag_manager_model.flags:
-        if str(flag.id) == NOT_FOUND_ID_FLAG: continue
+        if str(flag.id) == FLAG_MOCK['not_found_flag_id']: continue
         assert flag.to_dict() in test_flags
 
 def test_add_flags_with_wrong_flags(flag_manager_model: FlagManager) -> None:

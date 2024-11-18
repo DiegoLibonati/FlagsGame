@@ -2,15 +2,15 @@ from bson import ObjectId
 
 from src.models.Mode import Mode
 
-from test.constants import TEST_MODE_MOCK
+from test.constants import MODE_MOCK
 
 
 def test_mode_model(mode_model: Mode) -> None:
-    _id = TEST_MODE_MOCK.get("_id")
-    name = TEST_MODE_MOCK.get("name")
-    description = TEST_MODE_MOCK.get("description")
-    multiplier = TEST_MODE_MOCK.get("multiplier")
-    timeleft = TEST_MODE_MOCK.get("timeleft")
+    _id = MODE_MOCK['mode'].get("_id")
+    name = MODE_MOCK['mode'].get("name")
+    description = MODE_MOCK['mode'].get("description")
+    multiplier = MODE_MOCK['mode'].get("multiplier")
+    timeleft = MODE_MOCK['mode'].get("timeleft")
 
 
     assert mode_model.id == ObjectId(_id)

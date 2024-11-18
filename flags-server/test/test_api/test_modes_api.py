@@ -4,9 +4,7 @@ from flask import Flask
 from flask import Response
 
 from test.constants import BLUEPRINTS
-from test.constants import NOT_FOUND_ID_MODE
-from test.constants import NOT_FOUND_NAME_MODE
-from test.constants import WRONG_ID_MODE
+from test.constants import MODE_MOCK
 
 
 @pytest.mark.usefixtures("mongo_test_db")
@@ -131,7 +129,7 @@ def test_find_mode_not_name(flask_client: Flask) -> None:
 @pytest.mark.usefixtures("mongo_test_db")
 def test_find_mode_not_found_mode(flask_client: Flask) -> None:
     response: Response = flask_client.get(
-        f"{BLUEPRINTS['modes']}/findmode/{NOT_FOUND_NAME_MODE}",
+        f"{BLUEPRINTS['modes']}/findmode/{MODE_MOCK['not_found_mode_name']}",
     )
 
     result = response.json
@@ -141,7 +139,7 @@ def test_find_mode_not_found_mode(flask_client: Flask) -> None:
     data = result.get("data")
 
     assert status_code == 404
-    assert message == f"A game mode with name {NOT_FOUND_NAME_MODE} was not found, please enter valid fields."
+    assert message == f"A game mode with name {MODE_MOCK['not_found_mode_name']} was not found, please enter valid fields."
     assert not data
 
 @pytest.mark.usefixtures("mongo_test_db")
@@ -178,7 +176,7 @@ def test_get_mode_top(flask_client: Flask, test_mode: dict[str, str]) -> None:
 @pytest.mark.usefixtures("mongo_test_db")
 def test_get_mode_not_found_mode_name(flask_client: Flask) -> None:
     response: Response = flask_client.get(
-        f"{BLUEPRINTS['modes']}/mode/top/{NOT_FOUND_NAME_MODE}",
+        f"{BLUEPRINTS['modes']}/mode/top/{MODE_MOCK['not_found_mode_name']}",
     )
 
     result = response.json
@@ -227,7 +225,7 @@ def test_delete_mode(flask_client: Flask, test_mode: dict[str, str]) -> None:
 
 @pytest.mark.usefixtures("mongo_test_db")
 def test_delete_mode_with_not_found_id(flask_client: Flask) -> None:
-    response: Response = flask_client.delete(f"{BLUEPRINTS['modes']}/delete/{NOT_FOUND_ID_MODE}")
+    response: Response = flask_client.delete(f"{BLUEPRINTS['modes']}/delete/{MODE_MOCK['not_found_mode_id']}")
 
     result = response.json
     status_code = response.status_code
@@ -236,12 +234,12 @@ def test_delete_mode_with_not_found_id(flask_client: Flask) -> None:
     data = result.get("data")
 
     assert status_code == 404
-    assert message == f"No mode found with id: {NOT_FOUND_ID_MODE}."
+    assert message == f"No mode found with id: {MODE_MOCK['not_found_mode_id']}."
     assert not data
 
 @pytest.mark.usefixtures("mongo_test_db")
 def test_delete_mode_with_wrong_id(flask_client: Flask) -> None:
-    response: Response = flask_client.delete(f"{BLUEPRINTS['modes']}/delete/{WRONG_ID_MODE}")
+    response: Response = flask_client.delete(f"{BLUEPRINTS['modes']}/delete/{MODE_MOCK['wrong_mode_id']}")
 
     result = response.json
     status_code = response.status_code

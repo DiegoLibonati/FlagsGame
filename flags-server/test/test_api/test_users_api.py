@@ -6,12 +6,7 @@ from flask import Response
 from src.data_access.users_repository import UserRepository
 
 from test.constants import BLUEPRINTS
-from test.constants import SCORES_USER_UPDATE_MOCK
-from test.constants import WRONG_USERNAME_USER
-from test.constants import WRONG_PASSWORD_USER
-from test.constants import WRONG_MODE_USER
-from test.constants import WRONG_ID_USER
-from test.constants import NOT_FOUND_ID_USER
+from test.constants import USER_MOCK
 
 
 @pytest.mark.usefixtures("mongo_test_db")
@@ -68,7 +63,7 @@ def test_try_to_add_user_again(flask_client: Flask, test_user_request: dict[str,
 def test_modify_user(flask_client: Flask, test_user_request: dict[str, str]) -> None:
     username = test_user_request.get("username")
     password = test_user_request.get("password")
-    score = SCORES_USER_UPDATE_MOCK["hard"]
+    score = USER_MOCK['scores_updated']["hard"]
     mode_name = "hard"
 
     response: Response = flask_client.put(
@@ -97,7 +92,7 @@ def test_modify_user(flask_client: Flask, test_user_request: dict[str, str]) -> 
 
 @pytest.mark.usefixtures("mongo_test_db")
 def test_try_to_modify_user_without_user(flask_client: Flask, test_user_request: dict[str, str]) -> None:
-    username =  WRONG_USERNAME_USER
+    username =  USER_MOCK['wrong_user_username']
     password = test_user_request.get("password")
     score = test_user_request.get("score")
     mode_name = test_user_request.get("mode_name")
@@ -125,7 +120,7 @@ def test_try_to_modify_user_without_user(flask_client: Flask, test_user_request:
 @pytest.mark.usefixtures("mongo_test_db")
 def test_try_to_modify_user_with_wrong_password(flask_client: Flask, test_user_request: dict[str, str]) -> None:
     username = test_user_request.get("username")
-    password = WRONG_PASSWORD_USER
+    password = USER_MOCK['wrong_user_password']
     score = test_user_request.get("score")
     mode_name = test_user_request.get("mode_name")
 
@@ -179,7 +174,7 @@ def test_add_or_modify_user_with_wrong_mode_name(flask_client: Flask) -> None:
             "username": "asd",
             "password": "1234",
             "score": 200,
-            "mode_name": WRONG_MODE_USER
+            "mode_name": USER_MOCK['wrong_user_mode_name']
         }
     )
 
@@ -246,7 +241,7 @@ def test_delete_user(flask_client: Flask, test_user_request: dict[str, str], use
 
 @pytest.mark.usefixtures("mongo_test_db")
 def test_delete_user_with_not_found_id(flask_client: Flask) -> None:
-    response: Response = flask_client.delete(f"{BLUEPRINTS['users']}/delete/{NOT_FOUND_ID_USER}")
+    response: Response = flask_client.delete(f"{BLUEPRINTS['users']}/delete/{USER_MOCK['not_found_user_id']}")
 
     result = response.json
     status_code = response.status_code
@@ -255,12 +250,12 @@ def test_delete_user_with_not_found_id(flask_client: Flask) -> None:
     data = result.get("data")
 
     assert status_code == 404
-    assert message == f"No user found with id: {NOT_FOUND_ID_USER}."
+    assert message == f"No user found with id: {USER_MOCK['not_found_user_id']}."
     assert not data
 
 @pytest.mark.usefixtures("mongo_test_db")
 def test_delete_user_with_wrong_id(flask_client: Flask) -> None:
-    response: Response = flask_client.delete(f"{BLUEPRINTS['users']}/delete/{WRONG_ID_USER}")
+    response: Response = flask_client.delete(f"{BLUEPRINTS['users']}/delete/{USER_MOCK['wrong_user_id']}")
 
     result = response.json
     status_code = response.status_code

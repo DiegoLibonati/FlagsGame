@@ -5,7 +5,7 @@ import pytest
 from src.models.Mode import Mode
 from src.models.ModeManager import ModeManager
 
-from test.constants import NOT_FOUND_ID_MODE
+from test.constants import MODE_MOCK
 
 
 def test_init_mode_manager(mode_manager_model: ModeManager, test_modes: dict[str, Any]) -> None:
@@ -31,7 +31,7 @@ def test_add_modes(mode_manager_model: ModeManager, test_modes: dict[str, Any]) 
     assert mode_manager_model.modes
     
     for mode in mode_manager_model.modes:
-        if str(mode.id) == NOT_FOUND_ID_MODE: continue
+        if str(mode.id) == MODE_MOCK['not_found_mode_id']: continue
         assert mode.to_dict() in test_modes
 
 def test_add_modes_with_wrong_modes(mode_manager_model: ModeManager) -> None:

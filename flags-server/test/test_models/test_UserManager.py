@@ -7,7 +7,7 @@ import pytest
 from src.models.User import User
 from src.models.UserManager import UserManager
 
-from test.constants import NOT_FOUND_ID_USER
+from test.constants import USER_MOCK
 
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -36,7 +36,7 @@ def test_add_users(user_manager_model: UserManager, test_users: dict[str, str]) 
     assert user_manager_model.users
     
     for user in user_manager_model.users:
-        if str(user.id) == NOT_FOUND_ID_USER: continue
+        if str(user.id) == USER_MOCK['not_found_user_id']: continue
         assert {**user.to_dict(), "password": "1234"} in test_users
 
 def test_add_users_with_wrong_users(user_manager_model: UserManager) -> None:

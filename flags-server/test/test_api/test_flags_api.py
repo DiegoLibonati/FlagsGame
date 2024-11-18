@@ -6,8 +6,7 @@ from flask import Flask
 from flask import Response
 
 from test.constants import BLUEPRINTS
-from test.constants import NOT_FOUND_ID_FLAG
-from test.constants import WRONG_ID_FLAG
+from test.constants import FLAG_MOCK
 
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -182,7 +181,7 @@ def test_delete_flag(flask_client: Flask, test_flag: dict[str, str]) -> None:
 
 @pytest.mark.usefixtures("mongo_test_db")
 def test_delete_flag_with_not_found_id(flask_client: Flask) -> None:
-    response: Response = flask_client.delete(f"{BLUEPRINTS['flags']}/delete/{NOT_FOUND_ID_FLAG}")
+    response: Response = flask_client.delete(f"{BLUEPRINTS['flags']}/delete/{FLAG_MOCK['not_found_flag_id']}")
 
     result = response.json
     status_code = response.status_code
@@ -191,13 +190,13 @@ def test_delete_flag_with_not_found_id(flask_client: Flask) -> None:
     data = result.get("data")
 
     assert status_code == 404
-    assert message == f"No flag found with id: {NOT_FOUND_ID_FLAG}."
+    assert message == f"No flag found with id: {FLAG_MOCK['not_found_flag_id']}."
     assert isinstance(message, str)
     assert not data
 
 @pytest.mark.usefixtures("mongo_test_db")
 def test_delete_flag_with_wrong_id(flask_client: Flask) -> None:
-    response: Response = flask_client.delete(f"{BLUEPRINTS['flags']}/delete/{WRONG_ID_FLAG}")
+    response: Response = flask_client.delete(f"{BLUEPRINTS['flags']}/delete/{FLAG_MOCK['wrong_flag_id']}")
 
     result = response.json
     status_code = response.status_code

@@ -3,15 +3,15 @@ from bson import ObjectId
 
 from src.models.User import User
 
-from test.constants import TEST_USER_MOCK
+from test.constants import USER_MOCK
 
 
 def test_user_model(user_model: User) -> None:
-    _id = TEST_USER_MOCK.get("_id")
-    username = TEST_USER_MOCK.get("username")
-    password = TEST_USER_MOCK.get("password")
-    scores = TEST_USER_MOCK.get("scores")
-    total_score = TEST_USER_MOCK.get("total_score")
+    _id = USER_MOCK['user'].get("_id")
+    username = USER_MOCK['user'].get("username")
+    password = USER_MOCK['user'].get("password")
+    scores = USER_MOCK['user'].get("scores")
+    total_score = USER_MOCK['user'].get("total_score")
 
 
     assert user_model.id == ObjectId(_id)

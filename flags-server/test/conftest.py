@@ -8,7 +8,6 @@ from bson import ObjectId
 import pytest
 
 from flask import Flask
-from flask import Response
 from flask.testing import FlaskClient
 
 from src.app import app as api_app
@@ -24,14 +23,10 @@ from src.data_access.flags_repository import FlagRepository
 from src.data_access.modes_repository import ModeRepository
 from src.data_access.users_repository import UserRepository
 
-from test.constants import TEST_FLAG_MOCK
-from test.constants import TEST_FLAGS_MOCK
-from test.constants import TEST_MODE_MOCK
-from test.constants import TEST_MODES_MOCK
-from test.constants import TEST_USER_MOCK
-from test.constants import TEST_USERS_MOCK
-from test.constants import TEST_USER_MOCK_REQUEST
-from test.constants import PASSWORD
+from test.constants import FLAG_MOCK
+from test.constants import MODE_MOCK
+from test.constants import USER_MOCK
+from test.constants import ENCRYPT_MOCK
 
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -89,33 +84,33 @@ def user_repository(flask_app: Flask) -> UserRepository:
 # CLASS
 @pytest.fixture(scope="session")
 def flag_model() -> Flag:
-    TEST_FLAG_MOCK_COPY = TEST_FLAG_MOCK.copy()
+    TEST_FLAG_MOCK_COPY = FLAG_MOCK['flag'].copy()
     TEST_FLAG_MOCK_COPY["_id"] = ObjectId(TEST_FLAG_MOCK_COPY["_id"])
     return Flag(**TEST_FLAG_MOCK_COPY)
 
 
 @pytest.fixture(scope="session")
 def not_valid_flag_model() -> Flag:
-    return Flag(_id=ObjectId(TEST_FLAG_MOCK.get("_id")), name="", image=TEST_FLAG_MOCK.get("image"))
+    return Flag(_id=ObjectId(FLAG_MOCK['flag'].get("_id")), name="", image=FLAG_MOCK['flag'].get("image"))
 
 
 @pytest.fixture(scope="session")
 def mode_model() -> Mode:
-    TEST_MODE_MOCK_COPY = TEST_MODE_MOCK.copy()
+    TEST_MODE_MOCK_COPY = MODE_MOCK['mode'].copy()
     TEST_MODE_MOCK_COPY["_id"] = ObjectId(TEST_MODE_MOCK_COPY["_id"])
     return Mode(**TEST_MODE_MOCK_COPY)
 
 
 @pytest.fixture(scope="session")
 def user_model() -> User:
-    TEST_USER_MOCK_COPY = TEST_USER_MOCK.copy()
+    TEST_USER_MOCK_COPY = USER_MOCK['user'].copy()
     TEST_USER_MOCK_COPY["_id"] = ObjectId(TEST_USER_MOCK_COPY["_id"])
     return User(**TEST_USER_MOCK_COPY)
 
 
 @pytest.fixture(scope="session")
 def encrypt_model() -> Encrypt:
-    return Encrypt(password=PASSWORD)
+    return Encrypt(password=ENCRYPT_MOCK['password'])
 
 
 @pytest.fixture(scope="session")
@@ -136,38 +131,38 @@ def user_manager_model() -> UserManager:
 # MOCKS CONSTANTS
 @pytest.fixture(scope="session")
 def test_flag() -> dict[str, str]:
-    TEST_FLAG_COPY = TEST_FLAG_MOCK.copy()
+    TEST_FLAG_COPY = FLAG_MOCK['flag'].copy()
     del TEST_FLAG_COPY["_id"]
     return TEST_FLAG_COPY
 
 
 @pytest.fixture(scope="session")
 def test_mode() -> dict[str, str]:
-    TEST_MODE_COPY = TEST_MODE_MOCK.copy()
+    TEST_MODE_COPY = MODE_MOCK['mode'].copy()
     del TEST_MODE_COPY["_id"]
     return TEST_MODE_COPY
 
 
 @pytest.fixture(scope="session")
 def test_user() -> dict[str, str]:
-    TEST_USER_COPY = TEST_USER_MOCK.copy()
+    TEST_USER_COPY = USER_MOCK['user'].copy()
     del TEST_USER_COPY["_id"]
     return TEST_USER_COPY
 
 @pytest.fixture(scope="session")
 def test_user_request() -> dict[str, str]:
-    return TEST_USER_MOCK_REQUEST
+    return USER_MOCK['user_request']
 
 @pytest.fixture(scope="session")
 def test_flags() -> dict[str, str]:
-    return TEST_FLAGS_MOCK
+    return FLAG_MOCK['flags']
 
 
 @pytest.fixture(scope="session")
 def test_modes() -> dict[str, Any]:
-    return TEST_MODES_MOCK
+    return MODE_MOCK['modes']
 
 
 @pytest.fixture(scope="session")
 def test_users() -> dict[str, Any]:
-    return TEST_USERS_MOCK
+    return USER_MOCK['users']
