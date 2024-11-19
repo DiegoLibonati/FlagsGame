@@ -29,26 +29,30 @@ I made a web application with React JS and Flask for the api-rest, I used mongod
 #### Dependencies
 
 ```
-"@types/jest": "^29.5.13",
-"@types/react": "^18.3.11",
-"@types/react-dom": "^18.3.1",
-"react": "^18.2.0",
-"react-dom": "^18.2.0",
-"react-icons": "^4.4.0",
-"react-scripts": "5.0.1",
-"web-vitals": "^2.1.4",
+"@types/jest": "^29.5.13"
+"@types/react": "^18.3.11"
+"@types/react-dom": "^18.3.1"
+"react": "^18.2.0"
+"react-dom": "^18.2.0"
+"react-icons": "^4.4.0"
+"react-scripts": "5.0.1"
+"web-vitals": "^2.1.4"
 "react-router-dom": "^6.3.0"
 ```
 
 #### devDependencies
 
 ```
-"@testing-library/jest-dom": "^6.6.2",
-"@testing-library/react": "^16.0.1",
-"@testing-library/user-event": "^14.5.2",
-"@testing-library/dom": "^10.4.0",
-"msw": "^2.6.0",
+"@testing-library/jest-dom": "^6.6.2"
+"@testing-library/react": "^16.0.1"
+"@testing-library/user-event": "^14.5.2"
+"@testing-library/dom": "^10.4.0"
+"msw": "^2.6.0"
 "typescript": "^5.3.3"
+"jest": "^29.7.0"
+"jest-environment-jsdom": "^29.7.0"
+"jest-fixed-jsdom": "^0.0.9"
+"ts-jest": "^29.2.5"
 ```
 
 ### Backend

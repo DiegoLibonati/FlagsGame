@@ -39,6 +39,10 @@ const renderComponent = async (): Promise<RenderComponent> => {
   };
 };
 
+afterEach(() => {
+  jest.clearAllMocks();
+});
+
 describe("General Tests", () => {
   createServer([
     {

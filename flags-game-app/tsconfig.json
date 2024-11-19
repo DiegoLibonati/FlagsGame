@@ -16,7 +16,7 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "allowImportingTsExtensions": true,
-    "types": ["node", "@testing-library/jest-dom"]
+    "types": ["node", "jest", "@testing-library/jest-dom"]
   },
   "include": ["src"]
 }
