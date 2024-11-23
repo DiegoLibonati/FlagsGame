@@ -3,11 +3,11 @@
 ## Getting Started
 
 1. Clone the repository with `git clone "repository link"`
-2. Go to the folder where you cloned your repository
-3. Run `docker-compose build --no-cache` in the terminal
-4. Once built, you must execute the command: `docker-compose up --force-recreate`
+2. Join to `flags-game-app` folder and execute: `npm install` or `yarn install` in the terminal
+3. Go to the previous folder and execute: `docker-compose build --no-cache` in the terminal
+4. Once built, you must execute the command: `docker-compose up --force-recreate` in the terminal
 
-NOTE: You have to be standing in the folder containing the: `docker-compose.yml`
+NOTE: You have to be standing in the folder containing the: `docker-compose.yml` and you need to install `Docker Desktop` if you are in Windows.
 
 ## Description
 
@@ -84,9 +84,8 @@ https://user-images.githubusercontent.com/99032604/199865818-646e2a21-c6a4-42d6-
 
 ### Frontend
 
-1. Join to the correct path of the clone and join to: `flags-game-app`
-2. Execute: `yarn install`
-3. Execute: `yarn test`
+1. Join to `flags-game-app` folder
+2. Execute: `yarn test` or `npm test`
 
 ### Backend
 
