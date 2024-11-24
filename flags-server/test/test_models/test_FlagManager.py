@@ -41,7 +41,7 @@ def test_add_flags(flag_manager_model: FlagManager, test_flags: dict[str, str]) 
 
 def test_add_flags_with_wrong_flags(flag_manager_model: FlagManager) -> None:
     with pytest.raises(TypeError) as exc_info:
-        flag_manager_model.add_flags(flags=[])
+        flag_manager_model.add_flags(flags={})
 
     assert str(exc_info.value) == "You must enter a valid flags to add its."
 

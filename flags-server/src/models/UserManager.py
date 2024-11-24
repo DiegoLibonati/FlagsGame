@@ -6,11 +6,11 @@ from src.models.Manager import Manager
 
 class UserManager(Manager[User]):
     def __init__(self) -> None:
-        super().__init__(items=[], initializer=User)
+        super().__init__(items={}, initializer=User)
 
     @property
     def users(self) -> list[User]:
-        return self.items
+        return self.items_values
     
     def add_user(self, user: User) -> None:
         if not user or not isinstance(user, User): raise TypeError("You must enter a valid user in order to add it.")
@@ -18,7 +18,7 @@ class UserManager(Manager[User]):
         super()._add_item(item=user)
 
     def add_users(self, users: list[dict[str, Any]]) -> None:
-        if not users or not isinstance(users, list): raise TypeError("You must enter a valid users to add its.")
+        if not isinstance(users, list): raise TypeError("You must enter a valid users to add its.")
 
         super()._add_items(items=users)
 

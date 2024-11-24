@@ -41,7 +41,7 @@ def test_add_users(user_manager_model: UserManager, test_users: dict[str, str]) 
 
 def test_add_users_with_wrong_users(user_manager_model: UserManager) -> None:
     with pytest.raises(TypeError) as exc_info:
-        user_manager_model.add_users(users=[])
+        user_manager_model.add_users(users={})
 
     assert str(exc_info.value) == "You must enter a valid users to add its."
 

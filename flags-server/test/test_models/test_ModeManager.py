@@ -36,7 +36,7 @@ def test_add_modes(mode_manager_model: ModeManager, test_modes: dict[str, Any]) 
 
 def test_add_modes_with_wrong_modes(mode_manager_model: ModeManager) -> None:
     with pytest.raises(TypeError) as exc_info:
-        mode_manager_model.add_modes(modes=[])
+        mode_manager_model.add_modes(modes={})
 
     assert str(exc_info.value) == "You must enter a valid modes to add its."
 
