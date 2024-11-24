@@ -68,17 +68,17 @@ def mongo_test_db() -> None:
 # REPOSITORIES - SERVICES
 @pytest.fixture(scope="session")
 def flag_repository(flask_app: Flask) -> FlagRepository:
-    return FlagRepository(db=flask_app.mongo.db)
+    return flask_app.flag_repository
 
 
 @pytest.fixture(scope="session")
 def mode_repository(flask_app: Flask) -> ModeRepository:
-    return ModeRepository(db=flask_app.mongo.db)
+    return flask_app.mode_repository
 
 
 @pytest.fixture(scope="session")
 def user_repository(flask_app: Flask) -> UserRepository:
-    return UserRepository(db=flask_app.mongo.db)
+    return flask_app.user_repository
 
 
 # CLASS

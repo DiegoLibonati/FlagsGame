@@ -9,12 +9,10 @@ from src.models.Encrypt import Encrypt
 from src.models.User import User
 from src.models.UserManager import UserManager
 from src.models.ModeManager import ModeManager
-from src.data_access.modes_repository import ModeRepository
-from src.data_access.users_repository import UserRepository
 
 
 def top_general() -> dict[str, Any]:
-    users = UserRepository(db=current_app.mongo.db).get_all_users()
+    users = current_app.user_repository.get_all_users()
     user_manager = UserManager()
 
     if users: user_manager.add_users(users=users)
@@ -41,7 +39,7 @@ def add_or_modify() -> dict[str, Any]:
             "data": None
         }, 400)
     
-    modes = ModeRepository(db=current_app.mongo.db).get_all_modes()
+    modes = current_app.mode_repository.get_all_modes()
 
     mode_manager = ModeManager()
     if modes: mode_manager.add_modes(modes=modes)
@@ -54,7 +52,7 @@ def add_or_modify() -> dict[str, Any]:
             "data": None
         }, 404)
 
-    user = UserRepository(db=current_app.mongo.db).get_user_by_username(username=username) 
+    user = current_app.user_repository.get_user_by_username(username=username) 
 
     # NOTE: PUT
 
@@ -75,7 +73,7 @@ def add_or_modify() -> dict[str, Any]:
         
         user.update_scores(mode_name=mode_name, score=score_actual)
 
-        UserRepository(db=current_app.mongo.db).update_user_by_username(username=username, values={"scores": user.scores, "total_score": user.total_score})
+        current_app.user_repository.update_user_by_username(username=username, values={"scores": user.scores, "total_score": user.total_score})
 
         return make_response({
             "message": "User successfully updated.",
@@ -89,9 +87,9 @@ def add_or_modify() -> dict[str, Any]:
         if not user:
             scores = {"general": score_actual, mode_name: score_actual}
 
-            UserRepository(db=current_app.mongo.db).insert_user(user={'username': username, 'password': Encrypt(password=password).password_hashed, 'scores': scores, 'total_score': scores.get("general")})
+            current_app.user_repository.insert_user(user={'username': username, 'password': Encrypt(password=password).password_hashed, 'scores': scores, 'total_score': scores.get("general")})
 
-            user = UserRepository(db=current_app.mongo.db).get_user_by_username(username=username) 
+            user = current_app.user_repository.get_user_by_username(username=username) 
 
             return make_response({
                 "message":"User successfully added.",
@@ -113,7 +111,7 @@ def add_or_modify() -> dict[str, Any]:
 def delete_user(id: str) -> dict[str, Any]:
     try:
         object_id = ObjectId(id)
-        document = UserRepository(db=current_app.mongo.db).get_user_by_id(user_id=object_id)
+        document = current_app.user_repository.get_user_by_id(user_id=object_id)
 
         if not document: 
             return make_response({
@@ -123,7 +121,7 @@ def delete_user(id: str) -> dict[str, Any]:
         
         user = User(**document)
 
-        UserRepository(db=current_app.mongo.db).delete_user_by_id(user_id=user.id)
+        current_app.user_repository.delete_user_by_id(user_id=user.id)
 
         return make_response({
             "message": f"User with id: {id} was deleted.",
