@@ -42,7 +42,13 @@ createServer([
 
 const renderComponent = (): RenderComponent => {
   const { container } = render(
-    <MemoryRouter initialEntries={[currentPath]}>
+    <MemoryRouter
+      initialEntries={[currentPath]}
+      future={{
+        v7_startTransition: true,
+        v7_relativeSplatPath: true,
+      }}
+    >
       <Routes>
         <Route
           path="/menu/:mode"
@@ -65,7 +71,13 @@ const renderComponent = (): RenderComponent => {
 
 const renderComponentAsync = async (): Promise<RenderComponent> => {
   const { container } = render(
-    <MemoryRouter initialEntries={[currentPath]}>
+    <MemoryRouter
+      initialEntries={[currentPath]}
+      future={{
+        v7_startTransition: true,
+        v7_relativeSplatPath: true,
+      }}
+    >
       <Routes>
         <Route
           path="/menu/:mode"

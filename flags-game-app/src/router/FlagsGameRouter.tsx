@@ -6,7 +6,12 @@ import { PublicRoutes } from "./routes/PublicRoutes/PublicRoutes";
 
 export const FlagsGameRouter = (): JSX.Element => {
   return (
-    <BrowserRouter>
+    <BrowserRouter
+      future={{
+        v7_startTransition: true,
+        v7_relativeSplatPath: true,
+      }}
+    >
       <Navbar></Navbar>
 
       <PublicRoutes></PublicRoutes>

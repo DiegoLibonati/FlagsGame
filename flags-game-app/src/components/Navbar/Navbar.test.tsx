@@ -13,7 +13,12 @@ type RenderComponent = {
 
 const renderComponent = (): RenderComponent => {
   const { container } = render(
-    <MemoryRouter>
+    <MemoryRouter
+      future={{
+        v7_startTransition: true,
+        v7_relativeSplatPath: true,
+      }}
+    >
       <UiProvider>
         <Navbar></Navbar>
       </UiProvider>

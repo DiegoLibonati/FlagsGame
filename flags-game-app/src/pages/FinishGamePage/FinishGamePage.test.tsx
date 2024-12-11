@@ -48,7 +48,13 @@ const currentPath = `/menu/${MODE_DATA_STATIC_TEST.name}/finishgame`;
 
 const asyncRenderComponent = async (): Promise<RenderComponent> => {
   const { container } = render(
-    <MemoryRouter initialEntries={[currentPath]}>
+    <MemoryRouter
+      initialEntries={[currentPath]}
+      future={{
+        v7_startTransition: true,
+        v7_relativeSplatPath: true,
+      }}
+    >
       <Routes>
         <Route
           path="/menu/:mode/finishgame"

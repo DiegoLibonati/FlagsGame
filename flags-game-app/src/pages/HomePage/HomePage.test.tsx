@@ -27,7 +27,12 @@ createServer([
 
 const renderComponent = (): RenderComponent => {
   const { container } = render(
-    <MemoryRouter>
+    <MemoryRouter
+      future={{
+        v7_startTransition: true,
+        v7_relativeSplatPath: true,
+      }}
+    >
       <UsersProvider>
         <HomePage></HomePage>
       </UsersProvider>
@@ -41,7 +46,12 @@ const renderComponent = (): RenderComponent => {
 
 const renderComponentAsync = async (): Promise<RenderComponent> => {
   const { container } = render(
-    <MemoryRouter>
+    <MemoryRouter
+      future={{
+        v7_startTransition: true,
+        v7_relativeSplatPath: true,
+      }}
+    >
       <UsersProvider>
         <HomePage></HomePage>
       </UsersProvider>

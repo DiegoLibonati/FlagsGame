@@ -21,7 +21,12 @@ type RenderComponent = {
 
 const renderComponent = async (): Promise<RenderComponent> => {
   const { container } = render(
-    <MemoryRouter>
+    <MemoryRouter
+      future={{
+        v7_startTransition: true,
+        v7_relativeSplatPath: true,
+      }}
+    >
       <AlertContext.Provider value={{ ...ALERT_PROVIDER_STATIC }}>
         <FlagsProvider>
           <GameProvider>
