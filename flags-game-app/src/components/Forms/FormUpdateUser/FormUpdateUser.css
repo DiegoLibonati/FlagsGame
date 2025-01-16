@@ -1,21 +1,21 @@
-.send_points_container_mini_form {
+.form__send__points {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-flow: column wrap;
   width: 100%;
   height: auto;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(var(--black-int-color), 0.5);
   padding: 1rem;
 }
 
-.send_points_container_mini_form h3 {
+.form__send__points h3 {
   font-size: 2rem;
   margin-bottom: 2rem;
-  color: #fff;
+  color: var(--white-color);
 }
 
-.send_points_container_mini_form input {
+.form__send__points input {
   width: 100%;
   padding: 1rem;
   margin-bottom: 2rem;
@@ -24,22 +24,22 @@
   font-weight: 900;
   outline: none;
   background-color: transparent;
-  border: 0.1rem solid #fff;
-  color: #fff;
+  border: 0.1rem solid var(--white-color);
+  color: var(--white-color);
 }
 
-.send_points_container_mini_form input::placeholder {
-  color: #fff;
+.form__send__points input::placeholder {
+  color: var(--white-color);
 }
 
-.send_points_container_mini_form button {
+.form__send__points button {
   width: 100%;
   border: none;
   padding: 1rem;
   font-weight: 900;
   cursor: pointer;
   background-color: transparent;
-  color: #fff;
+  color: var(--white-color);
   cursor: pointer;
   font-size: 2rem;
   letter-spacing: 0.1rem;

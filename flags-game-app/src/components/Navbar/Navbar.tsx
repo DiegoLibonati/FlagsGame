@@ -10,8 +10,8 @@ export const Navbar = (): JSX.Element => {
   const { navbar, handleManageNavbar } = useUiContext();
 
   return (
-    <header className="header_container">
-      <div className="header_container_logo">
+    <header className="header">
+      <div className="header__logo">
         <Link to="/" aria-label="title FlagsGame">
           FlagsGame
         </Link>
@@ -24,16 +24,16 @@ export const Navbar = (): JSX.Element => {
 
       <nav
         className={
-          navbar ? "header_container_nav open-nav" : "header_container_nav"
+          navbar ? "header__nav open__nav" : "header__nav"
         }
       >
-        <ul className="header_container_nav_list">
+        <ul className="header__nav__list">
           <li>
             <NavLink
               to="/"
               aria-label="home"
               className={({ isActive }) =>
-                isActive ? "nav-link active" : "nav-link"
+                isActive ? "nav__link active" : "nav__link"
               }
             >
               Home
@@ -44,7 +44,7 @@ export const Navbar = (): JSX.Element => {
               to="/menu"
               aria-label="menu"
               className={({ isActive }) =>
-                isActive ? "nav-link active" : "nav-link"
+                isActive ? "nav__link active" : "nav__link"
               }
             >
               Menu

@@ -26,12 +26,16 @@ const renderComponent = (): RenderComponent => {
   };
 };
 
-test("You must render the Flag component with its respective props.", () => {
-  const { props } = renderComponent();
+describe("Flag.tsx", () => {
+  describe("General Tests.", () => {
+    test("You must render the Flag component with its respective props.", () => {
+      const { props } = renderComponent();
 
-  const flag = screen.getByRole("img");
+      const flag = screen.getByRole("img");
 
-  expect(flag).toBeInTheDocument();
-  expect(flag).toHaveAttribute("src", props.image);
-  expect(flag).toHaveAttribute("alt", props.name);
+      expect(flag).toBeInTheDocument();
+      expect(flag).toHaveAttribute("src", props.image);
+      expect(flag).toHaveAttribute("alt", props.name);
+    });
+  });
 });

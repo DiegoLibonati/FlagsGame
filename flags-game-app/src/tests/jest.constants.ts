@@ -3,7 +3,7 @@ import {
   Flag,
   Mode,
   UserWithOutPassword,
-} from "../../entities/entities";
+} from "../entities/entities";
 
 export const FLAGS_DATA_STATIC_TEST: Flag[] = [
   {
@@ -129,7 +129,8 @@ export const USERS_TOP_STATIC_TEST: UserWithOutPassword[] = [
   },
 ];
 
-export const FIRST_USER_TOP_STATIC: UserWithOutPassword = USERS_TOP_STATIC_TEST[0];
+export const FIRST_USER_TOP_STATIC: UserWithOutPassword =
+  USERS_TOP_STATIC_TEST[0];
 
 export const ALERT_PROVIDER_STATIC: AlertContext = {
   alert: {

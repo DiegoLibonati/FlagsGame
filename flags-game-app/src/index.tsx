@@ -5,6 +5,8 @@ import App from "./App";
 import { UiProvider } from "./context/UiContext/UiProvider";
 import { AlertProvider } from "./context/AlertContext/AlertProvider";
 
+import "./index.css";
+
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );

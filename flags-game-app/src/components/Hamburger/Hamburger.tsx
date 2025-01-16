@@ -11,7 +11,7 @@ export const Hamburger = ({
 }: HamburgerProps): JSX.Element => {
   return (
     <button
-      className={navbar ? "menu opened" : "menu"}
+      className={navbar ? "menu open" : "menu"}
       aria-label="Main Menu"
       onClick={() => manageNavbar()}
     >

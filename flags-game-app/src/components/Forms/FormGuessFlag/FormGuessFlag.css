@@ -1,4 +1,4 @@
-.guess_container_form {
+.form__guess {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -7,33 +7,33 @@
   height: auto;
 }
 
-.guess_container_form input {
+.form__guess input {
   padding: 1rem;
   width: 100%;
   font-size: 1.5rem;
   outline: none;
-  border: 0.1rem solid #fff;
-  background-color: rgba(0, 0, 0, 0.5);
-  color: #fff;
+  border: 0.1rem solid var(--white-color);
+  background-color: rgba(var(--black-int-color), 0.5);
+  color: var(--white-color);
 }
 
-.guess_container_form button {
+.form__guess button {
   padding: 1rem;
   font-size: 2rem;
   margin-top: 1rem;
   border: none;
-  background-color: rgba(0, 0, 0, 0.5);
-  color: #fff;
+  background-color: rgba(var(--black-int-color), 0.5);
+  color: var(--white-color);
   cursor: pointer;
 }
 
 @media only screen and (min-width: 768px) {
-  .guess_container_form input {
+  .form__guess input {
     width: 60rem;
     font-size: 3rem;
   }
 
-  .guess_container_form button {
+  .form__guess button {
     font-size: 3rem;
   }
 }

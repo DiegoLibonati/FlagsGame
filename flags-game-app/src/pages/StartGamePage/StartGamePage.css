@@ -1,4 +1,4 @@
-.section_btn_start {
+.start__game {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -6,12 +6,12 @@
   height: calc(100vh - 5rem);
 }
 
-.btn-start-game {
+.start__game__btn {
   width: 15rem;
   padding: 1rem;
   font-size: 2rem;
-  background-color: rgba(0, 0, 0, 0.5);
-  color: #fff;
+  background-color: rgba(var(--black-int-color), 0.5);
+  color: var(--white-color);
   cursor: pointer;
   border: none;
   text-align: center;

@@ -4,26 +4,14 @@ import { MemoryRouter } from "react-router-dom";
 
 import { HomePage } from "./HomePage";
 
-import { UsersProvider } from "../../context/UsersContext/UsersProvider";
-
 import { createServer } from "../../tests/msw/server";
-import { USERS_TOP_STATIC_TEST } from "../../tests/constants/constants";
+import { USERS_TOP_STATIC_TEST } from "../../tests/jest.constants";
+
+import { UsersProvider } from "../../context/UsersContext/UsersProvider";
 
 type RenderComponent = {
   container: HTMLElement;
 };
-
-createServer([
-  {
-    path: `/v1/users/top/general`,
-    method: "get",
-    res: () => {
-      return {
-        data: USERS_TOP_STATIC_TEST,
-      };
-    },
-  },
-]);
 
 const renderComponent = (): RenderComponent => {
   const { container } = render(
@@ -65,45 +53,59 @@ const renderComponentAsync = async (): Promise<RenderComponent> => {
   };
 };
 
-test("It must render the main of home page.", async () => {
-  await renderComponentAsync();
+describe("HomePage.tsx", () => {
+  describe("General Tests.", () => {
+    createServer([
+      {
+        path: `/v1/users/top/general`,
+        method: "get",
+        res: () => {
+          return {
+            data: USERS_TOP_STATIC_TEST,
+          };
+        },
+      },
+    ]);
 
-  const main = screen.getByRole("main");
+    test("It must render the main of home page.", async () => {
+      await renderComponentAsync();
 
-  expect(main).toBeInTheDocument();
-});
+      const main = screen.getByRole("main");
 
-test("It must render a loader before the top load is completed and must not display the list of users.", () => {
-  const { container } = renderComponent();
+      expect(main).toBeInTheDocument();
+    });
 
-  //eslint-disable-next-line
-  const loader = container.querySelector(".loader");
-  const list = screen.queryByRole("list");
+    test("It must render a loader before the top load is completed and must not display the list of users.", () => {
+      const { container } = renderComponent();
 
-  expect(loader).toBeInTheDocument();
-  expect(list).not.toBeInTheDocument();
-});
+      //eslint-disable-next-line
+      const loader = container.querySelector(".loader");
+      const list = screen.queryByRole("list");
 
-test("It should render the link to play and the top list of general users.", async () => {
-  await renderComponentAsync();
+      expect(loader).toBeInTheDocument();
+      expect(list).not.toBeInTheDocument();
+    });
 
-  const letsPlay = screen.getByRole("link", {
-    name: /lets play/i,
+    test("It should render the link to play and the top list of general users.", async () => {
+      await renderComponentAsync();
+
+      const letsPlay = screen.getByRole("link", {
+        name: /lets play/i,
+      });
+      const userTopTitle = screen.getByRole("heading", {
+        name: /global top users/i,
+      });
+      const usersTopList = screen.getByRole("list");
+
+      expect(letsPlay).toBeInTheDocument();
+      expect(userTopTitle).toBeInTheDocument();
+
+      expect(usersTopList).toBeInTheDocument();
+      expect(usersTopList).toHaveClass("top__list mode__top__list");
+
+      const usersInList = within(usersTopList).getAllByRole("listitem");
+
+      expect(usersInList).toHaveLength(USERS_TOP_STATIC_TEST.length);
+    });
   });
-  const userTopTitle = screen.getByRole("heading", {
-    name: /global top users/i,
-  });
-  const usersTopList = screen.getByRole("list");
-
-  expect(letsPlay).toBeInTheDocument();
-  expect(userTopTitle).toBeInTheDocument();
-
-  expect(usersTopList).toBeInTheDocument();
-  expect(usersTopList).toHaveClass(
-    "list_stats_container_top_list menu_mode_top_list"
-  );
-
-  const usersInList = within(usersTopList).getAllByRole("listitem");
-
-  expect(usersInList).toHaveLength(USERS_TOP_STATIC_TEST.length);
 });

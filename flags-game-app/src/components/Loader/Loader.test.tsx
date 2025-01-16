@@ -14,11 +14,15 @@ const renderComponent = (): RenderComponent => {
   };
 };
 
-test("You must render the Loader component.", () => {
-  const { container } = renderComponent();
+describe("Loader.tsx", () => {
+  describe("General Tests.", () => {
+    test("You must render the Loader component.", () => {
+      const { container } = renderComponent();
 
-  // eslint-disable-next-line
-  const loader = container.querySelector(".loader");
+      // eslint-disable-next-line
+      const loader = container.querySelector(".loader");
 
-  expect(loader).toBeInTheDocument();
+      expect(loader).toBeInTheDocument();
+    });
+  });
 });

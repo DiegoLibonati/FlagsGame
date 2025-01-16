@@ -28,10 +28,10 @@ export const MenuModePage = (): JSX.Element => {
         <BsChevronLeft id="go-back"></BsChevronLeft>
       </Link>
 
-      <section className="mode_container">
+      <section className="mode">
         <h1>{mode.mode?.name} MODE</h1>
 
-        <article className="mode_container_explain">
+        <article className="mode__explain">
           <p>{mode.mode?.description}</p>
 
           <Link to={`/menu/${mode.mode?.name}/start`} aria-label="play">

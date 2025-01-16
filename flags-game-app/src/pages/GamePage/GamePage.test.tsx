@@ -5,44 +5,23 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 
 import { GamePage } from "./GamePage";
 
-import { FlagsProvider } from "../../context/FlagsContext/FlagsProvider";
-import { GameProvider } from "../../context/GameContext/GameProvider";
-import { ModeProvider } from "../../context/ModeContext/ModeProvider";
-import { parseZero } from "../../helpers/parseZero";
-
 import { createServer } from "../../tests/msw/server";
 import {
   FLAG_DATA_STATIC_TEST,
   FLAGS_DATA_STATIC_TEST,
   MODE_DATA_STATIC_TEST,
-} from "../../tests/constants/constants";
+} from "../../tests/jest.constants";
+
+import { FlagsProvider } from "../../context/FlagsContext/FlagsProvider";
+import { GameProvider } from "../../context/GameContext/GameProvider";
+import { ModeProvider } from "../../context/ModeContext/ModeProvider";
+import { parseZero } from "../../helpers/parseZero";
 
 type RenderComponent = {
   container: HTMLElement;
 };
 
 const currentPath = `/menu/${MODE_DATA_STATIC_TEST.name}/game`;
-
-createServer([
-  {
-    path: `/v1/flags/random/:quantity`,
-    method: "get",
-    res: () => {
-      return {
-        data: FLAGS_DATA_STATIC_TEST,
-      };
-    },
-  },
-  {
-    path: `/v1/modes/findmode/:mode`,
-    method: "get",
-    res: () => {
-      return {
-        data: MODE_DATA_STATIC_TEST,
-      };
-    },
-  },
-]);
 
 const renderComponent = (): RenderComponent => {
   const { container } = render(
@@ -116,160 +95,227 @@ const secondsToTimer = (seconds: number) => {
   return `${hours}:${minutes}:${secs}`;
 };
 
-test("It must render the main of game page.", async () => {
-  await renderComponentAsync();
+describe("GamePage.tsx", () => {
+  describe("General Tests.", () => {
+    createServer([
+      {
+        path: `/v1/flags/random/:quantity`,
+        method: "get",
+        res: () => {
+          return {
+            data: FLAGS_DATA_STATIC_TEST,
+          };
+        },
+      },
+      {
+        path: `/v1/modes/findmode/:mode`,
+        method: "get",
+        res: () => {
+          return {
+            data: MODE_DATA_STATIC_TEST,
+          };
+        },
+      },
+    ]);
 
-  const main = screen.getByRole("main");
+    test("It must render the main of game page.", async () => {
+      await renderComponentAsync();
 
-  expect(main).toBeInTheDocument();
-});
+      const main = screen.getByRole("main");
 
-test("It must render a loader before render modes in menu page.", () => {
-  const { container } = renderComponent();
-
-  //eslint-disable-next-line
-  const loader = container.querySelector(".loader");
-  const linkGoHome = screen.queryByRole("link", {
-    name: /go home/i,
-  });
-
-  expect(loader).toBeInTheDocument();
-  expect(linkGoHome).not.toBeInTheDocument();
-});
-
-test("It should render the page title, the flag to guess, the form to guess, the score and the remaining time.", async () => {
-  const { container } = await renderComponentAsync();
-
-  const heading = screen.getByRole("heading", {
-    name: /guess the flag/i,
-  });
-  const flag = screen.getByRole("img");
-  // eslint-disable-next-line
-  const form = container.querySelector(".guess_container_form");
-  const score = screen.getByRole("heading", {
-    name: /score: 0 pts/i,
-  });
-  const timeleft = screen.getByRole("heading", {
-    name: /time left: /i,
-  });
-
-  expect(heading).toBeInTheDocument();
-
-  expect(flag).toBeInTheDocument();
-  expect(flag).toHaveAttribute("src", FLAG_DATA_STATIC_TEST.image);
-  expect(flag).toHaveAttribute("alt", FLAG_DATA_STATIC_TEST.name);
-
-  expect(form).toBeInTheDocument();
-  expect(score).toBeInTheDocument();
-
-  expect(timeleft).toBeInTheDocument();
-  expect(timeleft).toHaveTextContent(
-    `Time left: ${secondsToTimer(MODE_DATA_STATIC_TEST.timeleft)}`
-  );
-});
-
-describe("If you guess the flag.", () => {
-  test("It should change the score, reset the form and the flag should change to the next one.", async () => {
-    const firstFlag = FLAG_DATA_STATIC_TEST;
-    const secondFlag = FLAGS_DATA_STATIC_TEST[1];
-    const initialScore = 0;
-
-    const { container } = await renderComponentAsync();
-
-    //eslint-disable-next-line
-    const form = container.querySelector(
-      ".guess_container_form"
-    ) as HTMLFormElement;
-    const input = within(form).getByPlaceholderText(/enter a country name.../i);
-    const submitButton = within(form).getByRole("button", {
-      name: /submit/i,
+      expect(main).toBeInTheDocument();
     });
 
-    expect(form).toBeInTheDocument();
-    expect(input).toBeInTheDocument();
-    expect(submitButton).toBeInTheDocument();
+    test("It must render a loader before render modes in menu page.", () => {
+      const { container } = renderComponent();
 
-    const flag = screen.getByRole("img");
-    const score = screen.getByRole("heading", {
-      name: /score: 0 pts/i,
+      //eslint-disable-next-line
+      const loader = container.querySelector(".loader");
+      const linkGoHome = screen.queryByRole("link", {
+        name: /go home/i,
+      });
+
+      expect(loader).toBeInTheDocument();
+      expect(linkGoHome).not.toBeInTheDocument();
     });
 
-    expect(flag).toBeInTheDocument();
-    expect(flag).toHaveAttribute("src", firstFlag.image);
-    expect(flag).toHaveAttribute("alt", firstFlag.name);
-    expect(score).toBeInTheDocument();
+    test("It should render the page title, the flag to guess, the form to guess, the score and the remaining time.", async () => {
+      const { container } = await renderComponentAsync();
 
-    await user.click(input);
-    await user.keyboard(firstFlag.name);
+      const heading = screen.getByRole("heading", {
+        name: /guess the flag/i,
+      });
+      const flag = screen.getByRole("img");
+      // eslint-disable-next-line
+      const form = container.querySelector(".form__guess");
+      const score = screen.getByRole("heading", {
+        name: /score: 0 pts/i,
+      });
+      const timeleft = screen.getByRole("heading", {
+        name: /time left: /i,
+      });
 
-    await user.click(submitButton);
+      expect(heading).toBeInTheDocument();
 
-    expect(input).not.toHaveValue();
-    expect(input).toHaveStyle("borderColor: green;");
+      expect(flag).toBeInTheDocument();
+      expect(flag).toHaveAttribute("src", FLAG_DATA_STATIC_TEST.image);
+      expect(flag).toHaveAttribute("alt", FLAG_DATA_STATIC_TEST.name);
 
-    const nextFlag = screen.getByRole("img");
+      expect(form).toBeInTheDocument();
+      expect(score).toBeInTheDocument();
 
-    expect(flag).not.toBeInTheDocument();
-    expect(nextFlag).toBeInTheDocument();
-    expect(nextFlag).toHaveAttribute("src", secondFlag.image);
-    expect(nextFlag).toHaveAttribute("alt", secondFlag.name);
-
-    const totalScore =
-      initialScore +
-      MODE_DATA_STATIC_TEST.timeleft * MODE_DATA_STATIC_TEST.multiplier;
-
-    expect(score).toHaveTextContent(`Score: ${totalScore} PTS`);
+      expect(timeleft).toBeInTheDocument();
+      expect(timeleft).toHaveTextContent(
+        `Time left: ${secondsToTimer(MODE_DATA_STATIC_TEST.timeleft)}`
+      );
+    });
   });
-});
 
-describe("If the flag is NOT guessed.", () => {
-  test("The score must remain the same, reset the form and the flag must be the same.", async () => {
-    const firstFlag = FLAG_DATA_STATIC_TEST;
-    const secondFlag = FLAGS_DATA_STATIC_TEST[1];
-    const wrongFlagName = "Asd";
-    const initialScore = 0;
+  describe("If you guess the flag.", () => {
+    createServer([
+      {
+        path: `/v1/flags/random/:quantity`,
+        method: "get",
+        res: () => {
+          return {
+            data: FLAGS_DATA_STATIC_TEST,
+          };
+        },
+      },
+      {
+        path: `/v1/modes/findmode/:mode`,
+        method: "get",
+        res: () => {
+          return {
+            data: MODE_DATA_STATIC_TEST,
+          };
+        },
+      },
+    ]);
 
-    const { container } = await renderComponentAsync();
+    test("It should change the score, reset the form and the flag should change to the next one.", async () => {
+      const firstFlag = FLAG_DATA_STATIC_TEST;
+      const secondFlag = FLAGS_DATA_STATIC_TEST[1];
+      const initialScore = 0;
 
-    //eslint-disable-next-line
-    const form = container.querySelector(
-      ".guess_container_form"
-    ) as HTMLFormElement;
-    const input = within(form).getByPlaceholderText(/enter a country name.../i);
-    const submitButton = within(form).getByRole("button", {
-      name: /submit/i,
+      const { container } = await renderComponentAsync();
+
+      //eslint-disable-next-line
+      const form = container.querySelector(".form__guess") as HTMLFormElement;
+      const input = within(form).getByPlaceholderText(
+        /enter a country name.../i
+      );
+      const submitButton = within(form).getByRole("button", {
+        name: /submit/i,
+      });
+
+      expect(form).toBeInTheDocument();
+      expect(input).toBeInTheDocument();
+      expect(submitButton).toBeInTheDocument();
+
+      const flag = screen.getByRole("img");
+      const score = screen.getByRole("heading", {
+        name: /score: 0 pts/i,
+      });
+
+      expect(flag).toBeInTheDocument();
+      expect(flag).toHaveAttribute("src", firstFlag.image);
+      expect(flag).toHaveAttribute("alt", firstFlag.name);
+      expect(score).toBeInTheDocument();
+
+      await user.click(input);
+      await user.keyboard(firstFlag.name);
+
+      await user.click(submitButton);
+
+      expect(input).not.toHaveValue();
+      expect(input).toHaveStyle("borderColor: green;");
+
+      const nextFlag = screen.getByRole("img");
+
+      expect(flag).not.toBeInTheDocument();
+      expect(nextFlag).toBeInTheDocument();
+      expect(nextFlag).toHaveAttribute("src", secondFlag.image);
+      expect(nextFlag).toHaveAttribute("alt", secondFlag.name);
+
+      const totalScore =
+        initialScore +
+        MODE_DATA_STATIC_TEST.timeleft * MODE_DATA_STATIC_TEST.multiplier;
+
+      expect(score).toHaveTextContent(`Score: ${totalScore} PTS`);
     });
+  });
 
-    expect(form).toBeInTheDocument();
-    expect(input).toBeInTheDocument();
-    expect(submitButton).toBeInTheDocument();
+  describe("If the flag is NOT guessed.", () => {
+    createServer([
+      {
+        path: `/v1/flags/random/:quantity`,
+        method: "get",
+        res: () => {
+          return {
+            data: FLAGS_DATA_STATIC_TEST,
+          };
+        },
+      },
+      {
+        path: `/v1/modes/findmode/:mode`,
+        method: "get",
+        res: () => {
+          return {
+            data: MODE_DATA_STATIC_TEST,
+          };
+        },
+      },
+    ]);
 
-    const flag = screen.getByRole("img");
-    const score = screen.getByRole("heading", {
-      name: /score: 0 pts/i,
+    test("The score must remain the same, reset the form and the flag must be the same.", async () => {
+      const firstFlag = FLAG_DATA_STATIC_TEST;
+      const secondFlag = FLAGS_DATA_STATIC_TEST[1];
+      const wrongFlagName = "Asd";
+      const initialScore = 0;
+
+      const { container } = await renderComponentAsync();
+
+      //eslint-disable-next-line
+      const form = container.querySelector(".form__guess") as HTMLFormElement;
+      const input = within(form).getByPlaceholderText(
+        /enter a country name.../i
+      );
+      const submitButton = within(form).getByRole("button", {
+        name: /submit/i,
+      });
+
+      expect(form).toBeInTheDocument();
+      expect(input).toBeInTheDocument();
+      expect(submitButton).toBeInTheDocument();
+
+      const flag = screen.getByRole("img");
+      const score = screen.getByRole("heading", {
+        name: /score: 0 pts/i,
+      });
+
+      expect(flag).toBeInTheDocument();
+      expect(flag).toHaveAttribute("src", firstFlag.image);
+      expect(flag).toHaveAttribute("alt", firstFlag.name);
+      expect(score).toBeInTheDocument();
+
+      await user.click(input);
+      await user.keyboard(wrongFlagName);
+
+      await user.click(submitButton);
+
+      expect(input).not.toHaveValue();
+      expect(input).toHaveStyle("borderColor: red;");
+
+      expect(flag).toBeInTheDocument();
+      expect(flag).toHaveAttribute("src", firstFlag.image);
+      expect(flag).toHaveAttribute("alt", firstFlag.name);
+      expect(flag).not.toHaveAttribute("src", secondFlag.image);
+      expect(flag).not.toHaveAttribute("alt", secondFlag.name);
+
+      const totalScore = initialScore;
+
+      expect(score).toHaveTextContent(`Score: ${totalScore} PTS`);
     });
-
-    expect(flag).toBeInTheDocument();
-    expect(flag).toHaveAttribute("src", firstFlag.image);
-    expect(flag).toHaveAttribute("alt", firstFlag.name);
-    expect(score).toBeInTheDocument();
-
-    await user.click(input);
-    await user.keyboard(wrongFlagName);
-
-    await user.click(submitButton);
-
-    expect(input).not.toHaveValue();
-    expect(input).toHaveStyle("borderColor: red;");
-
-    expect(flag).toBeInTheDocument();
-    expect(flag).toHaveAttribute("src", firstFlag.image);
-    expect(flag).toHaveAttribute("alt", firstFlag.name);
-    expect(flag).not.toHaveAttribute("src", secondFlag.image);
-    expect(flag).not.toHaveAttribute("alt", secondFlag.name);
-
-    const totalScore = initialScore;
-
-    expect(score).toHaveTextContent(`Score: ${totalScore} PTS`);
   });
 });

@@ -12,8 +12,8 @@ export const HomePage = (): JSX.Element => {
 
   return (
     <main>
-      <section className="home_container">
-        <article className="home_container_play">
+      <section className="home">
+        <article className="home__play">
           <Link to="/menu" aria-label="lets play">
             ¡Lets PLAY!
           </Link>

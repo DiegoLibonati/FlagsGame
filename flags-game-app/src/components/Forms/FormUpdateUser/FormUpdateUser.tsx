@@ -65,7 +65,7 @@ export const FormUpdateUser = (): JSX.Element => {
 
   return (
     <form
-      className="send_points_container_mini_form update_form"
+      className="form__send__points form__update"
       onSubmit={(e) => onSendRequest(e)}
     >
       <h3>Your score was: {score} PTS</h3>
@@ -85,6 +85,7 @@ export const FormUpdateUser = (): JSX.Element => {
       ></input>
       <button
         type="submit"
+        aria-label="send and replace"
         disabled={
           alert.type === "alert-auth-error" ||
           alert.type === "alert-auth-success"

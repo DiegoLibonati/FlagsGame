@@ -1,4 +1,4 @@
-.home_container {
+.home {
   display: grid;
   grid-template-columns: repeat(1, 1fr);
   width: 100%;
@@ -12,7 +12,7 @@
   background-size: cover;
 }
 
-.home_container_play {
+.home__play {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -20,39 +20,39 @@
   height: auto;
 }
 
-.home_container_play a {
+.home__play a {
   text-decoration: none;
-  background-color: rgba(0, 0, 0, 0.5);
-  color: #fff;
+  background-color: rgba(var(--black-int-color), 0.5);
+  color: var(--white-color);
   padding: 1rem;
   font-size: 2rem;
 }
 
 @media only screen and (min-width: 280px) and (orientation: landscape) {
-  .home_container {
+  .home {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media only screen and (min-width: 540px) and (orientation: portrait) {
-  .home_container_play a {
+  .home__play a {
     font-size: 3rem;
   }
 }
 
 @media only screen and (min-width: 768px) and (orientation: portrait) {
-  .home_container_play a {
+  .home__play a {
     font-size: 4rem;
   }
 }
 
 @media only screen and (min-width: 1024px) {
-  .home_container {
+  .home {
     justify-items: center;
     align-items: center;
   }
 
-  .home_container_play a {
+  .home__play a {
     font-size: 5rem;
   }
 }

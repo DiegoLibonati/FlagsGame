@@ -39,41 +39,43 @@ const renderComponent = (): RenderComponent => {
   };
 };
 
-test("You must render the ListStats component.", () => {
-  renderComponent();
+describe("ListStats.tsx", () => {
+  describe("General Tests.", () => {
+    test("You must render the ListStats component.", () => {
+      renderComponent();
 
-  const listStats = screen.getByRole("article");
+      const listStats = screen.getByRole("article");
 
-  expect(listStats).toBeInTheDocument();
-  expect(listStats).toHaveClass("list_stats_container_top menu_mode_top");
-});
+      expect(listStats).toBeInTheDocument();
+      expect(listStats).toHaveClass("top mode__top");
+    });
 
-test("It must render the top with title, the totality of users of the top and match the first user of the top.", () => {
-  const { props } = renderComponent();
+    test("It must render the top with title, the totality of users of the top and match the first user of the top.", () => {
+      const { props } = renderComponent();
 
-  const firstUser = props.arrayTop![0];
+      const firstUser = props.arrayTop![0];
 
-  const heading = screen.getByRole("heading", {
-    name: props.nameTop,
+      const heading = screen.getByRole("heading", {
+        name: props.nameTop,
+      });
+
+      expect(heading).toBeInTheDocument();
+      expect(heading).toHaveTextContent(props.nameTop);
+
+      const listTop = screen.getByRole("list");
+
+      expect(listTop).toBeInTheDocument();
+      expect(listTop).toHaveClass("top__list mode__top__list");
+
+      const usersTop = screen.getAllByRole("listitem");
+
+      expect(usersTop).toHaveLength(props.arrayTop!.length);
+
+      const firstUserTop = within(listTop).getByText(
+        `${firstUser.username} with ${firstUser.score} PTS`
+      );
+
+      expect(firstUserTop).toBeInTheDocument();
+    });
   });
-
-  expect(heading).toBeInTheDocument();
-  expect(heading).toHaveTextContent(props.nameTop);
-
-  const listTop = screen.getByRole("list");
-
-  expect(listTop).toBeInTheDocument();
-  expect(listTop).toHaveClass(
-    "list_stats_container_top_list menu_mode_top_list"
-  );
-
-  const usersTop = screen.getAllByRole("listitem");
-
-  expect(usersTop).toHaveLength(props.arrayTop!.length);
-
-  const firstUserTop = within(listTop).getByText(
-    `${firstUser.username} with ${firstUser.score} PTS`
-  );
-
-  expect(firstUserTop).toBeInTheDocument();
 });

@@ -1,20 +1,20 @@
-.list_stats_container_top {
+.top {
   display: flex;
   align-items: center;
   justify-content: flex-start;
   flex-flow: column wrap;
   height: auto;
   width: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(var(--black-int-color), 0.5);
 }
 
-.list_stats_container_top h2 {
+.top h2 {
   font-size: 3rem;
   text-align: center;
-  color: #fff;
+  color: var(--white-color);
 }
 
-.list_stats_container_top_list {
+.top__list {
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
@@ -26,54 +26,54 @@
   padding: 1rem;
 }
 
-.list_stats_container_top_list li {
+.top__list li {
   font-size: 2.5rem;
   font-weight: 900;
-  color: #fff;
+  color: var(--white-color);
   margin-bottom: 1rem;
 }
 
 @media only screen and (min-width: 280px) and (orientation: landscape) {
-  .list_stats_container_top h2 {
+  .top h2 {
     font-size: 2.5rem;
   }
 
-  .list_stats_container_top_list li {
+  .top__list li {
     font-size: 2rem;
   }
 }
 
 @media only screen and (min-width: 540px) and (orientation: portrait) {
-  .list_stats_container_top h2 {
+  .top h2 {
     font-size: 4rem;
   }
 
-  .list_stats_container_top_list li {
+  .top__list li {
     font-size: 3rem;
   }
 }
 
 @media only screen and (min-width: 768px) and (orientation: portrait) {
-  .list_stats_container_top h2 {
+  .top h2 {
     font-size: 5rem;
   }
 
-  .list_stats_container_top_list li {
+  .top__list li {
     font-size: 4rem;
   }
 }
 
 @media only screen and (min-width: 1024px) {
-  .list_stats_container_top {
+  .top {
     height: 50rem;
     width: 40rem;
   }
 
-  .list_stats_container_top h2 {
+  .top h2 {
     font-size: 4rem;
   }
 
-  .list_stats_container_top_list li {
+  .top__list li {
     font-size: 2.5rem;
   }
 }

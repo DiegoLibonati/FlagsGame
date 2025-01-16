@@ -24,9 +24,9 @@ export const MenuPage = (): JSX.Element => {
         <BsChevronLeft id="go-back"></BsChevronLeft>
       </Link>
 
-      <section className="menu_container">
+      <section className="menu__page">
         <h1>Choose a MODE</h1>
-        <article className="menu_container_option">
+        <article className="menu__page__option">
           {modes.modes!.map((mode) => {
             return (
               <Link

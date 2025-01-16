@@ -46,8 +46,8 @@ export const GamePage = (): JSX.Element => {
 
   return (
     <main>
-      <section className="guess_container">
-        <article className="guess_container_header">
+      <section className="guess">
+        <article className="guess__header">
           <h1>GUESS THE FLAG</h1>
           <FlagComponent
             key={currentFlagToGuess!._id}
@@ -58,7 +58,7 @@ export const GamePage = (): JSX.Element => {
 
         <FormGuessFlag secondsLeft={secondsLeft}></FormGuessFlag>
 
-        <article className="guess_container_score">
+        <article className="guess__score">
           <h3>Score: {score} PTS</h3>
 
           <h3>Time left: {timerText}</h3>

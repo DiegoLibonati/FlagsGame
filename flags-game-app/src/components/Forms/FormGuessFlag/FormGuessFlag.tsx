@@ -3,6 +3,7 @@ import { useEffect, useRef } from "react";
 import { useForm } from "../../../hooks/useForm";
 import { useModeContext } from "../../../context/ModeContext/ModeProvider";
 import { useGameContext } from "../../../context/GameContext/GameProvider";
+import { rootCss } from "../../../constants/configCss";
 
 import "./FormGuessFlag.css";
 
@@ -31,14 +32,14 @@ export const FormGuessFlag = ({
     const inputValue = formState.name.toLowerCase();
 
     if (currentFlagName === inputValue) {
-      inputElement.style.borderColor = "green";
+      inputElement.style.borderColor = rootCss.colors.green;
       onResetForm();
       handleSetScore(score + secondsLeft * mode.mode?.multiplier!);
       handleNextFlagToGuess();
       return;
     }
 
-    inputElement.style.borderColor = "red";
+    inputElement.style.borderColor = rootCss.colors.red;
     onResetForm();
   };
 
@@ -48,7 +49,7 @@ export const FormGuessFlag = ({
     if (!inputElement) return;
 
     const timeout = setTimeout(() => {
-      inputRef.current!.style.borderColor = "white";
+      inputRef.current!.style.borderColor = rootCss.colors.white;
     }, 500);
 
     return () => {
@@ -57,7 +58,7 @@ export const FormGuessFlag = ({
   }, [inputRef.current?.style?.borderColor]);
 
   return (
-    <form className="guess_container_form" onSubmit={(e) => onSubmit(e)}>
+    <form className="form__guess" onSubmit={(e) => onSubmit(e)}>
       <input
         ref={inputRef}
         type="text"
@@ -66,7 +67,7 @@ export const FormGuessFlag = ({
         onChange={(e) => onInputChange(e)}
         name="name"
       ></input>
-      <button type="submit">SUBMIT</button>
+      <button type="submit" aria-label="submit guess">SUBMIT</button>
     </form>
   );
 };

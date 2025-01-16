@@ -29,15 +29,15 @@ export const FinishGamePage = (): JSX.Element => {
 
   return (
     <main>
-      <section className="send_points_container">
+      <section className="send__points">
         <h4 className={`alert ${parseAlertTypeFn()}`}>{alert.message}</h4>
-        <article className="send_points_container_mini register_article">
+        <article className="send__points__mini register__article">
           <h2>If you DONT have a user register</h2>
 
           <FormRegisterUser></FormRegisterUser>
         </article>
 
-        <article className="send_points_container_mini update_article">
+        <article className="send__points__mini update__article">
           <h2>If you HAVE a user register</h2>
 
           <FormUpdateUser></FormUpdateUser>

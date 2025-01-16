@@ -59,7 +59,7 @@ export const FormRegisterUser = (): JSX.Element => {
 
   return (
     <form
-      className="send_points_container_mini_form register_form"
+      className="form__send__points form__register"
       onSubmit={(e) => onSendRequest(e)}
     >
       <h3>Your score was: {score} PTS</h3>
@@ -79,6 +79,7 @@ export const FormRegisterUser = (): JSX.Element => {
       ></input>
       <button
         type="submit"
+        aria-label="send and register"
         disabled={
           alert.type === "alert-auth-error" ||
           alert.type === "alert-auth-success"

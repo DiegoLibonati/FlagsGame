@@ -1,4 +1,4 @@
-.guess_container {
+.guess {
   display: grid;
   justify-items: center;
   align-items: center;
@@ -13,7 +13,7 @@
   background-size: cover;
 }
 
-.guess_container_header {
+.guess__header {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -22,13 +22,13 @@
   width: 100%;
 }
 
-.guess_container_header h1 {
+.guess__header h1 {
   font-size: 5rem;
   text-align: center;
-  color: #fff;
+  color: var(--white-color);
 }
 
-.guess_container_score {
+.guess__score {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -36,35 +36,35 @@
   height: auto;
 }
 
-.guess_container_score h3 {
+.guess__score h3 {
   text-align: center;
   font-size: 2rem;
-  background-color: rgba(0, 0, 0, 0.5);
-  color: #fff;
+  background-color: rgba(var(--black-int-color), 0.5);
+  color: var(--white-color);
   padding: 1rem;
   margin: 1rem;
 }
 
 @media only screen and (min-width: 540px) {
-  .guess_container_header h1 {
+  .guess__header h1 {
     font-size: 6rem;
   }
 
-  .guess_container_header img {
+  .guess__header img {
     width: 50rem;
   }
 }
 
 @media only screen and (min-width: 768px) {
-  .guess_container_header h1 {
+  .guess__header h1 {
     font-size: 9rem;
   }
 
-  .guess_container_header img {
+  .guess__header img {
     width: 60rem;
   }
 
-  .guess_container_score h3 {
+  .guess__score h3 {
     font-size: 3rem;
   }
 }
