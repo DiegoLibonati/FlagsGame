@@ -1,4 +1,4 @@
-.guess__header img {
+.flag {
   width: calc(100% - 2rem);
   height: auto;
   object-fit: cover;
@@ -6,13 +6,13 @@
 }
 
 @media only screen and (min-width: 540px) {
-  .guess__header img {
+  .flag {
     width: 50rem;
   }
 }
 
 @media only screen and (min-width: 768px) {
-  .guess__header img {
+  .flag {
     height: 40rem;
     width: 60rem;
     object-fit: cover;

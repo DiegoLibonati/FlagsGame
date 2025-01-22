@@ -1,4 +1,4 @@
-.form__send__points {
+.form-update-user {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -9,13 +9,13 @@
   padding: 1rem;
 }
 
-.form__send__points h3 {
+.form-update-user__score {
   font-size: 2rem;
   margin-bottom: 2rem;
   color: var(--white-color);
 }
 
-.form__send__points input {
+.form-update-user__input {
   width: 100%;
   padding: 1rem;
   margin-bottom: 2rem;
@@ -28,11 +28,11 @@
   color: var(--white-color);
 }
 
-.form__send__points input::placeholder {
+.form-update-user__input::placeholder {
   color: var(--white-color);
 }
 
-.form__send__points button {
+.form-update-user__submit {
   width: 100%;
   border: none;
   padding: 1rem;

@@ -147,7 +147,7 @@ describe("GamePage.tsx", () => {
       });
       const flag = screen.getByRole("img");
       // eslint-disable-next-line
-      const form = container.querySelector(".form__guess");
+      const form = container.querySelector(".form-guess-flag");
       const score = screen.getByRole("heading", {
         name: /score: 0 pts/i,
       });
@@ -201,7 +201,7 @@ describe("GamePage.tsx", () => {
       const { container } = await renderComponentAsync();
 
       //eslint-disable-next-line
-      const form = container.querySelector(".form__guess") as HTMLFormElement;
+      const form = container.querySelector(".form-guess-flag") as HTMLFormElement;
       const input = within(form).getByPlaceholderText(
         /enter a country name.../i
       );
@@ -277,7 +277,7 @@ describe("GamePage.tsx", () => {
       const { container } = await renderComponentAsync();
 
       //eslint-disable-next-line
-      const form = container.querySelector(".form__guess") as HTMLFormElement;
+      const form = container.querySelector(".form-guess-flag") as HTMLFormElement;
       const input = within(form).getByPlaceholderText(
         /enter a country name.../i
       );

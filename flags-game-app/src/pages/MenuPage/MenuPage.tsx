@@ -19,19 +19,20 @@ export const MenuPage = (): JSX.Element => {
     );
 
   return (
-    <main>
+    <main className="menu-main">
       <Link to="/" aria-label="go home">
-        <BsChevronLeft id="go-back"></BsChevronLeft>
+        <BsChevronLeft id="go-back" className="icon__go-back"></BsChevronLeft>
       </Link>
 
-      <section className="menu__page">
-        <h1>Choose a MODE</h1>
-        <article className="menu__page__option">
+      <section className="menu-page">
+        <h1 className="menu-page__title">Choose a MODE</h1>
+        <article className="menu-page__modes">
           {modes.modes!.map((mode) => {
             return (
               <Link
                 key={mode._id}
                 to={`/menu/${mode.name}`}
+                className="menu-page__modes-mode"
                 aria-label={`select ${mode.name} to play`}
               >
                 {mode.name} MODE

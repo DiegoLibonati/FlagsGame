@@ -5,9 +5,9 @@ import { FormUpdateUser } from "../../components/Forms/FormUpdateUser/FormUpdate
 
 import { useAlertContext } from "../../context/AlertContext/AlertProvider";
 import { useGameContext } from "../../context/GameContext/GameProvider";
+import { parseAlertType } from "../../helpers/parseAlertType";
 
 import "./FinishGamePage.css";
-import { parseAlertType } from "../../helpers/parseAlertType";
 
 // TODO: Separar estilos de alert // Componente Alert
 
@@ -28,17 +28,21 @@ export const FinishGamePage = (): JSX.Element => {
   }, []);
 
   return (
-    <main>
-      <section className="send__points">
+    <main className="finish-game-main">
+      <section className="finish-game-page">
         <h4 className={`alert ${parseAlertTypeFn()}`}>{alert.message}</h4>
-        <article className="send__points__mini register__article">
-          <h2>If you DONT have a user register</h2>
+        <article className="finish-game-page__wrapper-form finish-game-page__wrapper-register">
+          <h2 className="finish-game-page__wrapper-form-title">
+            If you DONT have a user register
+          </h2>
 
           <FormRegisterUser></FormRegisterUser>
         </article>
 
-        <article className="send__points__mini update__article">
-          <h2>If you HAVE a user register</h2>
+        <article className="finish-game-page__wrapper-form finish-game-page__wrapper-update">
+          <h2 className="finish-game-page__wrapper-form-title">
+            If you HAVE a user register
+          </h2>
 
           <FormUpdateUser></FormUpdateUser>
         </article>

@@ -11,10 +11,10 @@ export const HomePage = (): JSX.Element => {
   const { topUsers } = useUsersContext();
 
   return (
-    <main>
-      <section className="home">
-        <article className="home__play">
-          <Link to="/menu" aria-label="lets play">
+    <main className="home-main">
+      <section className="home-page">
+        <article className="home-page__actions">
+          <Link to="/menu" aria-label="lets play" className="home-page__actions-play">
             ¡Lets PLAY!
           </Link>
         </article>

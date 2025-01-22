@@ -1,4 +1,15 @@
-.mode {
+.menu-mode-main {
+  padding-top: 5rem;
+  background-image: url("https://i.pinimg.com/originals/81/64/7e/81647eb1d13c460eb5d239ec09cdca69.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+
+.menu-mode-page {
   display: grid;
   grid-template-columns: repeat(1, 1fr);
   height: auto;
@@ -9,14 +20,14 @@
   padding: 1rem;
 }
 
-.mode h1 {
+.menu-mode-page__title {
   font-size: 5rem;
   margin-top: 5rem;
   text-align: center;
   color: var(--white-color);
 }
 
-.mode__explain {
+.menu-mode-page__description {
   display: flex;
   align-items: center;
   justify-content: space-evenly;
@@ -28,13 +39,13 @@
   margin-top: 3rem;
 }
 
-.mode__explain p {
+.menu-mode-page__description-text {
   font-size: 1.5rem;
   color: var(--white-color);
   text-align: justify;
 }
 
-.mode__explain a {
+.menu-mode-page__description-play {
   font-size: 2rem;
   padding: 1rem;
   text-decoration: none;
@@ -45,65 +56,65 @@
   letter-spacing: 0.2rem;
 }
 
-.mode__top {
+.top__mode {
   padding: 1rem;
 }
 
-.mode__top__list {
+.top__mode-list {
   padding: 1rem;
 }
 
 @media only screen and (min-width: 280px) {
-  .mode__top h2 {
+  .top__mode-title h2 {
     font-size: 2rem;
   }
 
-  .mode__top__list li {
+  .top__mode-list-item {
     font-size: 1.8rem;
   }
 }
 
 @media only screen and (min-width: 540px) {
-  .mode h1 {
+  .menu-mode-page__title {
     font-size: 7rem;
   }
 }
 
 @media only screen and (min-width: 768px) {
-  .mode h1 {
+  .menu-mode-page__title {
     font-size: 10rem;
   }
 
-  .mode__explain p {
+  .menu-mode-page__description-text {
     font-size: 3rem;
   }
 
-  .mode__explain a {
+  .menu-mode-page__description-play {
     font-size: 2.5rem;
   }
 
-  .mode__top h2 {
+  .top__mode-title {
     font-size: 3rem;
   }
 
-  .mode__top__list li {
+  .top__mode-list-item {
     font-size: 2rem;
   }
 }
 
 @media only screen and (min-width: 1024px) {
-  .mode {
+  .menu-mode-page {
     grid-template-columns: repeat(2, 1fr);
     height: calc(100vh - 5rem);
     justify-items: center;
     align-items: center;
   }
 
-  .mode h1 {
+  .menu-mode-page__title {
     grid-column: 1/3;
   }
 
-  .mode__explain {
+  .menu-mode-page__description {
     width: 100%;
     height: 50rem;
     margin: 0;
@@ -112,11 +123,11 @@
 }
 
 @media only screen and (min-width: 1280px) {
-  .mode h1 {
+  .menu-mode-page__title {
     font-size: 10rem;
   }
 
-  .mode__explain {
+  .menu-mode-page__description {
     width: 80%;
   }
 }

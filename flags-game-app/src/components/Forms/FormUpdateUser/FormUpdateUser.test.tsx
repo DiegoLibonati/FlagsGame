@@ -66,10 +66,10 @@ describe("FormUpdateUser.tsx", () => {
       const { container } = await renderComponent();
 
       //eslint-disable-next-line
-      const form = container.querySelector(".form__send__points");
+      const form = container.querySelector(".form-update-user");
 
       expect(form).toBeInTheDocument();
-      expect(form).toHaveClass("form__send__points");
+      expect(form).toHaveClass("form-update-user");
     });
 
     test("It must render the content of the form. A title, a username input, a password input and a submit button.", async () => {

@@ -62,12 +62,12 @@ describe("Navbar.tsx", () => {
 
       await user.click(hamburger);
 
-      expect(hamburger).toHaveClass("menu open");
+      expect(hamburger).toHaveClass("hamburger hamburger--open");
 
       const navbar = screen.getByRole("navigation");
 
       expect(navbar).toBeInTheDocument();
-      expect(navbar).toHaveClass("header__nav open__nav");
+      expect(navbar).toHaveClass("header__nav header__nav--open");
     });
 
     test("It should render the navbar link list, the links are home and menu.", () => {
@@ -78,7 +78,7 @@ describe("Navbar.tsx", () => {
       const list = screen.getByRole("list");
 
       expect(list).toBeInTheDocument();
-      expect(list).toHaveClass("header__nav__list");
+      expect(list).toHaveClass("header__nav-list");
 
       const navLinksElements = within(list).getAllByRole("listitem");
 
@@ -90,7 +90,7 @@ describe("Navbar.tsx", () => {
         });
 
         expect(nLink).toBeInTheDocument();
-        expect(nLink).toHaveClass("nav__link");
+        expect(nLink).toHaveClass("header__nav-link");
       }
     });
   });

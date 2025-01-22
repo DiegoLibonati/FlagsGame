@@ -58,16 +58,23 @@ export const FormGuessFlag = ({
   }, [inputRef.current?.style?.borderColor]);
 
   return (
-    <form className="form__guess" onSubmit={(e) => onSubmit(e)}>
+    <form className="form-guess-flag" onSubmit={(e) => onSubmit(e)}>
       <input
         ref={inputRef}
         type="text"
         value={formState.name}
         placeholder="Enter a Country Name..."
         onChange={(e) => onInputChange(e)}
+        className="form-guess-flag__name"
         name="name"
       ></input>
-      <button type="submit" aria-label="submit guess">SUBMIT</button>
+      <button
+        type="submit"
+        aria-label="submit guess"
+        className="form-guess-flag__submit"
+      >
+        SUBMIT
+      </button>
     </form>
   );
 };

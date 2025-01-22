@@ -1,4 +1,15 @@
-.home {
+.home-main {
+  padding-top: 5rem;
+  background-image: url("https://i.pinimg.com/originals/81/64/7e/81647eb1d13c460eb5d239ec09cdca69.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+
+.home-page {
   display: grid;
   grid-template-columns: repeat(1, 1fr);
   width: 100%;
@@ -12,7 +23,7 @@
   background-size: cover;
 }
 
-.home__play {
+.home-page__actions {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -20,7 +31,7 @@
   height: auto;
 }
 
-.home__play a {
+.home-page__actions-play {
   text-decoration: none;
   background-color: rgba(var(--black-int-color), 0.5);
   color: var(--white-color);
@@ -29,30 +40,30 @@
 }
 
 @media only screen and (min-width: 280px) and (orientation: landscape) {
-  .home {
+  .home-page {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media only screen and (min-width: 540px) and (orientation: portrait) {
-  .home__play a {
+  .home-page__actions-play {
     font-size: 3rem;
   }
 }
 
 @media only screen and (min-width: 768px) and (orientation: portrait) {
-  .home__play a {
+  .home-page__actions-play {
     font-size: 4rem;
   }
 }
 
 @media only screen and (min-width: 1024px) {
-  .home {
+  .home-page {
     justify-items: center;
     align-items: center;
   }
 
-  .home__play a {
+  .home-page__actions-play {
     font-size: 5rem;
   }
 }

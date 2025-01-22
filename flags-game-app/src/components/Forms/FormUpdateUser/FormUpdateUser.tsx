@@ -64,16 +64,14 @@ export const FormUpdateUser = (): JSX.Element => {
   }, []);
 
   return (
-    <form
-      className="form__send__points form__update"
-      onSubmit={(e) => onSendRequest(e)}
-    >
-      <h3>Your score was: {score} PTS</h3>
+    <form className="form-update-user" onSubmit={(e) => onSendRequest(e)}>
+      <h3 className="form-update-user__score">Your score was: {score} PTS</h3>
       <input
         type="text"
         placeholder="Your username goes here"
         value={formState.username}
         name="username"
+        className="form-update-user__input"
         onChange={(e) => onInputChange(e)}
       ></input>
       <input
@@ -81,11 +79,13 @@ export const FormUpdateUser = (): JSX.Element => {
         placeholder="Your password goes here"
         value={formState.password}
         name="password"
+        className="form-update-user__input"
         onChange={(e) => onInputChange(e)}
       ></input>
       <button
         type="submit"
         aria-label="send and replace"
+        className="form-update-user__submit"
         disabled={
           alert.type === "alert-auth-error" ||
           alert.type === "alert-auth-success"

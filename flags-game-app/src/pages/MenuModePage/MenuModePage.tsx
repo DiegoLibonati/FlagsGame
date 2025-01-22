@@ -16,25 +16,31 @@ export const MenuModePage = (): JSX.Element => {
 
   if (mode.loading) {
     return (
-      <main>
+      <main className="menu-mode-main">
         <Loader></Loader>
       </main>
     );
   }
 
   return (
-    <main>
+    <main className="menu-mode-main">
       <Link to="/menu" aria-label="go home">
-        <BsChevronLeft id="go-back"></BsChevronLeft>
+        <BsChevronLeft id="go-back" className="icon__go-back"></BsChevronLeft>
       </Link>
 
-      <section className="mode">
-        <h1>{mode.mode?.name} MODE</h1>
+      <section className="menu-mode-page">
+        <h1 className="menu-mode-page__title">{mode.mode?.name} MODE</h1>
 
-        <article className="mode__explain">
-          <p>{mode.mode?.description}</p>
+        <article className="menu-mode-page__description">
+          <p className="menu-mode-page__description-text">
+            {mode.mode?.description}
+          </p>
 
-          <Link to={`/menu/${mode.mode?.name}/start`} aria-label="play">
+          <Link
+            to={`/menu/${mode.mode?.name}/start`}
+            aria-label="play"
+            className="menu-mode-page__description-play"
+          >
             ¡PLAY!
           </Link>
         </article>

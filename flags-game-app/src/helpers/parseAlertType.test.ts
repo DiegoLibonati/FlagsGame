@@ -13,7 +13,7 @@ test("It must return 'error' if an 'alert-auth-error' string is entered for pars
 
   const alertTypeParsed = parseAlertType(alertType);
 
-  expect(alertTypeParsed).toBe("error");
+  expect(alertTypeParsed).toBe("alert--error");
 });
 
 test("It should return 'success' if an 'alert-auth-success' string is entered for parsing.", () => {
@@ -21,5 +21,5 @@ test("It should return 'success' if an 'alert-auth-success' string is entered fo
 
   const alertTypeParsed = parseAlertType(alertType);
 
-  expect(alertTypeParsed).toBe("success");
+  expect(alertTypeParsed).toBe("alert--success");
 });

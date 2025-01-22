@@ -69,10 +69,10 @@ describe("FormGuessFlag.tsx", () => {
       const { container } = renderComponent();
 
       //eslint-disable-next-line
-      const form = container.querySelector(".form__guess");
+      const form = container.querySelector(".form-guess-flag");
 
       expect(form).toBeInTheDocument();
-      expect(form).toHaveClass("form__guess");
+      expect(form).toHaveClass("form-guess-flag");
     });
 
     test("It must render an input name to enter the name of the flag and a submit button.", () => {

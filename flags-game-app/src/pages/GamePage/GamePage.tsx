@@ -38,17 +38,17 @@ export const GamePage = (): JSX.Element => {
 
   if (flags.loading || !currentFlagToGuess) {
     return (
-      <main>
+      <main className="game-main">
         <Loader></Loader>
       </main>
     );
   }
 
   return (
-    <main>
-      <section className="guess">
-        <article className="guess__header">
-          <h1>GUESS THE FLAG</h1>
+    <main className="game-main">
+      <section className="game-page">
+        <article className="game-page__header">
+          <h1 className="game-page__header-title">GUESS THE FLAG</h1>
           <FlagComponent
             key={currentFlagToGuess!._id}
             image={currentFlagToGuess?.image!}
@@ -58,10 +58,10 @@ export const GamePage = (): JSX.Element => {
 
         <FormGuessFlag secondsLeft={secondsLeft}></FormGuessFlag>
 
-        <article className="guess__score">
-          <h3>Score: {score} PTS</h3>
+        <article className="game-page__stats">
+          <h3 className="game-page__stats-score">Score: {score} PTS</h3>
 
-          <h3>Time left: {timerText}</h3>
+          <h3 className="game-page__stats-timeleft">Time left: {timerText}</h3>
         </article>
       </section>
     </main>

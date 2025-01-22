@@ -104,7 +104,7 @@ describe("FinishGamePage.tsx", () => {
 
       // eslint-disable-next-line
       const articleRegisterUser = container.querySelector(
-        ".register__article"
+        ".finish-game-page__wrapper-register"
       ) as HTMLElement;
 
       const heading = within(articleRegisterUser).getByRole("heading", {
@@ -112,7 +112,7 @@ describe("FinishGamePage.tsx", () => {
       });
       // eslint-disable-next-line
       const formRegister = container.querySelector(
-        ".form__register"
+        ".form-register-user"
       ) as HTMLFormElement;
 
       const scoreHeading = within(formRegister).getByRole("heading", {
@@ -170,7 +170,7 @@ describe("FinishGamePage.tsx", () => {
 
       // eslint-disable-next-line
       const articleRegisterUser = container.querySelector(
-        ".register__article"
+        ".finish-game-page__wrapper-register"
       ) as HTMLElement;
 
       const heading = within(articleRegisterUser).getByRole("heading", {
@@ -178,7 +178,7 @@ describe("FinishGamePage.tsx", () => {
       });
       // eslint-disable-next-line
       const formRegister = container.querySelector(
-        ".form__register"
+        ".form-register-user"
       ) as HTMLFormElement;
 
       const scoreHeading = within(formRegister).getByRole("heading", {
@@ -213,7 +213,7 @@ describe("FinishGamePage.tsx", () => {
       const alertHeading = container.querySelector(".alert");
 
       expect(alertHeading).toBeInTheDocument();
-      expect(alertHeading).toHaveClass("alert success");
+      expect(alertHeading).toHaveClass("alert alert--success");
       expect(alertHeading).toHaveTextContent(messageService);
     });
   });
@@ -251,7 +251,7 @@ describe("FinishGamePage.tsx", () => {
 
       // eslint-disable-next-line
       const articleRegisterUser = container.querySelector(
-        ".register__article"
+        ".finish-game-page__wrapper-register"
       ) as HTMLElement;
 
       const heading = within(articleRegisterUser).getByRole("heading", {
@@ -259,7 +259,7 @@ describe("FinishGamePage.tsx", () => {
       });
       // eslint-disable-next-line
       const formRegister = container.querySelector(
-        ".form__register"
+        ".form-register-user"
       ) as HTMLFormElement;
 
       const scoreHeading = within(formRegister).getByRole("heading", {
@@ -294,7 +294,7 @@ describe("FinishGamePage.tsx", () => {
       const alertHeading = container.querySelector(".alert");
 
       expect(alertHeading).toBeInTheDocument();
-      expect(alertHeading).toHaveClass("alert error");
+      expect(alertHeading).toHaveClass("alert alert--error");
       expect(alertHeading).toHaveTextContent(messageService);
     });
   });
@@ -317,7 +317,7 @@ describe("FinishGamePage.tsx", () => {
 
       // eslint-disable-next-line
       const articleUpdateUser = container.querySelector(
-        ".update__article"
+        ".finish-game-page__wrapper-update"
       ) as HTMLElement;
 
       const heading = within(articleUpdateUser).getByRole("heading", {
@@ -325,7 +325,7 @@ describe("FinishGamePage.tsx", () => {
       });
       // eslint-disable-next-line
       const formUpdate = container.querySelector(
-        ".form__update"
+        ".form-update-user"
       ) as HTMLFormElement;
 
       const scoreHeading = within(formUpdate).getByRole("heading", {
@@ -383,7 +383,7 @@ describe("FinishGamePage.tsx", () => {
 
       // eslint-disable-next-line
       const articleUpdateUser = container.querySelector(
-        ".update__article"
+        ".finish-game-page__wrapper-update"
       ) as HTMLElement;
 
       const heading = within(articleUpdateUser).getByRole("heading", {
@@ -391,7 +391,7 @@ describe("FinishGamePage.tsx", () => {
       });
       // eslint-disable-next-line
       const formUpdate = container.querySelector(
-        ".form__update"
+        ".form-update-user"
       ) as HTMLFormElement;
 
       const scoreHeading = within(formUpdate).getByRole("heading", {
@@ -426,7 +426,7 @@ describe("FinishGamePage.tsx", () => {
       const alertHeading = container.querySelector(".alert");
 
       expect(alertHeading).toBeInTheDocument();
-      expect(alertHeading).toHaveClass("alert success");
+      expect(alertHeading).toHaveClass("alert alert--success");
       expect(alertHeading).toHaveTextContent(messageService);
     });
   });
@@ -464,7 +464,7 @@ describe("FinishGamePage.tsx", () => {
 
       // eslint-disable-next-line
       const articleUpdateUser = container.querySelector(
-        ".update__article"
+        ".finish-game-page__wrapper-update"
       ) as HTMLElement;
 
       const heading = within(articleUpdateUser).getByRole("heading", {
@@ -472,7 +472,7 @@ describe("FinishGamePage.tsx", () => {
       });
       // eslint-disable-next-line
       const updateForm = container.querySelector(
-        ".form__update"
+        ".form-update-user"
       ) as HTMLFormElement;
 
       const scoreHeading = within(updateForm).getByRole("heading", {
@@ -507,7 +507,7 @@ describe("FinishGamePage.tsx", () => {
       const alertHeading = container.querySelector(".alert");
 
       expect(alertHeading).toBeInTheDocument();
-      expect(alertHeading).toHaveClass("alert error");
+      expect(alertHeading).toHaveClass("alert alert--error");
       expect(alertHeading).toHaveTextContent(messageService);
     });
   });

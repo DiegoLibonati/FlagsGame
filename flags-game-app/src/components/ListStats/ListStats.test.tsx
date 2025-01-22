@@ -47,7 +47,7 @@ describe("ListStats.tsx", () => {
       const listStats = screen.getByRole("article");
 
       expect(listStats).toBeInTheDocument();
-      expect(listStats).toHaveClass("top mode__top");
+      expect(listStats).toHaveClass("top__mode");
     });
 
     test("It must render the top with title, the totality of users of the top and match the first user of the top.", () => {
@@ -65,7 +65,7 @@ describe("ListStats.tsx", () => {
       const listTop = screen.getByRole("list");
 
       expect(listTop).toBeInTheDocument();
-      expect(listTop).toHaveClass("top__list mode__top__list");
+      expect(listTop).toHaveClass("top__mode-list");
 
       const usersTop = screen.getAllByRole("listitem");
 

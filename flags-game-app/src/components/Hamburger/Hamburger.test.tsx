@@ -54,7 +54,7 @@ describe("Hamburger.tsx", () => {
       });
 
       expect(hamburger).toBeInTheDocument();
-      expect(hamburger).toHaveClass("menu");
+      expect(hamburger).toHaveClass("hamburger");
     });
 
     test("Must render menu open class if navbar prop is true.", () => {
@@ -65,7 +65,7 @@ describe("Hamburger.tsx", () => {
       });
 
       expect(hamburger).toBeInTheDocument();
-      expect(hamburger).toHaveClass("menu open");
+      expect(hamburger).toHaveClass("hamburger hamburger--open");
     });
 
     test("You must run the manageNavbar function when you click on Hamburger.", async () => {

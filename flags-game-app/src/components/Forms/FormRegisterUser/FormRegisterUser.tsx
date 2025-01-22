@@ -58,15 +58,13 @@ export const FormRegisterUser = (): JSX.Element => {
   };
 
   return (
-    <form
-      className="form__send__points form__register"
-      onSubmit={(e) => onSendRequest(e)}
-    >
-      <h3>Your score was: {score} PTS</h3>
+    <form className="form-register-user" onSubmit={(e) => onSendRequest(e)}>
+      <h3 className="form-register-user__score">Your score was: {score} PTS</h3>
       <input
         type="text"
         placeholder="Your username goes here"
         value={formState.username}
+        className="form-register-user__input"
         name="username"
         onChange={(e) => onInputChange(e)}
       ></input>
@@ -74,12 +72,14 @@ export const FormRegisterUser = (): JSX.Element => {
         type="password"
         placeholder="Your password goes here"
         value={formState.password}
+        className="form-register-user__input"
         name="password"
         onChange={(e) => onInputChange(e)}
       ></input>
       <button
         type="submit"
         aria-label="send and register"
+        className="form-register-user__submit"
         disabled={
           alert.type === "alert-auth-error" ||
           alert.type === "alert-auth-success"

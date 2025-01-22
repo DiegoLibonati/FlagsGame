@@ -61,7 +61,7 @@ describe("StartGamePage.tsx", () => {
       });
 
       expect(linkStartGame).toBeInTheDocument();
-      expect(linkStartGame).toHaveClass("start__game__btn");
+      expect(linkStartGame).toHaveClass("start-game-page__btn-start");
     });
   });
 });
