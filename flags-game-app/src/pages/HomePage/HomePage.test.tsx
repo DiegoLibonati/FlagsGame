@@ -101,7 +101,7 @@ describe("HomePage.tsx", () => {
       expect(userTopTitle).toBeInTheDocument();
 
       expect(usersTopList).toBeInTheDocument();
-      expect(usersTopList).toHaveClass("top__mode-list");
+      expect(usersTopList).toHaveClass("list-stats__users");
 
       const usersInList = within(usersTopList).getAllByRole("listitem");
 

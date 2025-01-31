@@ -34,7 +34,7 @@
   margin-bottom: 5rem;
 }
 
-.finish-game-page__wrapper-form-title {
+.finish-game-page__form-title {
   font-size: 3rem;
   margin-bottom: 2rem;
   text-align: center;
@@ -79,7 +79,7 @@
     height: 100rem;
   }
 
-  .finish-game-page__wrapper-form-title {
+  .finish-game-page__form-title {
     font-size: 5rem;
   }
 }
@@ -95,7 +95,7 @@
     margin-bottom: 0rem;
   }
 
-  .finish-game-page__wrapper-form-title {
+  .finish-game-page__form-title {
     font-size: 3.5rem;
     text-align: start;
   }

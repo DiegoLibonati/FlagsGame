@@ -33,7 +33,7 @@ def add_or_modify() -> dict[str, Any]:
     score_actual = request.json.get('score')
     mode_name = request.json.get('mode_name', "").strip().lower()
 
-    if not username or not password or not score_actual or not mode_name:
+    if not username or not password or not mode_name:
         return make_response({
             "message": "The data entered are not valid.",
             "data": None

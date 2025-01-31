@@ -12,15 +12,15 @@ export const ListStats = ({
   arrayTop,
 }: ListStatsProps): JSX.Element => {
   return (
-    <article className="top__mode">
-      <h2 className="top__mode-title">{nameTop}</h2>
+    <article className="list-stats">
+      <h2 className="list-stats__title">{nameTop}</h2>
 
-      <ul className="top__mode-list">
+      <ul className="list-stats__users">
         {arrayTop.map((top) => {
           const { _id, username, score } = top;
 
           return (
-            <li key={_id} className="top__mode-list-item">
+            <li key={_id} className="list-stats__user">
               {username} with {score} PTS
             </li>
           );

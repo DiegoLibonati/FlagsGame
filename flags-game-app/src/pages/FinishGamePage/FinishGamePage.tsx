@@ -32,7 +32,7 @@ export const FinishGamePage = (): JSX.Element => {
       <section className="finish-game-page">
         <h4 className={`alert ${parseAlertTypeFn()}`}>{alert.message}</h4>
         <article className="finish-game-page__wrapper-form finish-game-page__wrapper-register">
-          <h2 className="finish-game-page__wrapper-form-title">
+          <h2 className="finish-game-page__form-title">
             If you DONT have a user register
           </h2>
 
@@ -40,7 +40,7 @@ export const FinishGamePage = (): JSX.Element => {
         </article>
 
         <article className="finish-game-page__wrapper-form finish-game-page__wrapper-update">
-          <h2 className="finish-game-page__wrapper-form-title">
+          <h2 className="finish-game-page__form-title">
             If you HAVE a user register
           </h2>
 

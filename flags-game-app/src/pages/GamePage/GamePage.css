@@ -33,7 +33,7 @@
   width: 100%;
 }
 
-.game-page__header-title {
+.game-page__title {
   font-size: 5rem;
   text-align: center;
   color: var(--white-color);
@@ -47,8 +47,8 @@
   height: auto;
 }
 
-.game-page__stats-score,
-.game-page__stats-timeleft {
+.game-page__score,
+.game-page__timeleft {
   text-align: center;
   font-size: 2rem;
   background-color: rgba(var(--black-int-color), 0.5);
@@ -58,18 +58,18 @@
 }
 
 @media only screen and (min-width: 540px) {
-  .game-page__header-title {
+  .game-page__title {
     font-size: 6rem;
   }
 }
 
 @media only screen and (min-width: 768px) {
-  .game-page__header-title {
+  .game-page__title {
     font-size: 9rem;
   }
 
-  .game-page__stats-score,
-  .game-page__stats-timeleft {
+  .game-page__score,
+  .game-page__timeleft {
     font-size: 3rem;
   }
 }

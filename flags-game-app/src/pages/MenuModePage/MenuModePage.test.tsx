@@ -160,7 +160,7 @@ describe("MenuModePage.tsx", () => {
       });
 
       expect(list).toBeInTheDocument();
-      expect(list).toHaveClass("top__mode-list");
+      expect(list).toHaveClass("list-stats__users");
       expect(titleTop).toBeInTheDocument();
 
       const usersInTop = within(list).getAllByRole("listitem");

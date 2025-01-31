@@ -14,7 +14,7 @@ export const HomePage = (): JSX.Element => {
     <main className="home-main">
       <section className="home-page">
         <article className="home-page__actions">
-          <Link to="/menu" aria-label="lets play" className="home-page__actions-play">
+          <Link to="/menu" aria-label="lets play" className="home-page__play">
             ¡Lets PLAY!
           </Link>
         </article>

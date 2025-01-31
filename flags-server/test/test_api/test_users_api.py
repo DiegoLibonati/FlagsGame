@@ -149,9 +149,9 @@ def test_add_or_modify_user_with_wrong_user(flask_client: Flask) -> None:
     response: Response = flask_client.post(
         f"{BLUEPRINTS['users']}/addormodify",
         json={
-            "username": "asd",
+            "username": "",
             "password": "1234",
-            "score": "",
+            "score": "200",
             "mode_name": "general"
         }
     )

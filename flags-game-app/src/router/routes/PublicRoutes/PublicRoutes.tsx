@@ -24,6 +24,7 @@ export const PublicRoutes = (): JSX.Element => {
           </UsersProvider>
         }
       ></Route>
+
       <Route
         path="/menu"
         element={
@@ -32,6 +33,7 @@ export const PublicRoutes = (): JSX.Element => {
           </ModesProvider>
         }
       ></Route>
+      
       <Route
         path="/menu/:mode"
         element={

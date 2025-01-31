@@ -65,7 +65,7 @@ export const FormGuessFlag = ({
         value={formState.name}
         placeholder="Enter a Country Name..."
         onChange={(e) => onInputChange(e)}
-        className="form-guess-flag__name"
+        className="form-guess-flag__input"
         name="name"
       ></input>
       <button

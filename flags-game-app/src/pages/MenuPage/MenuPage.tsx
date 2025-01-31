@@ -21,7 +21,7 @@ export const MenuPage = (): JSX.Element => {
   return (
     <main className="menu-main">
       <Link to="/" aria-label="go home">
-        <BsChevronLeft id="go-back" className="icon__go-back"></BsChevronLeft>
+        <BsChevronLeft id="go-back" className="icon-go-back"></BsChevronLeft>
       </Link>
 
       <section className="menu-page">
@@ -32,7 +32,7 @@ export const MenuPage = (): JSX.Element => {
               <Link
                 key={mode._id}
                 to={`/menu/${mode.name}`}
-                className="menu-page__modes-mode"
+                className="menu-page__mode"
                 aria-label={`select ${mode.name} to play`}
               >
                 {mode.name} MODE

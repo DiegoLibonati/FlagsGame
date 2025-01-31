@@ -1,4 +1,4 @@
-.top__mode {
+.list-stats {
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -8,13 +8,13 @@
   background-color: rgba(var(--black-int-color), 0.5);
 }
 
-.top__mode-title {
+.list-stats__title {
   font-size: 3rem;
   text-align: center;
   color: var(--white-color);
 }
 
-.top__mode-list {
+.list-stats__users {
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
@@ -26,7 +26,7 @@
   padding: 1rem;
 }
 
-.top__mode-list-item {
+.list-stats__user {
   font-size: 2.5rem;
   font-weight: 900;
   color: var(--white-color);
@@ -34,46 +34,46 @@
 }
 
 @media only screen and (min-width: 280px) and (orientation: landscape) {
-  .top__mode-title {
+  .list-stats__title {
     font-size: 2.5rem;
   }
 
-  .top__mode-list-item {
+  .list-stats__user {
     font-size: 2rem;
   }
 }
 
 @media only screen and (min-width: 540px) and (orientation: portrait) {
-  .top__mode-title {
+  .list-stats__title {
     font-size: 4rem;
   }
 
-  .top__mode-list-item {
+  .list-stats__user {
     font-size: 3rem;
   }
 }
 
 @media only screen and (min-width: 768px) and (orientation: portrait) {
-  .top__mode-title {
+  .list-stats__title {
     font-size: 4rem;
   }
 
-  .top__mode-list-item {
+  .list-stats__user {
     font-size: 3rem;
   }
 }
 
 @media only screen and (min-width: 1024px) {
-  .top__mode {
+  .list-stats {
     height: 50rem;
     width: 40rem;
   }
 
-  .top__mode-title {
+  .list-stats__title {
     font-size: 3rem;
   }
 
-  .top__mode-list-item {
+  .list-stats__user {
     font-size: 2.5rem;
   }
 }

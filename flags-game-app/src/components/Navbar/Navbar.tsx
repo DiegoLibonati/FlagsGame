@@ -15,7 +15,7 @@ export const Navbar = (): JSX.Element => {
         <Link
           to="/"
           aria-label="title FlagsGame"
-          className="header__logo-title"
+          className="header__title"
         >
           FlagsGame
         </Link>

@@ -10,7 +10,7 @@ export const StartGamePage = (): JSX.Element => {
   return (
     <main className="start-game-main">
       <Link to={`/menu/${mode}`} aria-label="go home">
-        <BsChevronLeft id="go-back" className="icon__go-back"></BsChevronLeft>
+        <BsChevronLeft id="go-back" className="icon-go-back"></BsChevronLeft>
       </Link>
 
       <section className="start-game-page">

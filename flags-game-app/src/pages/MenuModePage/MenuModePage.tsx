@@ -25,21 +25,21 @@ export const MenuModePage = (): JSX.Element => {
   return (
     <main className="menu-mode-main">
       <Link to="/menu" aria-label="go home">
-        <BsChevronLeft id="go-back" className="icon__go-back"></BsChevronLeft>
+        <BsChevronLeft id="go-back" className="icon-go-back"></BsChevronLeft>
       </Link>
 
       <section className="menu-mode-page">
         <h1 className="menu-mode-page__title">{mode.mode?.name} MODE</h1>
 
-        <article className="menu-mode-page__description">
-          <p className="menu-mode-page__description-text">
+        <article className="menu-mode-page__explication">
+          <p className="menu-mode-page__description">
             {mode.mode?.description}
           </p>
 
           <Link
             to={`/menu/${mode.mode?.name}/start`}
             aria-label="play"
-            className="menu-mode-page__description-play"
+            className="menu-mode-page__play"
           >
             ¡PLAY!
           </Link>

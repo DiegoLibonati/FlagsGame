@@ -40,7 +40,7 @@
   height: auto;
 }
 
-.menu-page__modes-mode {
+.menu-page__mode {
   font-size: 2rem;
   text-decoration: none;
   background-color: rgba(var(--black-int-color), 0.5);
