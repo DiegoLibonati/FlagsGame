@@ -1,15 +1,15 @@
-from typing import Any
 from bson import ObjectId
 
 from flask import make_response
 from flask import current_app
 from flask import request
+from flask import Response
 
 from src.models.Flag import Flag
 from src.models.FlagManager import FlagManager
 
 
-def flags() -> dict[str, Any]:
+def flags() -> Response:
     flag_manager = FlagManager()
     flags = current_app.flag_repository.get_all_flags()
 
@@ -23,7 +23,7 @@ def flags() -> dict[str, Any]:
     }, 200)
 
 
-def add_flag() -> dict[str, Any]:
+def add_flag() -> Response:
     image = request.json.get('image', "").strip()
     name = request.json.get('name', "").strip()
     
@@ -47,7 +47,7 @@ def add_flag() -> dict[str, Any]:
     }, 201)
 
 
-def get_random_flags(quantity: str) -> dict[str, Any]:
+def get_random_flags(quantity: str) -> Response:
     try:
         quantity = int(quantity)
 
@@ -72,7 +72,7 @@ def get_random_flags(quantity: str) -> dict[str, Any]:
     }, 200)
 
 
-def delete_flag(id: str) -> dict[str, Any]:
+def delete_flag(id: str) -> Response:
     try:
         object_id = ObjectId(id)
         document = current_app.flag_repository.get_flag(flag_id=object_id)

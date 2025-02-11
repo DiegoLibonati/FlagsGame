@@ -1,9 +1,9 @@
-from typing import Any
 from bson import ObjectId
 
 from flask import make_response
 from flask import current_app
 from flask import request
+from flask import Response
 
 from src.models.Encrypt import Encrypt
 from src.models.User import User
@@ -11,7 +11,7 @@ from src.models.UserManager import UserManager
 from src.models.ModeManager import ModeManager
 
 
-def top_general() -> dict[str, Any]:
+def top_general() -> Response:
     users = current_app.user_repository.get_all_users()
     user_manager = UserManager()
 
@@ -25,7 +25,7 @@ def top_general() -> dict[str, Any]:
     }, 200)
 
 
-def add_or_modify() -> dict[str, Any]:
+def add_or_modify() -> Response:
     method = request.method
 
     username = request.json.get('username', "").strip()
@@ -108,7 +108,7 @@ def add_or_modify() -> dict[str, Any]:
     }, 400)
 
 
-def delete_user(id: str) -> dict[str, Any]:
+def delete_user(id: str) -> Response:
     try:
         object_id = ObjectId(id)
         document = current_app.user_repository.get_user_by_id(user_id=object_id)

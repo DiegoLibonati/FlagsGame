@@ -1,16 +1,16 @@
-from typing import Any
 from bson import ObjectId
 
 from flask import make_response
 from flask import current_app
 from flask import request
+from flask import Response
 
 from src.models.Mode import Mode
 from src.models.UserManager import UserManager
 from src.models.ModeManager import ModeManager
 
 
-def get_modes() -> dict[str, Any]:
+def get_modes() -> Response:
     mode_manager = ModeManager()
     modes = current_app.mode_repository.get_all_modes()
 
@@ -24,7 +24,7 @@ def get_modes() -> dict[str, Any]:
     }, 200)
 
 
-def find_mode(name : str) -> dict[str, Any]:
+def find_mode(name : str) -> Response:
     if not name:
         return make_response({
             "message": f"A game mode with name {name} was not found, please enter valid fields.",
@@ -48,7 +48,7 @@ def find_mode(name : str) -> dict[str, Any]:
     }, 200)
 
 
-def add_mode() -> dict[str, Any]:
+def add_mode() -> Response:
     name = request.json.get('name', "").strip()
     description = request.json.get('description', "").strip()
     timeleft = request.json.get('timeleft')
@@ -82,7 +82,7 @@ def add_mode() -> dict[str, Any]:
     }, 201)
 
 
-def top_mode(mode: str) -> dict[str, Any]:
+def top_mode(mode: str) -> Response:
     mode_manager = ModeManager()
     mode_name = mode.lower()
 
@@ -111,7 +111,7 @@ def top_mode(mode: str) -> dict[str, Any]:
     }, 200)
 
 
-def delete_mode(id: str) -> dict[str, Any]:
+def delete_mode(id: str) -> Response:
     try:
         object_id = ObjectId(id)
         document = current_app.mode_repository.get_mode_by_id(mode_id=object_id)
