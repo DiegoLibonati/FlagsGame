@@ -5,11 +5,11 @@ import { MemoryRouter } from "react-router-dom";
 
 import { FormRegisterUser } from "./FormRegisterUser";
 
-import { createServer } from "../../../tests/msw/server";
+import { createServer } from "../../../../tests/msw/server";
 import {
   ALERT_PROVIDER_STATIC,
   FLAGS_DATA_STATIC_TEST,
-} from "../../../tests/jest.constants";
+} from "../../../../tests/jest.constants";
 
 import { AlertContext } from "../../../context/AlertContext/AlertContext";
 import { FlagsProvider } from "../../../context/FlagsContext/FlagsProvider";

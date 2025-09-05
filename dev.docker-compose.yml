@@ -3,7 +3,7 @@ services:
   flags-game-app:
     build:
       context: ./flags-game-app
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.development
     restart: always
     environment:
       - TZ="America/Argentina/Buenos_Aires"
@@ -19,7 +19,7 @@ services:
   flags-server:
     build:
       context: ./flags-server
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.development
     restart: always
     environment:
       - TZ="America/Argentina/Buenos_Aires"

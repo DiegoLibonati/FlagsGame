@@ -4,8 +4,8 @@ import { MemoryRouter } from "react-router-dom";
 
 import { HomePage } from "./HomePage";
 
-import { createServer } from "../../tests/msw/server";
-import { USERS_TOP_STATIC_TEST } from "../../tests/jest.constants";
+import { createServer } from "../../../tests/msw/server";
+import { USERS_TOP_STATIC_TEST } from "../../../tests/jest.constants";
 
 import { UsersProvider } from "../../context/UsersContext/UsersProvider";
 

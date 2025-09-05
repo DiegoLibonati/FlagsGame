@@ -5,12 +5,12 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 
 import { GamePage } from "./GamePage";
 
-import { createServer } from "../../tests/msw/server";
+import { createServer } from "../../../tests/msw/server";
 import {
   FLAG_DATA_STATIC_TEST,
   FLAGS_DATA_STATIC_TEST,
   MODE_DATA_STATIC_TEST,
-} from "../../tests/jest.constants";
+} from "../../../tests/jest.constants";
 
 import { FlagsProvider } from "../../context/FlagsContext/FlagsProvider";
 import { GameProvider } from "../../context/GameContext/GameProvider";

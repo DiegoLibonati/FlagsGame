@@ -3,12 +3,12 @@ import user from "@testing-library/user-event";
 
 import { FormGuessFlag } from "./FormGuessFlag";
 
-import { createServer } from "../../../tests/msw/server";
+import { createServer } from "../../../../tests/msw/server";
 import {
   FLAG_DATA_STATIC_TEST,
   FLAGS_DATA_STATIC_TEST,
   MODE_DATA_STATIC_TEST,
-} from "../../../tests/jest.constants";
+} from "../../../../tests/jest.constants";
 
 import { FlagsProvider } from "../../../context/FlagsContext/FlagsProvider";
 import { ModeProvider } from "../../../context/ModeContext/ModeProvider";

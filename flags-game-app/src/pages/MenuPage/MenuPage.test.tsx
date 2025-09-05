@@ -4,8 +4,8 @@ import { MemoryRouter } from "react-router-dom";
 
 import { MenuPage } from "./MenuPage";
 
-import { createServer } from "../../tests/msw/server";
-import { MODES_DATA_STATIC_TEST } from "../../tests/jest.constants";
+import { createServer } from "../../../tests/msw/server";
+import { MODES_DATA_STATIC_TEST } from "../../../tests/jest.constants";
 
 import { ModesProvider } from "../../context/ModesContext/ModesProvider";
 

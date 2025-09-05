@@ -4,11 +4,11 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 
 import { MenuModePage } from "./MenuModePage";
 
-import { createServer } from "../../tests/msw/server";
+import { createServer } from "../../../tests/msw/server";
 import {
   MODE_DATA_STATIC_TEST,
   USERS_TOP_STATIC_TEST,
-} from "../../tests/jest.constants";
+} from "../../../tests/jest.constants";
 
 import { UsersProvider } from "../../context/UsersContext/UsersProvider";
 import { ModeProvider } from "../../context/ModeContext/ModeProvider";

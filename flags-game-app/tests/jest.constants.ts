@@ -3,7 +3,7 @@ import {
   Flag,
   Mode,
   UserWithOutPassword,
-} from "../entities/entities";
+} from "../src/entities/entities";
 
 export const FLAGS_DATA_STATIC_TEST: Flag[] = [
   {
