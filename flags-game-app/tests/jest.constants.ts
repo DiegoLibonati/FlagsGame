@@ -1,9 +1,5 @@
-import {
-  AlertContext,
-  Flag,
-  Mode,
-  UserWithOutPassword,
-} from "../src/entities/entities";
+import { AlertContext } from "@src/entities/contexts";
+import { Flag, Mode, UserTop } from "@src/entities/entities";
 
 export const FLAGS_DATA_STATIC_TEST: Flag[] = [
   {
@@ -66,7 +62,7 @@ export const MODES_DATA_STATIC_TEST: Mode[] = [
 
 export const MODE_DATA_STATIC_TEST: Mode = MODES_DATA_STATIC_TEST[0];
 
-export const USERS_TOP_STATIC_TEST: UserWithOutPassword[] = [
+export const USERS_TOP_STATIC_TEST: UserTop[] = [
   {
     _id: "672a713141aec0b5e6b0a1a2",
     score: 6925,
@@ -129,8 +125,7 @@ export const USERS_TOP_STATIC_TEST: UserWithOutPassword[] = [
   },
 ];
 
-export const FIRST_USER_TOP_STATIC: UserWithOutPassword =
-  USERS_TOP_STATIC_TEST[0];
+export const FIRST_USER_TOP_STATIC: UserTop = USERS_TOP_STATIC_TEST[0];
 
 export const ALERT_PROVIDER_STATIC: AlertContext = {
   alert: {

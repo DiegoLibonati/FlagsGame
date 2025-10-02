@@ -1,14 +1,13 @@
+import { BsChevronLeft } from "react-icons/bs";
 import { Link } from "react-router-dom";
 
-import { ListStats } from "../../components/ListStats/ListStats";
-import { Loader } from "../../components/Loader/Loader";
+import { ListStats } from "@src/components/ListStats/ListStats";
+import { Loader } from "@src/components/Loader/Loader";
 
-import { useUsersContext } from "../../context/UsersContext/UsersProvider";
-import { useModeContext } from "../../context/ModeContext/ModeProvider";
+import { useUsersContext } from "@src/context/UsersContext/UsersProvider";
+import { useModeContext } from "@src/context/ModeContext/ModeProvider";
 
-import { BsChevronLeft } from "react-icons/bs";
-
-import "./MenuModePage.css";
+import "@src/pages/MenuModePage/MenuModePage.css";
 
 export const MenuModePage = (): JSX.Element => {
   const { topUsers } = useUsersContext();
@@ -37,7 +36,7 @@ export const MenuModePage = (): JSX.Element => {
           </p>
 
           <Link
-            to={`/menu/${mode.mode?.name}/start`}
+            to={`/menu/${mode.mode?._id}/start`}
             aria-label="play"
             className="menu-mode-page__play"
           >

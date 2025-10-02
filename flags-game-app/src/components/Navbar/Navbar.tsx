@@ -1,10 +1,10 @@
 import { Link, NavLink } from "react-router-dom";
 
-import { Hamburger } from "../Hamburger/Hamburger";
+import { Hamburger } from "@src/components/Hamburger/Hamburger";
 
-import { useUiContext } from "../../context/UiContext/UiProvider";
+import { useUiContext } from "@src/context/UiContext/UiProvider";
 
-import "./Navbar.css";
+import "@src/components/Navbar/Navbar.css";
 
 export const Navbar = (): JSX.Element => {
   const { navbar, handleManageNavbar } = useUiContext();

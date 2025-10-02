@@ -1,14 +1,11 @@
 import { screen, render, within } from "@testing-library/react";
 
-import { UserWithOutPassword } from "../../entities/entities";
+import { ListStatsProps } from "@src/entities/props";
 
-import { ListStats } from "./ListStats";
+import { ListStats } from "@src/components/ListStats/ListStats";
 
 type RenderComponent = {
-  props: {
-    nameTop: string;
-    arrayTop: UserWithOutPassword[];
-  };
+  props: ListStatsProps;
   container: HTMLElement;
 };
 

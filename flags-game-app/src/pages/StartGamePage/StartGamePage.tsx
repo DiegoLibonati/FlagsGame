@@ -2,20 +2,20 @@ import { Link, useParams } from "react-router-dom";
 
 import { BsChevronLeft } from "react-icons/bs";
 
-import "./StartGamePage.css";
+import "@src/pages/StartGamePage/StartGamePage.css";
 
 export const StartGamePage = (): JSX.Element => {
-  const { mode } = useParams();
+  const { idMode } = useParams();
 
   return (
     <main className="start-game-main">
-      <Link to={`/menu/${mode}`} aria-label="go home">
+      <Link to={`/menu/${idMode}`} aria-label="go home">
         <BsChevronLeft id="go-back" className="icon-go-back"></BsChevronLeft>
       </Link>
 
       <section className="start-game-page">
         <Link
-          to={`/menu/${mode}/game`}
+          to={`/menu/${idMode}/game`}
           className="start-game-page__btn-start"
           aria-label="start game"
         >

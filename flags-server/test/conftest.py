@@ -1,57 +1,77 @@
 import subprocess
 import time
-import logging
-
+import uuid
+from test.constants import COMPOSE_FILE
 from typing import Any
-from bson import ObjectId
 
 import pytest
-
-from flask import Flask
+from flask import Blueprint, Flask, Response, jsonify
 from flask.testing import FlaskClient
+from pydantic import BaseModel
+from pymongo.errors import PyMongoError
 
-from src.app import app as api_app
-from src.app import init
-from src.models.Encrypt import Encrypt
-from src.models.Flag import Flag
-from src.models.Mode import Mode
-from src.models.User import User
-from src.models.FlagManager import FlagManager
-from src.models.ModeManager import ModeManager
-from src.models.UserManager import UserManager
-from src.data_access.flags_repository import FlagRepository
-from src.data_access.modes_repository import ModeRepository
-from src.data_access.users_repository import UserRepository
-
-from test.constants import FLAG_MOCK
-from test.constants import MODE_MOCK
-from test.constants import USER_MOCK
-from test.constants import ENCRYPT_MOCK
+from app import create_app
+from src.services.flag_service import FlagService
+from src.services.mode_service import ModeService
+from src.services.user_service import UserService
+from src.utils.error_handler import handle_exceptions
+from src.utils.exceptions import ValidationAPIError
 
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
-
-# FLAKS FIXTURES
 @pytest.fixture(scope="session")
-def flask_app() -> Flask:
-    app = api_app
-    init()
+def flask_app(mongo_test_db: None) -> Flask:
+    app = create_app()
     return app
 
 
 @pytest.fixture(scope="session")
 def flask_client(flask_app: Flask) -> FlaskClient:
     return flask_app.test_client()
-    
 
-# MONGO FIXTURES
+
+@pytest.fixture
+def error_app() -> FlaskClient:
+    app = Flask(__name__)
+    bp = Blueprint("test_errors", __name__)
+
+    @bp.route("/base-api-error")
+    @handle_exceptions
+    def raise_base_api_error() -> None:
+        raise ValidationAPIError(message="Custom API error")
+
+    @bp.route("/pydantic-error")
+    @handle_exceptions
+    def raise_pydantic_error() -> Response:
+        class Model(BaseModel):
+            x: int
+
+        Model(x="not-an-int")
+        return jsonify({"ok": True})
+
+    @bp.route("/mongo-error")
+    @handle_exceptions
+    def raise_mongo_error() -> None:
+        raise PyMongoError("Mongo failed")
+
+    @bp.route("/generic-error")
+    @handle_exceptions
+    def raise_generic_error() -> None:
+        raise RuntimeError("Unexpected failure")
+
+    @bp.route("/no-error")
+    @handle_exceptions
+    def no_error() -> Response:
+        return jsonify({"ok": True})
+
+    app.register_blueprint(bp)
+    return app.test_client()
+
+
 @pytest.fixture(scope="session")
 def mongo_test_db() -> None:
     subprocess.run(
-        ["docker-compose", "up", "-d", "flags-db"],
-        capture_output=True,
-        text=True,
+        ["docker-compose", "-f", COMPOSE_FILE, "up", "-d", "flags-db"],
+        check=True,
     )
 
     time.sleep(5)
@@ -59,110 +79,54 @@ def mongo_test_db() -> None:
     yield
 
     subprocess.run(
-        ["docker-compose", "down"],
-        capture_output=True,
-        text=True,
+        ["docker-compose", "-f", COMPOSE_FILE, "down"],
+        check=True,
     )
 
 
-# REPOSITORIES - SERVICES
-@pytest.fixture(scope="session")
-def flag_repository(flask_app: Flask) -> FlagRepository:
-    return flask_app.flag_repository
+@pytest.fixture
+def unique_flag() -> dict[str, Any]:
+    return {
+        "name": f"test_flag_{uuid.uuid4().hex[:6]}",
+        "image": "https://test.com/img.png",
+    }
 
 
-@pytest.fixture(scope="session")
-def mode_repository(flask_app: Flask) -> ModeRepository:
-    return flask_app.mode_repository
+@pytest.fixture
+def unique_mode() -> dict[str, Any]:
+    return {
+        "name": f"test_mode_{uuid.uuid4().hex[:6]}",
+        "description": "Mode used for testing",
+        "multiplier": 25,
+        "timeleft": 90,
+    }
 
 
-@pytest.fixture(scope="session")
-def user_repository(flask_app: Flask) -> UserRepository:
-    return flask_app.user_repository
+@pytest.fixture
+def unique_user() -> dict[str, Any]:
+    return {
+        "username": f"test_user_{uuid.uuid4().hex[:6]}",
+        "password": "hi1234",
+        "score": 250,
+    }
 
 
-# CLASS
-@pytest.fixture(scope="session")
-def flag_model() -> Flag:
-    TEST_FLAG_MOCK_COPY = FLAG_MOCK['flag'].copy()
-    TEST_FLAG_MOCK_COPY["_id"] = ObjectId(TEST_FLAG_MOCK_COPY["_id"])
-    return Flag(**TEST_FLAG_MOCK_COPY)
+@pytest.fixture(autouse=True)
+def clean_flags():
+    for flag in FlagService.get_all_flags():
+        FlagService.delete_flag_by_id(flag["_id"])
+    yield
 
 
-@pytest.fixture(scope="session")
-def not_valid_flag_model() -> Flag:
-    return Flag(_id=ObjectId(FLAG_MOCK['flag'].get("_id")), name="", image=FLAG_MOCK['flag'].get("image"))
+@pytest.fixture(autouse=True)
+def clean_modes():
+    for mode in ModeService.get_all_modes():
+        ModeService.delete_mode_by_id(mode["_id"])
+    yield
 
 
-@pytest.fixture(scope="session")
-def mode_model() -> Mode:
-    TEST_MODE_MOCK_COPY = MODE_MOCK['mode'].copy()
-    TEST_MODE_MOCK_COPY["_id"] = ObjectId(TEST_MODE_MOCK_COPY["_id"])
-    return Mode(**TEST_MODE_MOCK_COPY)
-
-
-@pytest.fixture(scope="session")
-def user_model() -> User:
-    TEST_USER_MOCK_COPY = USER_MOCK['user'].copy()
-    TEST_USER_MOCK_COPY["_id"] = ObjectId(TEST_USER_MOCK_COPY["_id"])
-    return User(**TEST_USER_MOCK_COPY)
-
-
-@pytest.fixture(scope="session")
-def encrypt_model() -> Encrypt:
-    return Encrypt(password=ENCRYPT_MOCK['password'])
-
-
-@pytest.fixture(scope="session")
-def flag_manager_model() -> FlagManager:
-    return FlagManager()
-
-
-@pytest.fixture(scope="session")
-def mode_manager_model() -> ModeManager:
-    return ModeManager()
-
-
-@pytest.fixture(scope="session")
-def user_manager_model() -> UserManager:
-    return UserManager()
-
-
-# MOCKS CONSTANTS
-@pytest.fixture(scope="session")
-def test_flag() -> dict[str, str]:
-    TEST_FLAG_COPY = FLAG_MOCK['flag'].copy()
-    del TEST_FLAG_COPY["_id"]
-    return TEST_FLAG_COPY
-
-
-@pytest.fixture(scope="session")
-def test_mode() -> dict[str, str]:
-    TEST_MODE_COPY = MODE_MOCK['mode'].copy()
-    del TEST_MODE_COPY["_id"]
-    return TEST_MODE_COPY
-
-
-@pytest.fixture(scope="session")
-def test_user() -> dict[str, str]:
-    TEST_USER_COPY = USER_MOCK['user'].copy()
-    del TEST_USER_COPY["_id"]
-    return TEST_USER_COPY
-
-@pytest.fixture(scope="session")
-def test_user_request() -> dict[str, str]:
-    return USER_MOCK['user_request']
-
-@pytest.fixture(scope="session")
-def test_flags() -> dict[str, str]:
-    return FLAG_MOCK['flags']
-
-
-@pytest.fixture(scope="session")
-def test_modes() -> dict[str, Any]:
-    return MODE_MOCK['modes']
-
-
-@pytest.fixture(scope="session")
-def test_users() -> dict[str, Any]:
-    return USER_MOCK['users']
+@pytest.fixture(autouse=True)
+def clean_users():
+    for user in UserService.get_all_users():
+        UserService.delete_user_by_id(user["_id"])
+    yield

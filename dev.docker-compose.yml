@@ -1,45 +1,70 @@
-version: "3.9"
 services:
   flags-game-app:
     build:
       context: ./flags-game-app
       dockerfile: Dockerfile.development
     restart: always
-    environment:
-      - TZ="America/Argentina/Buenos_Aires"
-      - CHOKIDAR_USEPOLLING=true
-      - WATCHPACK_POLLING=true
+    env_file:
+      - ./flags-game-app/.env
     volumes:
-      - "./flags-game-app:/home/app"
+      - ./flags-game-app:/home/app
+      - /home/app/node_modules
     depends_on:
-      - flags-db
+      - flags-server
     ports:
-      - "3000:3000"
-    
+      - "5173:5173"
+    networks:
+     - flags-net
+    tty: true
+
   flags-server:
     build:
       context: ./flags-server
       dockerfile: Dockerfile.development
     restart: always
-    environment:
-      - TZ="America/Argentina/Buenos_Aires"
-      - PORT=5050
-      - MONGO_URI=mongodb://host.docker.internal/flags
+    env_file:
+      - ./flags-server/.env
     volumes:
       - "./flags-server:/home/app"
     depends_on:
       - flags-db
     ports:
       - "5050:5050"
+    networks:
+      - flags-net
 
   flags-db:
     image: mongo
-    ports: 
-      - "27017:27017"
     restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: secret123
+      MONGO_INITDB_DATABASE: flags
     volumes:
       - db-data:/data/db
-      
-volumes: 
+    networks:
+      - flags-net
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_URL: mongodb://admin:secret123@flags-db:27017/flags?authSource=admin
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: admin123
+    depends_on:
+      - flags-db
+    networks:
+      - flags-net
+
+volumes:
   db-data:
     driver: local
+
+networks:
+  flags-net:
+    driver: bridge

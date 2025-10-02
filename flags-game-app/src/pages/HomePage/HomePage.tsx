@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
 
-import { ListStats } from "../../components/ListStats/ListStats";
-import { Loader } from "../../components/Loader/Loader";
+import { ListStats } from "@src/components/ListStats/ListStats";
+import { Loader } from "@src/components/Loader/Loader";
 
-import { useUsersContext } from "../../context/UsersContext/UsersProvider";
+import { useUsersContext } from "@src/context/UsersContext/UsersProvider";
 
-import "./HomePage.css";
+import "@src/pages/HomePage/HomePage.css";
 
 export const HomePage = (): JSX.Element => {
   const { topUsers } = useUsersContext();

@@ -1,17 +1,17 @@
 import { useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { addOrModifyUser } from "../../../api/addOrModifyUser";
-import { useForm } from "../../../hooks/useForm";
-import { useGameContext } from "../../../context/GameContext/GameProvider";
-import { useAlertContext } from "../../../context/AlertContext/AlertProvider";
+import { addUser } from "@src/api/addUser";
+import { useForm } from "@src/hooks/useForm";
+import { useGameContext } from "@src/context/GameContext/GameProvider";
+import { useAlertContext } from "@src/context/AlertContext/AlertProvider";
 
-import "./FormRegisterUser.css";
+import "@src/components/Forms/FormRegisterUser/FormRegisterUser.css";
 
 export const FormRegisterUser = (): JSX.Element => {
   const redirectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const { mode } = useParams();
+  const { idMode } = useParams();
   const navigate = useNavigate();
 
   const { score } = useGameContext();
@@ -34,10 +34,10 @@ export const FormRegisterUser = (): JSX.Element => {
       username: formState.username,
       password: formState.password,
       score: score,
-      mode_name: mode!,
+      mode_id: idMode!,
     };
 
-    const result = await addOrModifyUser(body, "POST");
+    const result = await addUser(body);
 
     const messageBody = await result.json();
 

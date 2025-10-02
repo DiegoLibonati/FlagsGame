@@ -1,13 +1,14 @@
 import { screen, render } from "@testing-library/react";
 import user from "@testing-library/user-event";
 
-import { Hamburger } from "./Hamburger";
+import { HamburgerProps } from "@src/entities/props";
+
+import { Hamburger } from "@src/components/Hamburger/Hamburger";
 
 type RenderComponent = {
   props: {
-    navbar: boolean;
-    mockManageNavbar: jest.Mock;
-  };
+    manageNavbar: jest.Mock;
+  } & HamburgerProps;
   container: HTMLElement;
 };
 
@@ -18,13 +19,13 @@ interface RenderComponentProps {
 const renderComponent = ({ navbar }: RenderComponentProps): RenderComponent => {
   const props = {
     navbar: navbar,
-    mockManageNavbar: jest.fn(),
+    manageNavbar: jest.fn(),
   };
 
   const { container } = render(
     <Hamburger
       navbar={props.navbar}
-      manageNavbar={props.mockManageNavbar}
+      manageNavbar={props.manageNavbar}
     ></Hamburger>
   );
 
@@ -78,7 +79,7 @@ describe("Hamburger.tsx", () => {
       await user.click(hamburger);
 
       expect(hamburger).toBeInTheDocument();
-      expect(props.mockManageNavbar).toHaveBeenCalledTimes(1);
+      expect(props.manageNavbar).toHaveBeenCalledTimes(1);
     });
   });
 });

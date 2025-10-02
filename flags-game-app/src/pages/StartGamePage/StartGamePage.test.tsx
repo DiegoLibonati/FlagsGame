@@ -2,7 +2,7 @@ import { screen, render } from "@testing-library/react";
 
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 
-import { StartGamePage } from "./StartGamePage";
+import { StartGamePage } from "@src/pages/StartGamePage/StartGamePage";
 
 type RenderComponent = {
   container: HTMLElement;

@@ -1,4 +1,4 @@
-import { parseAlertType } from "./parseAlertType";
+import { parseAlertType } from "@src/helpers/parseAlertType";
 
 test("It must return 'unknown' if an empty string is entered for parsing.", () => {
   const alertType = "";

@@ -1,11 +1,6 @@
-import { UserWithOutPassword } from "../../entities/entities";
+import { ListStatsProps } from "@src/entities/props";
 
-import "./ListStats.css";
-
-interface ListStatsProps {
-  nameTop: string;
-  arrayTop: UserWithOutPassword[];
-}
+import "@src/components/ListStats/ListStats.css";
 
 export const ListStats = ({
   nameTop,

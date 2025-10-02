@@ -2,12 +2,13 @@ import { screen, render, within } from "@testing-library/react";
 
 import { MemoryRouter } from "react-router-dom";
 
-import { HomePage } from "./HomePage";
+import { createServer } from "@tests/msw/server";
+import { USERS_TOP_STATIC_TEST } from "@tests/jest.constants";
 
-import { createServer } from "../../../tests/msw/server";
-import { USERS_TOP_STATIC_TEST } from "../../../tests/jest.constants";
+import { HomePage } from "@src/pages/HomePage/HomePage";
 
-import { UsersProvider } from "../../context/UsersContext/UsersProvider";
+import { UsersProvider } from "@src/context/UsersContext/UsersProvider";
+import { apiRouteUsers } from "@src/api/apiRoute";
 
 type RenderComponent = {
   container: HTMLElement;
@@ -57,7 +58,7 @@ describe("HomePage.tsx", () => {
   describe("General Tests.", () => {
     createServer([
       {
-        path: `/v1/users/top/general`,
+        path: `${apiRouteUsers}/top_global`,
         method: "get",
         res: () => {
           return {

@@ -1,12 +1,11 @@
 import { Link } from "react-router-dom";
-
-import { Loader } from "../../components/Loader/Loader";
-
-import { useModesContext } from "../../context/ModesContext/ModesProvider";
-
 import { BsChevronLeft } from "react-icons/bs";
 
-import "./MenuPage.css";
+import { Loader } from "@src/components/Loader/Loader";
+
+import { useModesContext } from "@src/context/ModesContext/ModesProvider";
+
+import "@src/pages/MenuPage/MenuPage.css";
 
 export const MenuPage = (): JSX.Element => {
   const { modes } = useModesContext()!;
@@ -31,7 +30,7 @@ export const MenuPage = (): JSX.Element => {
             return (
               <Link
                 key={mode._id}
-                to={`/menu/${mode.name}`}
+                to={`/menu/${mode._id}`}
                 className="menu-page__mode"
                 aria-label={`select ${mode.name} to play`}
               >

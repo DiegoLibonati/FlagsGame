@@ -3,19 +3,20 @@ import user from "@testing-library/user-event";
 
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 
-import { GamePage } from "./GamePage";
-
-import { createServer } from "../../../tests/msw/server";
+import { createServer } from "@tests/msw/server";
 import {
   FLAG_DATA_STATIC_TEST,
   FLAGS_DATA_STATIC_TEST,
   MODE_DATA_STATIC_TEST,
-} from "../../../tests/jest.constants";
+} from "@tests/jest.constants";
 
-import { FlagsProvider } from "../../context/FlagsContext/FlagsProvider";
-import { GameProvider } from "../../context/GameContext/GameProvider";
-import { ModeProvider } from "../../context/ModeContext/ModeProvider";
-import { parseZero } from "../../helpers/parseZero";
+import { GamePage } from "@src/pages/GamePage/GamePage";
+
+import { FlagsProvider } from "@src/context/FlagsContext/FlagsProvider";
+import { GameProvider } from "@src/context/GameContext/GameProvider";
+import { ModeProvider } from "@src/context/ModeContext/ModeProvider";
+import { parseZero } from "@src/helpers/parseZero";
+import { apiRouteFlags, apiRouteModes } from "@src/api/apiRoute";
 
 type RenderComponent = {
   container: HTMLElement;
@@ -99,7 +100,7 @@ describe("GamePage.tsx", () => {
   describe("General Tests.", () => {
     createServer([
       {
-        path: `/v1/flags/random/:quantity`,
+        path: `${apiRouteFlags}/random/:quantity`,
         method: "get",
         res: () => {
           return {
@@ -108,7 +109,7 @@ describe("GamePage.tsx", () => {
         },
       },
       {
-        path: `/v1/modes/findmode/:mode`,
+        path: `${apiRouteModes}/:idMode`,
         method: "get",
         res: () => {
           return {
@@ -174,7 +175,7 @@ describe("GamePage.tsx", () => {
   describe("If you guess the flag.", () => {
     createServer([
       {
-        path: `/v1/flags/random/:quantity`,
+        path: `${apiRouteFlags}/random/:quantity`,
         method: "get",
         res: () => {
           return {
@@ -183,7 +184,7 @@ describe("GamePage.tsx", () => {
         },
       },
       {
-        path: `/v1/modes/findmode/:mode`,
+        path: `${apiRouteModes}/:idMode`,
         method: "get",
         res: () => {
           return {
@@ -201,7 +202,9 @@ describe("GamePage.tsx", () => {
       const { container } = await renderComponentAsync();
 
       //eslint-disable-next-line
-      const form = container.querySelector(".form-guess-flag") as HTMLFormElement;
+      const form = container.querySelector(
+        ".form-guess-flag"
+      ) as HTMLFormElement;
       const input = within(form).getByPlaceholderText(
         /enter a country name.../i
       );
@@ -249,7 +252,7 @@ describe("GamePage.tsx", () => {
   describe("If the flag is NOT guessed.", () => {
     createServer([
       {
-        path: `/v1/flags/random/:quantity`,
+        path: `${apiRouteFlags}/random/:quantity`,
         method: "get",
         res: () => {
           return {
@@ -258,7 +261,7 @@ describe("GamePage.tsx", () => {
         },
       },
       {
-        path: `/v1/modes/findmode/:mode`,
+        path: `${apiRouteModes}/:idMode`,
         method: "get",
         res: () => {
           return {
@@ -277,7 +280,9 @@ describe("GamePage.tsx", () => {
       const { container } = await renderComponentAsync();
 
       //eslint-disable-next-line
-      const form = container.querySelector(".form-guess-flag") as HTMLFormElement;
+      const form = container.querySelector(
+        ".form-guess-flag"
+      ) as HTMLFormElement;
       const input = within(form).getByPlaceholderText(
         /enter a country name.../i
       );

@@ -1,16 +1,16 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { Loader } from "../../components/Loader/Loader";
-import { Flag as FlagComponent } from "../../components/Flag/Flag";
-import { FormGuessFlag } from "../../components/Forms/FormGuessFlag/FormGuessFlag";
+import { Loader } from "@src/components/Loader/Loader";
+import { Flag as FlagComponent } from "@src/components/Flag/Flag";
+import { FormGuessFlag } from "@src/components/Forms/FormGuessFlag/FormGuessFlag";
 
-import { useCountdown } from "../../hooks/useCountdown";
-import { useFlagsContext } from "../../context/FlagsContext/FlagsProvider";
-import { useModeContext } from "../../context/ModeContext/ModeProvider";
-import { useGameContext } from "../../context/GameContext/GameProvider";
+import { useCountdown } from "@src/hooks/useCountdown";
+import { useFlagsContext } from "@src/context/FlagsContext/FlagsProvider";
+import { useModeContext } from "@src/context/ModeContext/ModeProvider";
+import { useGameContext } from "@src/context/GameContext/GameProvider";
 
-import "./GamePage.css";
+import "@src/pages/GamePage/GamePage.css";
 
 export const GamePage = (): JSX.Element => {
   const navigate = useNavigate();
@@ -32,7 +32,7 @@ export const GamePage = (): JSX.Element => {
 
   useEffect(() => {
     if (endTime || completeGuess)
-      navigate(`/menu/${mode.mode?.name}/finishgame`);
+      navigate(`/menu/${mode.mode?._id}/finishgame`);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [endTime, completeGuess]);
 

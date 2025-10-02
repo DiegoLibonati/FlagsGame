@@ -1,13 +1,13 @@
 import { useCallback, useEffect } from "react";
 
-import { FormRegisterUser } from "../../components/Forms/FormRegisterUser/FormRegisterUser";
-import { FormUpdateUser } from "../../components/Forms/FormUpdateUser/FormUpdateUser";
+import { FormRegisterUser } from "@src/components/Forms/FormRegisterUser/FormRegisterUser";
+import { FormUpdateUser } from "@src/components/Forms/FormUpdateUser/FormUpdateUser";
 
-import { useAlertContext } from "../../context/AlertContext/AlertProvider";
-import { useGameContext } from "../../context/GameContext/GameProvider";
-import { parseAlertType } from "../../helpers/parseAlertType";
+import { useAlertContext } from "@src/context/AlertContext/AlertProvider";
+import { useGameContext } from "@src/context/GameContext/GameProvider";
+import { parseAlertType } from "@src/helpers/parseAlertType";
 
-import "./FinishGamePage.css";
+import "@src/pages/FinishGamePage/FinishGamePage.css";
 
 // TODO: Separar estilos de alert // Componente Alert
 

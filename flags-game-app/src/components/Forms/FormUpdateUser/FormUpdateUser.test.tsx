@@ -3,17 +3,18 @@ import user from "@testing-library/user-event";
 
 import { MemoryRouter } from "react-router-dom";
 
-import { FormUpdateUser } from "./FormUpdateUser";
+import { FormUpdateUser } from "@src/components/Forms/FormUpdateUser/FormUpdateUser";
 
-import { createServer } from "../../../../tests/msw/server";
+import { createServer } from "@tests/msw/server";
 import {
   ALERT_PROVIDER_STATIC,
   FLAGS_DATA_STATIC_TEST,
-} from "../../../../tests/jest.constants";
+} from "@tests/jest.constants";
 
-import { AlertContext } from "../../../context/AlertContext/AlertContext";
-import { GameProvider } from "../../../context/GameContext/GameProvider";
-import { FlagsProvider } from "../../../context/FlagsContext/FlagsProvider";
+import { AlertContext } from "@src/context/AlertContext/AlertContext";
+import { GameProvider } from "@src/context/GameContext/GameProvider";
+import { FlagsProvider } from "@src/context/FlagsContext/FlagsProvider";
+import { apiRouteFlags, apiRouteUsers } from "@src/api/apiRoute";
 
 type RenderComponent = {
   container: HTMLElement;
@@ -48,7 +49,7 @@ describe("FormUpdateUser.tsx", () => {
   describe("General Tests", () => {
     createServer([
       {
-        path: "/v1/flags/random/:quantity",
+        path: `${apiRouteFlags}/random/:quantity`,
         method: "get",
         res: () => {
           return {
@@ -102,7 +103,7 @@ describe("FormUpdateUser.tsx", () => {
 
     createServer([
       {
-        path: "/v1/flags/random/:quantity",
+        path: `${apiRouteFlags}/random/:quantity`,
         method: "get",
         res: () => {
           return {
@@ -111,8 +112,9 @@ describe("FormUpdateUser.tsx", () => {
         },
       },
       {
-        path: `/v1/users/addormodify`,
-        method: "put",
+        path: `${apiRouteUsers}/`,
+        method: "patch",
+        status: 200,
         res: () => {
           return {
             message: messageService,
@@ -171,7 +173,7 @@ describe("FormUpdateUser.tsx", () => {
 
     createServer([
       {
-        path: "/v1/flags/random/:quantity",
+        path: `${apiRouteFlags}/random/:quantity`,
         method: "get",
         res: () => {
           return {
@@ -180,8 +182,8 @@ describe("FormUpdateUser.tsx", () => {
         },
       },
       {
-        path: `/v1/users/addormodify`,
-        method: "put",
+        path: `${apiRouteUsers}/`,
+        method: "patch",
         status: 400,
         res: () => {
           return {

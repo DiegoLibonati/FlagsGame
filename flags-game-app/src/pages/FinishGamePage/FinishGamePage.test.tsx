@@ -3,17 +3,18 @@ import user from "@testing-library/user-event";
 
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 
-import { FinishGamePage } from "./FinishGamePage";
-
-import { createServer } from "../../../tests/msw/server";
+import { createServer } from "@tests/msw/server";
 import {
   FLAGS_DATA_STATIC_TEST,
   MODE_DATA_STATIC_TEST,
-} from "../../../tests/jest.constants";
+} from "@tests/jest.constants";
 
-import { FlagsProvider } from "../../context/FlagsContext/FlagsProvider";
-import { GameProvider } from "../../context/GameContext/GameProvider";
-import { AlertProvider } from "../../context/AlertContext/AlertProvider";
+import { FinishGamePage } from "@src/pages/FinishGamePage/FinishGamePage";
+
+import { FlagsProvider } from "@src/context/FlagsContext/FlagsProvider";
+import { GameProvider } from "@src/context/GameContext/GameProvider";
+import { AlertProvider } from "@src/context/AlertContext/AlertProvider";
+import { apiRouteFlags, apiRouteUsers } from "@src/api/apiRoute";
 
 type RenderComponent = {
   container: HTMLElement;
@@ -58,7 +59,7 @@ describe("FinishGamePage.tsx", () => {
   describe("General Tests", () => {
     createServer([
       {
-        path: `/v1/flags/random/:quantity`,
+        path: `${apiRouteFlags}/random/:quantity`,
         method: "get",
         res: () => {
           return {
@@ -89,7 +90,7 @@ describe("FinishGamePage.tsx", () => {
   describe("Register Form", () => {
     createServer([
       {
-        path: "/v1/flags/random/:quantity",
+        path: `${apiRouteFlags}/random/:quantity`,
         method: "get",
         res: () => {
           return {
@@ -142,7 +143,7 @@ describe("FinishGamePage.tsx", () => {
 
     createServer([
       {
-        path: "/v1/flags/random/:quantity",
+        path: `${apiRouteFlags}/random/:quantity`,
         method: "get",
         res: () => {
           return {
@@ -151,7 +152,7 @@ describe("FinishGamePage.tsx", () => {
         },
       },
       {
-        path: `/v1/users/addormodify`,
+        path: `${apiRouteUsers}/`,
         method: "post",
         status: 200,
         res: () => {
@@ -223,7 +224,7 @@ describe("FinishGamePage.tsx", () => {
 
     createServer([
       {
-        path: "/v1/flags/random/:quantity",
+        path: `${apiRouteFlags}/random/:quantity`,
         method: "get",
         res: () => {
           return {
@@ -232,7 +233,7 @@ describe("FinishGamePage.tsx", () => {
         },
       },
       {
-        path: `/v1/users/addormodify`,
+        path: `${apiRouteUsers}/`,
         method: "post",
         status: 400,
         res: () => {
@@ -302,7 +303,7 @@ describe("FinishGamePage.tsx", () => {
   describe("Update Form", () => {
     createServer([
       {
-        path: "/v1/flags/random/:quantity",
+        path: `${apiRouteFlags}/random/:quantity`,
         method: "get",
         res: () => {
           return {
@@ -355,7 +356,7 @@ describe("FinishGamePage.tsx", () => {
 
     createServer([
       {
-        path: "/v1/flags/random/:quantity",
+        path: `${apiRouteFlags}/random/:quantity`,
         method: "get",
         res: () => {
           return {
@@ -364,8 +365,8 @@ describe("FinishGamePage.tsx", () => {
         },
       },
       {
-        path: `/v1/users/addormodify`,
-        method: "put",
+        path: `${apiRouteUsers}/`,
+        method: "patch",
         status: 200,
         res: () => {
           return {
@@ -436,7 +437,7 @@ describe("FinishGamePage.tsx", () => {
 
     createServer([
       {
-        path: "/v1/flags/random/:quantity",
+        path: `${apiRouteFlags}/random/:quantity`,
         method: "get",
         res: () => {
           return {
@@ -445,8 +446,8 @@ describe("FinishGamePage.tsx", () => {
         },
       },
       {
-        path: `/v1/users/addormodify`,
-        method: "put",
+        path: `${apiRouteUsers}/`,
+        method: "patch",
         status: 400,
         res: () => {
           return {

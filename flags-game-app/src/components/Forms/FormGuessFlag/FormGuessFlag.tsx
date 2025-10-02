@@ -1,15 +1,13 @@
 import { useEffect, useRef } from "react";
 
-import { useForm } from "../../../hooks/useForm";
-import { useModeContext } from "../../../context/ModeContext/ModeProvider";
-import { useGameContext } from "../../../context/GameContext/GameProvider";
-import { rootCss } from "../../../constants/configCss";
+import { FormGuessFlagProps } from "@src/entities/props";
 
-import "./FormGuessFlag.css";
+import { useForm } from "@src/hooks/useForm";
+import { useModeContext } from "@src/context/ModeContext/ModeProvider";
+import { useGameContext } from "@src/context/GameContext/GameProvider";
+import { rootCss } from "@src/constants/configCss";
 
-interface FormGuessFlagProps {
-  secondsLeft: number;
-}
+import "@src/components/Forms/FormGuessFlag/FormGuessFlag.css";
 
 export const FormGuessFlag = ({
   secondsLeft,

@@ -1,23 +1,24 @@
 import { screen, render } from "@testing-library/react";
 import user from "@testing-library/user-event";
 
-import { FormGuessFlag } from "./FormGuessFlag";
-
-import { createServer } from "../../../../tests/msw/server";
+import { createServer } from "@tests/msw/server";
 import {
   FLAG_DATA_STATIC_TEST,
   FLAGS_DATA_STATIC_TEST,
   MODE_DATA_STATIC_TEST,
-} from "../../../../tests/jest.constants";
+} from "@tests/jest.constants";
 
-import { FlagsProvider } from "../../../context/FlagsContext/FlagsProvider";
-import { ModeProvider } from "../../../context/ModeContext/ModeProvider";
-import { GameProvider } from "../../../context/GameContext/GameProvider";
+import { FormGuessFlagProps } from "@src/entities/props";
+
+import { FormGuessFlag } from "@src/components/Forms/FormGuessFlag/FormGuessFlag";
+
+import { apiRouteFlags, apiRouteModes } from "@src/api/apiRoute";
+import { FlagsProvider } from "@src/context/FlagsContext/FlagsProvider";
+import { ModeProvider } from "@src/context/ModeContext/ModeProvider";
+import { GameProvider } from "@src/context/GameContext/GameProvider";
 
 type RenderComponent = {
-  props: {
-    secondsLeft: number;
-  };
+  props: FormGuessFlagProps;
   container: HTMLElement;
 };
 
@@ -46,7 +47,7 @@ describe("FormGuessFlag.tsx", () => {
   describe("General Tests.", () => {
     createServer([
       {
-        path: "/v1/flags/random/:quantity",
+        path: `${apiRouteFlags}/random/:quantity`,
         method: "get",
         res: () => {
           return {
@@ -55,7 +56,7 @@ describe("FormGuessFlag.tsx", () => {
         },
       },
       {
-        path: "/v1/modes/findmode/:mode",
+        path: `${apiRouteModes}/:idMode`,
         method: "get",
         res: () => {
           return {
@@ -92,7 +93,7 @@ describe("FormGuessFlag.tsx", () => {
   describe("Hit the flag name", () => {
     createServer([
       {
-        path: "/v1/flags/random/:quantity",
+        path: `${apiRouteFlags}/random/:quantity`,
         method: "get",
         res: () => {
           return {
@@ -101,7 +102,7 @@ describe("FormGuessFlag.tsx", () => {
         },
       },
       {
-        path: "/v1/modes/findmode/:mode",
+        path: `${apiRouteModes}/:idMode`,
         method: "get",
         res: () => {
           return {
@@ -138,7 +139,7 @@ describe("FormGuessFlag.tsx", () => {
   describe("NOT hit the flag name", () => {
     createServer([
       {
-        path: "/v1/flags/random/:quantity",
+        path: `${apiRouteFlags}/random/:quantity`,
         method: "get",
         res: () => {
           return {
@@ -147,7 +148,7 @@ describe("FormGuessFlag.tsx", () => {
         },
       },
       {
-        path: "/v1/modes/findmode/:mode",
+        path: `${apiRouteModes}/:idMode`,
         method: "get",
         res: () => {
           return {

@@ -1,4 +1,4 @@
-import { parseZero } from "./parseZero";
+import { parseZero } from "@src/helpers/parseZero";
 
 test("It must return the number entered by parameters as a string but without adding the zero because it is greater than or equal to 10.", () => {
   const number = 12;

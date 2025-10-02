@@ -1,13 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 
-import { parseZero } from "../helpers/parseZero";
+import { UseCountdown } from "@src/entities/hooks";
 
-type UseCountdown = {
-  timerText: string;
-  secondsLeft: number;
-  endTime: boolean;
-  onCountdownReset: () => void;
-};
+import { parseZero } from "@src/helpers/parseZero";
 
 export const useCountdown = (timeleft: number): UseCountdown => {
   const [secondsLeft, setSecondsLeft] = useState<number>(-1);

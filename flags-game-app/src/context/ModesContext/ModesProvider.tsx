@@ -1,17 +1,12 @@
 import { useCallback, useContext, useEffect, useState } from "react";
 
-import {
-  ModesContext as ModesContextT,
-  Mode,
-  ModesState,
-} from "../../entities/entities";
+import { Mode } from "@src/entities/entities";
+import { ModesContext as ModesContextT } from "@src/entities/contexts";
+import { ModesState } from "@src/entities/states";
+import { ModesProviderProps } from "@src/entities/props";
 
-import { ModesContext } from "./ModesContext";
-import { getModes } from "../../api/getModes";
-
-interface ModesProviderProps {
-  children: React.ReactNode;
-}
+import { ModesContext } from "@src/context/ModesContext/ModesContext";
+import { getModes } from "@src/api/getModes";
 
 export const ModesProvider = ({ children }: ModesProviderProps) => {
   // Modes

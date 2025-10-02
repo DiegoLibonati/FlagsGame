@@ -1,0 +1,48 @@
+services:
+  flags-app:
+    build:
+      context: ./flags-game-app
+      dockerfile: Dockerfile.production
+    restart: always
+    env_file:
+      - ./flags-game-app/.env
+    depends_on:
+      - flags-server
+    ports:
+      - "80:80"
+    networks:
+      - flags-net
+
+  flags-server:
+    build:
+      context: ./flags-server
+      dockerfile: Dockerfile.production
+    restart: always
+    env_file:
+      - ./flags-server/.env
+    depends_on:
+      - flags-db
+    ports:
+      - "5050:5050"
+    networks:
+      - flags-net
+
+  flags-db:
+    image: mongo:6
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: secret123
+      MONGO_INITDB_DATABASE: flags
+    volumes:
+      - db-data:/data/db
+    networks:
+      - flags-net
+
+volumes:
+  db-data:
+    driver: local
+
+networks:
+  flags-net:
+    driver: bridge

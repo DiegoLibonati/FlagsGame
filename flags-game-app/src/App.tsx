@@ -1,6 +1,6 @@
-import { FlagsGameRouter } from "./router/FlagsGameRouter";
+import { FlagsGameRouter } from "@src/router/FlagsGameRouter";
 
-import "./App.css";
+import "@src/App.css";
 
 function App(): JSX.Element {
   return <FlagsGameRouter></FlagsGameRouter>;

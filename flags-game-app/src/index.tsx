@@ -1,11 +1,11 @@
 import ReactDOM from "react-dom/client";
 
-import App from "./App";
+import App from "@src/App";
 
-import { UiProvider } from "./context/UiContext/UiProvider";
-import { AlertProvider } from "./context/AlertContext/AlertProvider";
+import { UiProvider } from "@src/context/UiContext/UiProvider";
+import { AlertProvider } from "@src/context/AlertContext/AlertProvider";
 
-import "./index.css";
+import "@src/index.css";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement

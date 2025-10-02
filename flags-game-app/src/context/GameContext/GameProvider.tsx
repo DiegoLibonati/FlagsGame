@@ -1,13 +1,11 @@
 import { useContext, useEffect, useState } from "react";
 
-import { Flag, GameContext as GameContextT } from "../../entities/entities";
+import { Flag } from "@src/entities/entities";
+import { GameContext as GameContextT } from "@src/entities/contexts";
+import { GameProviderProps } from "@src/entities/props";
 
-import { GameContext } from "./GameContext";
-import { useFlagsContext } from "../FlagsContext/FlagsProvider";
-
-interface GameProviderProps {
-  children: React.ReactNode;
-}
+import { GameContext } from "@src/context/GameContext/GameContext";
+import { useFlagsContext } from "@src/context/FlagsContext/FlagsProvider";
 
 export const GameProvider = ({ children }: GameProviderProps) => {
   // 3RD

@@ -1,12 +1,11 @@
 import { screen, render } from "@testing-library/react";
 
-import { Flag } from "./Flag";
+import { FlagProps } from "@src/entities/props";
+
+import { Flag } from "@src/components/Flag/Flag";
 
 type RenderComponent = {
-  props: {
-    image: string;
-    name: string;
-  };
+  props: FlagProps;
   container: HTMLElement;
 };
 

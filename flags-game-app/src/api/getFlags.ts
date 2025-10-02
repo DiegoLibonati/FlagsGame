@@ -1,8 +1,8 @@
-import { apiRouteFlags } from "./apiRoute";
+import { apiRouteFlags } from "@src/api/apiRoute";
 
 export const getFlags = (): Promise<Response> => {
   return fetch(`${apiRouteFlags}/`,{
-    method: "get",
+    method: "GET",
     headers: {
       "Content-Type": "application/json",
     },

@@ -2,16 +2,17 @@ import { screen, render, within } from "@testing-library/react";
 
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 
-import { MenuModePage } from "./MenuModePage";
-
-import { createServer } from "../../../tests/msw/server";
+import { createServer } from "@tests/msw/server";
 import {
   MODE_DATA_STATIC_TEST,
   USERS_TOP_STATIC_TEST,
-} from "../../../tests/jest.constants";
+} from "@tests/jest.constants";
 
-import { UsersProvider } from "../../context/UsersContext/UsersProvider";
-import { ModeProvider } from "../../context/ModeContext/ModeProvider";
+import { MenuModePage } from "@src/pages/MenuModePage/MenuModePage";
+
+import { UsersProvider } from "@src/context/UsersContext/UsersProvider";
+import { ModeProvider } from "@src/context/ModeContext/ModeProvider";
+import { apiRouteModes, apiRouteUsers } from "@src/api/apiRoute";
 
 type RenderComponent = {
   container: HTMLElement;
@@ -85,7 +86,7 @@ describe("MenuModePage.tsx", () => {
   describe("General Tests.", () => {
     createServer([
       {
-        path: `/v1/modes/mode/top/:mode`,
+        path: `${apiRouteModes}/:idMode/top`,
         method: "get",
         res: () => {
           return {
@@ -94,11 +95,20 @@ describe("MenuModePage.tsx", () => {
         },
       },
       {
-        path: `/v1/modes/findmode/:mode`,
+        path: `${apiRouteModes}/:idMode`,
         method: "get",
         res: () => {
           return {
             data: MODE_DATA_STATIC_TEST,
+          };
+        },
+      },
+      {
+        path: `${apiRouteUsers}/top_global`,
+        method: "get",
+        res: () => {
+          return {
+            data: USERS_TOP_STATIC_TEST,
           };
         },
       },

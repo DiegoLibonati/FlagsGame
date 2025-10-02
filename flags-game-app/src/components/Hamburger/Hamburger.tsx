@@ -1,9 +1,6 @@
-import "./Hamburger.css";
+import { HamburgerProps } from "@src/entities/props";
 
-interface HamburgerProps {
-  navbar: boolean;
-  manageNavbar: () => void;
-}
+import "@src/components/Hamburger/Hamburger.css";
 
 export const Hamburger = ({
   navbar,

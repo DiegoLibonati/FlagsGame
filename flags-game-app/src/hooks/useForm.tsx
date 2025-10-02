@@ -1,10 +1,6 @@
 import { useState } from "react";
 
-type UseForm<T> = {
-  formState: T;
-  onInputChange: React.ChangeEventHandler<HTMLInputElement>;
-  onResetForm: () => void;
-};
+import { UseForm } from "@src/entities/hooks";
 
 export const useForm = <T,>(initialForm: T): UseForm<T> => {
   const [formState, setformState] = useState(initialForm);

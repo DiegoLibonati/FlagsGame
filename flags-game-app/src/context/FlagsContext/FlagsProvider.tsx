@@ -1,17 +1,12 @@
 import { useCallback, useContext, useEffect, useState } from "react";
 
-import {
-  Flag,
-  FlagsContext as FlagsContextT,
-  FlagsState,
-} from "../../entities/entities";
+import { Flag } from "@src/entities/entities";
+import { FlagsContext as FlagsContextT } from "@src/entities/contexts";
+import { FlagsState } from "@src/entities/states";
+import { FlagsProviderProps } from "@src/entities/props";
 
-import { FlagsContext } from "./FlagsContext";
-import { getRandomFlags } from "../../api/getRandomFlags";
-
-interface FlagsProviderProps {
-  children: React.ReactNode;
-}
+import { FlagsContext } from "@src/context/FlagsContext/FlagsContext";
+import { getRandomFlags } from "@src/api/getRandomFlags";
 
 export const FlagsProvider = ({ children }: FlagsProviderProps) => {
   // Flags

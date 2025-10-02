@@ -1,17 +1,17 @@
 import { Route, Routes } from "react-router-dom";
 
-import { HomePage } from "../../../pages/HomePage/HomePage";
-import { MenuPage } from "../../../pages/MenuPage/MenuPage";
-import { MenuModePage } from "../../../pages/MenuModePage/MenuModePage";
-import { GamePage } from "../../../pages/GamePage/GamePage";
-import { StartGamePage } from "../../../pages/StartGamePage/StartGamePage";
-import { FinishGamePage } from "../../../pages/FinishGamePage/FinishGamePage";
+import { HomePage } from "@src/pages/HomePage/HomePage";
+import { MenuPage } from "@src/pages/MenuPage/MenuPage";
+import { MenuModePage } from "@src/pages/MenuModePage/MenuModePage";
+import { GamePage } from "@src/pages/GamePage/GamePage";
+import { StartGamePage } from "@src/pages/StartGamePage/StartGamePage";
+import { FinishGamePage } from "@src/pages/FinishGamePage/FinishGamePage";
 
-import { UsersProvider } from "../../../context/UsersContext/UsersProvider";
-import { ModesProvider } from "../../../context/ModesContext/ModesProvider";
-import { ModeProvider } from "../../../context/ModeContext/ModeProvider";
-import { FlagsProvider } from "../../../context/FlagsContext/FlagsProvider";
-import { GameProvider } from "../../../context/GameContext/GameProvider";
+import { UsersProvider } from "@src/context/UsersContext/UsersProvider";
+import { ModesProvider } from "@src/context/ModesContext/ModesProvider";
+import { ModeProvider } from "@src/context/ModeContext/ModeProvider";
+import { FlagsProvider } from "@src/context/FlagsContext/FlagsProvider";
+import { GameProvider } from "@src/context/GameContext/GameProvider";
 
 export const PublicRoutes = (): JSX.Element => {
   return (
@@ -35,7 +35,7 @@ export const PublicRoutes = (): JSX.Element => {
       ></Route>
       
       <Route
-        path="/menu/:mode"
+        path="/menu/:idMode"
         element={
           <ModeProvider>
             <UsersProvider>
@@ -46,7 +46,7 @@ export const PublicRoutes = (): JSX.Element => {
       ></Route>
 
       <Route
-        path="/menu/:mode/*"
+        path="/menu/:idMode/*"
         element={
           <FlagsProvider>
             <ModeProvider>
@@ -62,7 +62,7 @@ export const PublicRoutes = (): JSX.Element => {
       ></Route>
 
       <Route
-        path="/menu/:mode/start"
+        path="/menu/:idMode/start"
         element={<StartGamePage></StartGamePage>}
       ></Route>
     </Routes>

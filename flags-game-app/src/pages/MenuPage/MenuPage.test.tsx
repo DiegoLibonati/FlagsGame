@@ -2,12 +2,16 @@ import { screen, render } from "@testing-library/react";
 
 import { MemoryRouter } from "react-router-dom";
 
-import { MenuPage } from "./MenuPage";
+import { createServer } from "@tests/msw/server";
+import {
+  MODES_DATA_STATIC_TEST,
+  USERS_TOP_STATIC_TEST,
+} from "@tests/jest.constants";
 
-import { createServer } from "../../../tests/msw/server";
-import { MODES_DATA_STATIC_TEST } from "../../../tests/jest.constants";
+import { MenuPage } from "@src/pages/MenuPage/MenuPage";
 
-import { ModesProvider } from "../../context/ModesContext/ModesProvider";
+import { ModesProvider } from "@src/context/ModesContext/ModesProvider";
+import { apiRouteModes, apiRouteUsers } from "@src/api/apiRoute";
 
 type RenderComponent = {
   container: HTMLElement;
@@ -59,11 +63,20 @@ describe("MenuPage.tsx", () => {
   describe("General Tests.", () => {
     createServer([
       {
-        path: `/v1/modes`,
+        path: `${apiRouteModes}/`,
         method: "get",
         res: () => {
           return {
             data: MODES_DATA_STATIC_TEST,
+          };
+        },
+      },
+      {
+        path: `${apiRouteUsers}/top_global`,
+        method: "get",
+        res: () => {
+          return {
+            data: USERS_TOP_STATIC_TEST,
           };
         },
       },

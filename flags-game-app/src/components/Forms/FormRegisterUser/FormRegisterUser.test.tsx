@@ -3,17 +3,18 @@ import user from "@testing-library/user-event";
 
 import { MemoryRouter } from "react-router-dom";
 
-import { FormRegisterUser } from "./FormRegisterUser";
-
-import { createServer } from "../../../../tests/msw/server";
+import { createServer } from "@tests/msw/server";
 import {
   ALERT_PROVIDER_STATIC,
   FLAGS_DATA_STATIC_TEST,
-} from "../../../../tests/jest.constants";
+} from "@tests/jest.constants";
 
-import { AlertContext } from "../../../context/AlertContext/AlertContext";
-import { FlagsProvider } from "../../../context/FlagsContext/FlagsProvider";
-import { GameProvider } from "../../../context/GameContext/GameProvider";
+import { FormRegisterUser } from "@src/components/Forms/FormRegisterUser/FormRegisterUser";
+
+import { AlertContext } from "@src/context/AlertContext/AlertContext";
+import { FlagsProvider } from "@src/context/FlagsContext/FlagsProvider";
+import { GameProvider } from "@src/context/GameContext/GameProvider";
+import { apiRouteFlags, apiRouteUsers } from "@src/api/apiRoute";
 
 type RenderComponent = {
   container: HTMLElement;
@@ -48,7 +49,7 @@ describe("FormRegisterUser.tsx", () => {
   describe("General Tests", () => {
     createServer([
       {
-        path: "/v1/flags/random/:quantity",
+        path: `${apiRouteFlags}/random/:quantity`,
         method: "get",
         res: () => {
           return {
@@ -102,7 +103,7 @@ describe("FormRegisterUser.tsx", () => {
 
     createServer([
       {
-        path: "/v1/flags/random/:quantity",
+        path: `${apiRouteFlags}/random/:quantity`,
         method: "get",
         res: () => {
           return {
@@ -111,7 +112,7 @@ describe("FormRegisterUser.tsx", () => {
         },
       },
       {
-        path: `/v1/users/addormodify`,
+        path: `${apiRouteUsers}/`,
         method: "post",
         status: 200,
         res: () => {
@@ -172,7 +173,7 @@ describe("FormRegisterUser.tsx", () => {
 
     createServer([
       {
-        path: "/v1/flags/random/:quantity",
+        path: `${apiRouteFlags}/random/:quantity`,
         method: "get",
         res: () => {
           return {
@@ -181,7 +182,7 @@ describe("FormRegisterUser.tsx", () => {
         },
       },
       {
-        path: `/v1/users/addormodify`,
+        path: `${apiRouteUsers}/`,
         method: "post",
         status: 400,
         res: () => {

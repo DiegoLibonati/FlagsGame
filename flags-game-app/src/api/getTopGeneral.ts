@@ -1,8 +1,8 @@
-import { apiRouteUsers } from "./apiRoute";
+import { apiRouteUsers } from "@src/api/apiRoute";
 
 export const getTopGeneral = (): Promise<Response> => {
-  return fetch(`${apiRouteUsers}/top/general`, {
-    method: "get",
+  return fetch(`${apiRouteUsers}/top_global`, {
+    method: "GET",
     headers: {
       "Content-Type": "application/json",
     },

@@ -1,22 +1,17 @@
 import { useCallback, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-import {
-  ModeContext as ModeContextT,
-  Mode,
-  ModeState,
-} from "../../entities/entities";
+import { Mode } from "@src/entities/entities";
+import { ModeContext as ModeContextT } from "@src/entities/contexts";
+import { ModeState } from "@src/entities/states";
+import { ModeProviderProps } from "@src/entities/props";
 
-import { ModeContext } from "./ModeContext";
-import { findMode } from "../../api/findMode";
-
-interface ModeProviderProps {
-  children: React.ReactNode;
-}
+import { ModeContext } from "@src/context/ModeContext/ModeContext";
+import { getMode } from "@src/api/getMode";
 
 export const ModeProvider = ({ children }: ModeProviderProps) => {
   // 3RD
-  const { mode: modeName } = useParams();
+  const { idMode } = useParams();
 
   // mode
   const [mode, setMode] = useState<ModeState>({
@@ -66,7 +61,7 @@ export const ModeProvider = ({ children }: ModeProviderProps) => {
   const fetchMode = useCallback(async () => {
     try {
       handleStartFetchMode();
-      const response = await findMode(modeName!);
+      const response = await getMode(idMode!);
       const data = await response.json();
       handleSetMode(data.data);
     } catch (error) {
