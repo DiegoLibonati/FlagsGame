@@ -140,20 +140,16 @@ AUTHOR: Diego Libonati
 
 1. `TZ`: Refers to the timezone setting for the container.
 2. `VITE_API_URL`: Refers to the base URL of the backend API the frontend consumes.
-3. `CHOKIDAR_USEPOLLING`: Refers to enabling polling mode for Chokidar (file watcher) to ensure hot reload works properly in Docker.
-4. `WATCHPACK_POLLING`: Refers to enabling polling mode for Webpack’s watcher, useful in Docker environments for reliable file change detection.
-5. `MONGO_URI`: Refers to the connection URI for the MongoDB database, including user, password, host, port, database name, and auth source.
-6. `HOST`: Refers to the network interface where the backend API listens (e.g., 0.0.0.0 to allow external connections).
-7. `PORT`: Refers to the port on which the backend API is exposed.
-8. `DEBUG_MODE`: Refers to enabling or disabling debug mode for backend lo
+3. `MONGO_URI`: Refers to the connection URI for the MongoDB database, including user, password, host, port, database name, and auth source.
+4. `HOST`: Refers to the network interface where the backend API listens (e.g., 0.0.0.0 to allow external connections).
+5. `PORT`: Refers to the port on which the backend API is exposed.
+6. `DEBUG_MODE`: Refers to enabling or disabling debug mode for backend lo
 
 ```ts
 # Frontend Envs
 TZ=America/Argentina/Buenos_Aires
 
 VITE_API_URL=http://host.docker.internal:5050
-CHOKIDAR_USEPOLLING=true
-WATCHPACK_POLLING=true
 
 # Backend Envs
 TZ=America/Argentina/Buenos_Aires
