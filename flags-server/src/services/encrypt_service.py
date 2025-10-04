@@ -1,7 +1,7 @@
 from werkzeug.security import check_password_hash, generate_password_hash
 
 
-class Encrypt:
+class EncryptService:
     def __init__(self, password: str) -> None:
         self.__password = password
 

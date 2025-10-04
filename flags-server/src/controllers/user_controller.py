@@ -21,9 +21,9 @@ from src.constants.messages import (
     MESSAGE_SUCCESS_UPDATE_USER,
 )
 from src.models.user_model import UserModel
+from src.services.encrypt_service import EncryptService
 from src.services.mode_service import ModeService
 from src.services.user_service import UserService
-from src.utils.encrypt import Encrypt
 from src.utils.error_handler import handle_exceptions
 from src.utils.exceptions import AuthenticationAPIError, NotFoundAPIError
 
@@ -72,7 +72,7 @@ def add_user() -> Response:
     user = UserModel(
         **{
             "username": username,
-            "password": Encrypt(password).password_hashed,
+            "password": EncryptService(password).password_hashed,
             "total_score": score_actual,
             "scores": scores,
         }
@@ -112,7 +112,7 @@ def modify_user() -> Response:
     if not user:
         raise NotFoundAPIError(code=CODE_NOT_FOUND_USER, message=MESSAGE_NOT_FOUND_USER)
 
-    if not Encrypt(password=password).valid_password(pwhash=user["password"]):
+    if not EncryptService(password=password).valid_password(pwhash=user["password"]):
         raise AuthenticationAPIError(
             code=CODE_ERROR_AUTHENTICATION, message=MESSAGE_ERROR_AUTHENTICATION
         )
