@@ -20,7 +20,7 @@ from src.utils.exceptions import ValidationAPIError
 
 @pytest.fixture(scope="session")
 def flask_app(mongo_test_db: None) -> Flask:
-    app = create_app()
+    app = create_app("testing")
     return app
 
 

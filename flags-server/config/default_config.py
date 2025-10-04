@@ -1,7 +1,7 @@
 import os
 
 
-class Config:
+class DefaultConfig:
     # General
     TZ = os.getenv("TZ", "America/Argentina/Buenos_Aires")
 
@@ -12,4 +12,7 @@ class Config:
     # Flask
     HOST = os.getenv("HOST", "0.0.0.0")
     PORT = os.getenv("PORT", 5000)
-    DEBUG_MODE = os.getenv("DEBUG_MODE", False)
+
+    # Flask general
+    DEBUG = False
+    TESTING = False

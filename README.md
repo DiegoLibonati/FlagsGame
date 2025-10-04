@@ -143,7 +143,6 @@ AUTHOR: Diego Libonati
 3. `MONGO_URI`: Refers to the connection URI for the MongoDB database, including user, password, host, port, database name, and auth source.
 4. `HOST`: Refers to the network interface where the backend API listens (e.g., 0.0.0.0 to allow external connections).
 5. `PORT`: Refers to the port on which the backend API is exposed.
-6. `DEBUG_MODE`: Refers to enabling or disabling debug mode for backend lo
 
 ```ts
 # Frontend Envs
@@ -158,7 +157,6 @@ MONGO_URI=mongodb://admin:secret123@bookstore-db:27017/bookstore?authSource=admi
 
 HOST=0.0.0.0
 PORT=5050
-DEBUG_MODE=true
 ```
 
 ### **Flags Endpoints API**
