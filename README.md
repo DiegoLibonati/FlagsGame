@@ -17,7 +17,7 @@ NOTE: You have to be standing in the folder containing the: `dev.docker-compose.
 
 ### Pre-Commit for Development (Python)
 
-NOTE: Install **pre-commit** inside: `bookstore-server` folder.
+NOTE: Install **pre-commit** inside: `flags-server` folder.
 
 1. Once you're inside the virtual environment, let's install the hooks specified in the pre-commit. Execute: `pre-commit install`
 2. Now every time you try to commit, the pre-commit lint will run. If you want to do it manually, you can run the command: `pre-commit run --all-files`
