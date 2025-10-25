@@ -1,10 +1,12 @@
 import { useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { addUser } from "@src/api/addUser";
 import { useForm } from "@src/hooks/useForm";
-import { useGameContext } from "@src/context/GameContext/GameProvider";
-import { useAlertContext } from "@src/context/AlertContext/AlertProvider";
+
+import { useGameContext } from "@src/hooks/useGameContext";
+import { useAlertContext } from "@src/hooks/useAlertContext";
+
+import { addUser } from "@src/api/post/addUser";
 
 import "@src/components/Forms/FormRegisterUser/FormRegisterUser.css";
 
@@ -28,33 +30,33 @@ export const FormRegisterUser = (): JSX.Element => {
   const onSendRequest = async (
     e: React.FormEvent<HTMLFormElement>
   ): Promise<void> => {
-    e.preventDefault();
+    try {
+      e.preventDefault();
 
-    const body = {
-      username: formState.username,
-      password: formState.password,
-      score: score,
-      mode_id: idMode!,
-    };
+      const body = {
+        username: formState.username,
+        password: formState.password,
+        score: score,
+        mode_id: idMode!,
+      };
 
-    const result = await addUser(body);
+      const result = await addUser(body);
 
-    const messageBody = await result.json();
+      const { message } = result;
 
-    const { message } = messageBody;
-
-    if (!result.ok) {
-      handleSetAlert({ type: "alert-auth-error", message: message });
+      handleSetAlert({ type: "alert-auth-success", message: message });
       onResetForm();
-      return;
+
+      redirectTimeoutRef.current = setTimeout(() => {
+        navigate("/");
+      }, 2000);
+    } catch (e) {
+      handleSetAlert({
+        type: "alert-auth-error",
+        message: e,
+      });
+      onResetForm();
     }
-
-    handleSetAlert({ type: "alert-auth-success", message: message });
-    onResetForm();
-
-    redirectTimeoutRef.current = setTimeout(() => {
-      navigate("/");
-    }, 2000);
   };
 
   return (

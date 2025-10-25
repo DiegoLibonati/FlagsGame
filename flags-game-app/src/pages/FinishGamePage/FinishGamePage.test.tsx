@@ -3,18 +3,15 @@ import user from "@testing-library/user-event";
 
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 
-import { createServer } from "@tests/msw/server";
-import {
-  FLAGS_DATA_STATIC_TEST,
-  MODE_DATA_STATIC_TEST,
-} from "@tests/jest.constants";
-
 import { FinishGamePage } from "@src/pages/FinishGamePage/FinishGamePage";
+import { AlertProvider } from "@src/contexts/AlertContext/AlertContext";
+import { FlagsProvider } from "@src/contexts/FlagsContext/FlagsContext";
+import { GameProvider } from "@src/contexts/GameContext/GameContext";
 
-import { FlagsProvider } from "@src/context/FlagsContext/FlagsProvider";
-import { GameProvider } from "@src/context/GameContext/GameProvider";
-import { AlertProvider } from "@src/context/AlertContext/AlertProvider";
-import { apiRouteFlags, apiRouteUsers } from "@src/api/apiRoute";
+import { usersApi } from "@src/api/users";
+
+import { createServer } from "@tests/msw/server";
+import { MODE_DATA_STATIC_TEST } from "@tests/jest.constants";
 
 type RenderComponent = {
   container: HTMLElement;
@@ -57,18 +54,6 @@ const asyncRenderComponent = async (): Promise<RenderComponent> => {
 
 describe("FinishGamePage.tsx", () => {
   describe("General Tests", () => {
-    createServer([
-      {
-        path: `${apiRouteFlags}/random/:quantity`,
-        method: "get",
-        res: () => {
-          return {
-            data: FLAGS_DATA_STATIC_TEST,
-          };
-        },
-      },
-    ]);
-
     test("It must render the main of game page.", async () => {
       await asyncRenderComponent();
 
@@ -80,52 +65,38 @@ describe("FinishGamePage.tsx", () => {
     test("It must render the alert without content and with the alert class only.", async () => {
       const { container } = await asyncRenderComponent();
 
-      // eslint-disable-next-line
-      const alertHeading = container.querySelector(".alert");
+      const alertHeading =
+        container.querySelector<HTMLHeadingElement>(".alert");
 
       expect(alertHeading).toBeInTheDocument();
     });
   });
 
   describe("Register Form", () => {
-    createServer([
-      {
-        path: `${apiRouteFlags}/random/:quantity`,
-        method: "get",
-        res: () => {
-          return {
-            data: FLAGS_DATA_STATIC_TEST,
-          };
-        },
-      },
-    ]);
-
     test("It must render the register user form with its respective title.", async () => {
       const { container } = await asyncRenderComponent();
 
-      // eslint-disable-next-line
-      const articleRegisterUser = container.querySelector(
+      const articleRegisterUser = container.querySelector<HTMLElement>(
         ".finish-game-page__wrapper-register"
-      ) as HTMLElement;
+      );
 
-      const heading = within(articleRegisterUser).getByRole("heading", {
+      const heading = within(articleRegisterUser!).getByRole("heading", {
         name: /if you dont have a user register/i,
       });
-      // eslint-disable-next-line
-      const formRegister = container.querySelector(
+      const formRegister = container.querySelector<HTMLFormElement>(
         ".form-register-user"
-      ) as HTMLFormElement;
+      );
 
-      const scoreHeading = within(formRegister).getByRole("heading", {
+      const scoreHeading = within(formRegister!).getByRole("heading", {
         name: /your score was: 0 pts/i,
       });
-      const inputUsername = within(formRegister).getByPlaceholderText(
+      const inputUsername = within(formRegister!).getByPlaceholderText(
         /your username goes here/i
       );
-      const inputPassword = within(formRegister).getByPlaceholderText(
+      const inputPassword = within(formRegister!).getByPlaceholderText(
         /your password goes here/i
       );
-      const buttonSubmit = within(formRegister).getByRole("button", {
+      const buttonSubmit = within(formRegister!).getByRole("button", {
         name: /send and register/i,
       });
 
@@ -143,16 +114,7 @@ describe("FinishGamePage.tsx", () => {
 
     createServer([
       {
-        path: `${apiRouteFlags}/random/:quantity`,
-        method: "get",
-        res: () => {
-          return {
-            data: FLAGS_DATA_STATIC_TEST,
-          };
-        },
-      },
-      {
-        path: `${apiRouteUsers}/`,
+        path: `${usersApi}/`,
         method: "post",
         status: 200,
         res: () => {
@@ -169,29 +131,27 @@ describe("FinishGamePage.tsx", () => {
 
       const { container } = await asyncRenderComponent();
 
-      // eslint-disable-next-line
-      const articleRegisterUser = container.querySelector(
+      const articleRegisterUser = container.querySelector<HTMLElement>(
         ".finish-game-page__wrapper-register"
-      ) as HTMLElement;
+      );
 
-      const heading = within(articleRegisterUser).getByRole("heading", {
+      const heading = within(articleRegisterUser!).getByRole("heading", {
         name: /if you dont have a user register/i,
       });
-      // eslint-disable-next-line
-      const formRegister = container.querySelector(
+      const formRegister = container.querySelector<HTMLFormElement>(
         ".form-register-user"
-      ) as HTMLFormElement;
+      );
 
-      const scoreHeading = within(formRegister).getByRole("heading", {
+      const scoreHeading = within(formRegister!).getByRole("heading", {
         name: /your score was: 0 pts/i,
       });
-      const inputUsername = within(formRegister).getByPlaceholderText(
+      const inputUsername = within(formRegister!).getByPlaceholderText(
         /your username goes here/i
       );
-      const inputPassword = within(formRegister).getByPlaceholderText(
+      const inputPassword = within(formRegister!).getByPlaceholderText(
         /your password goes here/i
       );
-      const buttonSubmit = within(formRegister).getByRole("button", {
+      const buttonSubmit = within(formRegister!).getByRole("button", {
         name: /send and register/i,
       });
 
@@ -210,8 +170,8 @@ describe("FinishGamePage.tsx", () => {
 
       await user.click(buttonSubmit);
 
-      // eslint-disable-next-line
-      const alertHeading = container.querySelector(".alert");
+      const alertHeading =
+        container.querySelector<HTMLHeadingElement>(".alert");
 
       expect(alertHeading).toBeInTheDocument();
       expect(alertHeading).toHaveClass("alert alert--success");
@@ -224,16 +184,7 @@ describe("FinishGamePage.tsx", () => {
 
     createServer([
       {
-        path: `${apiRouteFlags}/random/:quantity`,
-        method: "get",
-        res: () => {
-          return {
-            data: FLAGS_DATA_STATIC_TEST,
-          };
-        },
-      },
-      {
-        path: `${apiRouteUsers}/`,
+        path: `${usersApi}/`,
         method: "post",
         status: 400,
         res: () => {
@@ -250,29 +201,27 @@ describe("FinishGamePage.tsx", () => {
 
       const { container } = await asyncRenderComponent();
 
-      // eslint-disable-next-line
-      const articleRegisterUser = container.querySelector(
+      const articleRegisterUser = container.querySelector<HTMLElement>(
         ".finish-game-page__wrapper-register"
-      ) as HTMLElement;
+      );
 
-      const heading = within(articleRegisterUser).getByRole("heading", {
+      const heading = within(articleRegisterUser!).getByRole("heading", {
         name: /if you dont have a user register/i,
       });
-      // eslint-disable-next-line
-      const formRegister = container.querySelector(
+      const formRegister = container.querySelector<HTMLFormElement>(
         ".form-register-user"
-      ) as HTMLFormElement;
+      );
 
-      const scoreHeading = within(formRegister).getByRole("heading", {
+      const scoreHeading = within(formRegister!).getByRole("heading", {
         name: /your score was: 0 pts/i,
       });
-      const inputUsername = within(formRegister).getByPlaceholderText(
+      const inputUsername = within(formRegister!).getByPlaceholderText(
         /your username goes here/i
       );
-      const inputPassword = within(formRegister).getByPlaceholderText(
+      const inputPassword = within(formRegister!).getByPlaceholderText(
         /your password goes here/i
       );
-      const buttonSubmit = within(formRegister).getByRole("button", {
+      const buttonSubmit = within(formRegister!).getByRole("button", {
         name: /send and register/i,
       });
 
@@ -291,8 +240,8 @@ describe("FinishGamePage.tsx", () => {
 
       await user.click(buttonSubmit);
 
-      // eslint-disable-next-line
-      const alertHeading = container.querySelector(".alert");
+      const alertHeading =
+        container.querySelector<HTMLHeadingElement>(".alert");
 
       expect(alertHeading).toBeInTheDocument();
       expect(alertHeading).toHaveClass("alert alert--error");
@@ -301,44 +250,29 @@ describe("FinishGamePage.tsx", () => {
   });
 
   describe("Update Form", () => {
-    createServer([
-      {
-        path: `${apiRouteFlags}/random/:quantity`,
-        method: "get",
-        res: () => {
-          return {
-            data: FLAGS_DATA_STATIC_TEST,
-          };
-        },
-      },
-    ]);
-
     test("It must render the update user form with its respective title.", async () => {
       const { container } = await asyncRenderComponent();
 
-      // eslint-disable-next-line
-      const articleUpdateUser = container.querySelector(
+      const articleUpdateUser = container.querySelector<HTMLElement>(
         ".finish-game-page__wrapper-update"
-      ) as HTMLElement;
+      );
 
-      const heading = within(articleUpdateUser).getByRole("heading", {
+      const heading = within(articleUpdateUser!).getByRole("heading", {
         name: /if you have a user register/i,
       });
-      // eslint-disable-next-line
-      const formUpdate = container.querySelector(
-        ".form-update-user"
-      ) as HTMLFormElement;
+      const formUpdate =
+        container.querySelector<HTMLFormElement>(".form-update-user");
 
-      const scoreHeading = within(formUpdate).getByRole("heading", {
+      const scoreHeading = within(formUpdate!).getByRole("heading", {
         name: /your score was: 0 pts/i,
       });
-      const inputUsername = within(formUpdate).getByPlaceholderText(
+      const inputUsername = within(formUpdate!).getByPlaceholderText(
         /your username goes here/i
       );
-      const inputPassword = within(formUpdate).getByPlaceholderText(
+      const inputPassword = within(formUpdate!).getByPlaceholderText(
         /your password goes here/i
       );
-      const buttonSubmit = within(formUpdate).getByRole("button", {
+      const buttonSubmit = within(formUpdate!).getByRole("button", {
         name: /send and replace/i,
       });
 
@@ -356,16 +290,7 @@ describe("FinishGamePage.tsx", () => {
 
     createServer([
       {
-        path: `${apiRouteFlags}/random/:quantity`,
-        method: "get",
-        res: () => {
-          return {
-            data: FLAGS_DATA_STATIC_TEST,
-          };
-        },
-      },
-      {
-        path: `${apiRouteUsers}/`,
+        path: `${usersApi}/`,
         method: "patch",
         status: 200,
         res: () => {
@@ -382,29 +307,26 @@ describe("FinishGamePage.tsx", () => {
 
       const { container } = await asyncRenderComponent();
 
-      // eslint-disable-next-line
-      const articleUpdateUser = container.querySelector(
+      const articleUpdateUser = container.querySelector<HTMLElement>(
         ".finish-game-page__wrapper-update"
-      ) as HTMLElement;
+      );
 
-      const heading = within(articleUpdateUser).getByRole("heading", {
+      const heading = within(articleUpdateUser!).getByRole("heading", {
         name: /if you have a user register/i,
       });
-      // eslint-disable-next-line
-      const formUpdate = container.querySelector(
-        ".form-update-user"
-      ) as HTMLFormElement;
+      const formUpdate =
+        container.querySelector<HTMLFormElement>(".form-update-user");
 
-      const scoreHeading = within(formUpdate).getByRole("heading", {
+      const scoreHeading = within(formUpdate!).getByRole("heading", {
         name: /your score was: 0 pts/i,
       });
-      const inputUsername = within(formUpdate).getByPlaceholderText(
+      const inputUsername = within(formUpdate!).getByPlaceholderText(
         /your username goes here/i
       );
-      const inputPassword = within(formUpdate).getByPlaceholderText(
+      const inputPassword = within(formUpdate!).getByPlaceholderText(
         /your password goes here/i
       );
-      const buttonSubmit = within(formUpdate).getByRole("button", {
+      const buttonSubmit = within(formUpdate!).getByRole("button", {
         name: /send and replace/i,
       });
 
@@ -423,8 +345,8 @@ describe("FinishGamePage.tsx", () => {
 
       await user.click(buttonSubmit);
 
-      // eslint-disable-next-line
-      const alertHeading = container.querySelector(".alert");
+      const alertHeading =
+        container.querySelector<HTMLHeadingElement>(".alert");
 
       expect(alertHeading).toBeInTheDocument();
       expect(alertHeading).toHaveClass("alert alert--success");
@@ -437,16 +359,7 @@ describe("FinishGamePage.tsx", () => {
 
     createServer([
       {
-        path: `${apiRouteFlags}/random/:quantity`,
-        method: "get",
-        res: () => {
-          return {
-            data: FLAGS_DATA_STATIC_TEST,
-          };
-        },
-      },
-      {
-        path: `${apiRouteUsers}/`,
+        path: `${usersApi}/`,
         method: "patch",
         status: 400,
         res: () => {
@@ -463,29 +376,26 @@ describe("FinishGamePage.tsx", () => {
 
       const { container } = await asyncRenderComponent();
 
-      // eslint-disable-next-line
-      const articleUpdateUser = container.querySelector(
+      const articleUpdateUser = container.querySelector<HTMLElement>(
         ".finish-game-page__wrapper-update"
-      ) as HTMLElement;
+      );
 
-      const heading = within(articleUpdateUser).getByRole("heading", {
+      const heading = within(articleUpdateUser!).getByRole("heading", {
         name: /if you have a user register/i,
       });
-      // eslint-disable-next-line
-      const updateForm = container.querySelector(
-        ".form-update-user"
-      ) as HTMLFormElement;
+      const updateForm =
+        container.querySelector<HTMLFormElement>(".form-update-user");
 
-      const scoreHeading = within(updateForm).getByRole("heading", {
+      const scoreHeading = within(updateForm!).getByRole("heading", {
         name: /your score was: 0 pts/i,
       });
-      const inputUsername = within(updateForm).getByPlaceholderText(
+      const inputUsername = within(updateForm!).getByPlaceholderText(
         /your username goes here/i
       );
-      const inputPassword = within(updateForm).getByPlaceholderText(
+      const inputPassword = within(updateForm!).getByPlaceholderText(
         /your password goes here/i
       );
-      const buttonSubmit = within(updateForm).getByRole("button", {
+      const buttonSubmit = within(updateForm!).getByRole("button", {
         name: /send and replace/i,
       });
 
@@ -504,8 +414,8 @@ describe("FinishGamePage.tsx", () => {
 
       await user.click(buttonSubmit);
 
-      // eslint-disable-next-line
-      const alertHeading = container.querySelector(".alert");
+      const alertHeading =
+        container.querySelector<HTMLHeadingElement>(".alert");
 
       expect(alertHeading).toBeInTheDocument();
       expect(alertHeading).toHaveClass("alert alert--error");

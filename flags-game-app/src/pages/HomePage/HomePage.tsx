@@ -1,14 +1,44 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 import { ListStats } from "@src/components/ListStats/ListStats";
 import { Loader } from "@src/components/Loader/Loader";
 
-import { useUsersContext } from "@src/context/UsersContext/UsersProvider";
+import { useUsersContext } from "@src/hooks/useUsersContext";
+
+import { getTopGeneral } from "@src/api/get/getTopGeneral";
 
 import "@src/pages/HomePage/HomePage.css";
 
 export const HomePage = (): JSX.Element => {
-  const { topUsers } = useUsersContext();
+  const {
+    topUsers,
+    handleStartFetchUsers,
+    handleSetTopUsers,
+    handleEndFetchUsers,
+    handleSetErrorUsers,
+    handleClearTopUsers,
+  } = useUsersContext();
+
+  const handleGetGeneralTopUsers = async () => {
+    try {
+      handleStartFetchUsers();
+      const response = await getTopGeneral();
+      handleSetTopUsers(response.data);
+    } catch (error) {
+      handleSetErrorUsers(String(error));
+    } finally {
+      handleEndFetchUsers();
+    }
+  };
+
+  useEffect(() => {
+    handleGetGeneralTopUsers();
+
+    return () => {
+      handleClearTopUsers();
+    };
+  }, []);
 
   return (
     <main className="home-main">

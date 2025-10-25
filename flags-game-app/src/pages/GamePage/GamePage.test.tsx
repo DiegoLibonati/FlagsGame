@@ -3,20 +3,23 @@ import user from "@testing-library/user-event";
 
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 
+import { GamePage } from "@src/pages/GamePage/GamePage";
+
+import { parseZero } from "@src/helpers/parseZero";
+
+import { ModeProvider } from "@src/contexts/ModeContext/ModeContext";
+import { FlagsProvider } from "@src/contexts/FlagsContext/FlagsContext";
+import { GameProvider } from "@src/contexts/GameContext/GameContext";
+
+import { flagsApi } from "@src/api/flags";
+import { modesApi } from "@src/api/modes";
+
 import { createServer } from "@tests/msw/server";
 import {
   FLAG_DATA_STATIC_TEST,
   FLAGS_DATA_STATIC_TEST,
   MODE_DATA_STATIC_TEST,
 } from "@tests/jest.constants";
-
-import { GamePage } from "@src/pages/GamePage/GamePage";
-
-import { FlagsProvider } from "@src/context/FlagsContext/FlagsProvider";
-import { GameProvider } from "@src/context/GameContext/GameProvider";
-import { ModeProvider } from "@src/context/ModeContext/ModeProvider";
-import { parseZero } from "@src/helpers/parseZero";
-import { apiRouteFlags, apiRouteModes } from "@src/api/apiRoute";
 
 type RenderComponent = {
   container: HTMLElement;
@@ -100,7 +103,7 @@ describe("GamePage.tsx", () => {
   describe("General Tests.", () => {
     createServer([
       {
-        path: `${apiRouteFlags}/random/:quantity`,
+        path: `${flagsApi}/random/:quantity`,
         method: "get",
         res: () => {
           return {
@@ -109,7 +112,7 @@ describe("GamePage.tsx", () => {
         },
       },
       {
-        path: `${apiRouteModes}/:idMode`,
+        path: `${modesApi}/:idMode`,
         method: "get",
         res: () => {
           return {
@@ -130,8 +133,7 @@ describe("GamePage.tsx", () => {
     test("It must render a loader before render modes in menu page.", () => {
       const { container } = renderComponent();
 
-      //eslint-disable-next-line
-      const loader = container.querySelector(".loader");
+      const loader = container.querySelector<HTMLSpanElement>(".loader");
       const linkGoHome = screen.queryByRole("link", {
         name: /go home/i,
       });
@@ -147,8 +149,7 @@ describe("GamePage.tsx", () => {
         name: /guess the flag/i,
       });
       const flag = screen.getByRole("img");
-      // eslint-disable-next-line
-      const form = container.querySelector(".form-guess-flag");
+      const form = container.querySelector<HTMLFormElement>(".form-guess-flag");
       const score = screen.getByRole("heading", {
         name: /score: 0 pts/i,
       });
@@ -175,7 +176,7 @@ describe("GamePage.tsx", () => {
   describe("If you guess the flag.", () => {
     createServer([
       {
-        path: `${apiRouteFlags}/random/:quantity`,
+        path: `${flagsApi}/random/:quantity`,
         method: "get",
         res: () => {
           return {
@@ -184,7 +185,7 @@ describe("GamePage.tsx", () => {
         },
       },
       {
-        path: `${apiRouteModes}/:idMode`,
+        path: `${modesApi}/:idMode`,
         method: "get",
         res: () => {
           return {
@@ -201,14 +202,11 @@ describe("GamePage.tsx", () => {
 
       const { container } = await renderComponentAsync();
 
-      //eslint-disable-next-line
-      const form = container.querySelector(
-        ".form-guess-flag"
-      ) as HTMLFormElement;
-      const input = within(form).getByPlaceholderText(
+      const form = container.querySelector<HTMLFormElement>(".form-guess-flag");
+      const input = within(form!).getByPlaceholderText(
         /enter a country name.../i
       );
-      const submitButton = within(form).getByRole("button", {
+      const submitButton = within(form!).getByRole("button", {
         name: /submit/i,
       });
 
@@ -252,7 +250,7 @@ describe("GamePage.tsx", () => {
   describe("If the flag is NOT guessed.", () => {
     createServer([
       {
-        path: `${apiRouteFlags}/random/:quantity`,
+        path: `${flagsApi}/random/:quantity`,
         method: "get",
         res: () => {
           return {
@@ -261,7 +259,7 @@ describe("GamePage.tsx", () => {
         },
       },
       {
-        path: `${apiRouteModes}/:idMode`,
+        path: `${modesApi}/:idMode`,
         method: "get",
         res: () => {
           return {
@@ -279,14 +277,11 @@ describe("GamePage.tsx", () => {
 
       const { container } = await renderComponentAsync();
 
-      //eslint-disable-next-line
-      const form = container.querySelector(
-        ".form-guess-flag"
-      ) as HTMLFormElement;
-      const input = within(form).getByPlaceholderText(
+      const form = container.querySelector<HTMLFormElement>(".form-guess-flag");
+      const input = within(form!).getByPlaceholderText(
         /enter a country name.../i
       );
-      const submitButton = within(form).getByRole("button", {
+      const submitButton = within(form!).getByRole("button", {
         name: /submit/i,
       });
 

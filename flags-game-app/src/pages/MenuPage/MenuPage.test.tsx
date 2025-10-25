@@ -2,16 +2,17 @@ import { screen, render } from "@testing-library/react";
 
 import { MemoryRouter } from "react-router-dom";
 
+import { MenuPage } from "@src/pages/MenuPage/MenuPage";
+
+import { ModesProvider } from "@src/contexts/ModesContext/ModesContext";
+
+import { modesApi } from "@src/api/modes";
+
 import { createServer } from "@tests/msw/server";
 import {
   MODES_DATA_STATIC_TEST,
   USERS_TOP_STATIC_TEST,
 } from "@tests/jest.constants";
-
-import { MenuPage } from "@src/pages/MenuPage/MenuPage";
-
-import { ModesProvider } from "@src/context/ModesContext/ModesProvider";
-import { apiRouteModes, apiRouteUsers } from "@src/api/apiRoute";
 
 type RenderComponent = {
   container: HTMLElement;
@@ -63,20 +64,11 @@ describe("MenuPage.tsx", () => {
   describe("General Tests.", () => {
     createServer([
       {
-        path: `${apiRouteModes}/`,
+        path: `${modesApi}/`,
         method: "get",
         res: () => {
           return {
             data: MODES_DATA_STATIC_TEST,
-          };
-        },
-      },
-      {
-        path: `${apiRouteUsers}/top_global`,
-        method: "get",
-        res: () => {
-          return {
-            data: USERS_TOP_STATIC_TEST,
           };
         },
       },
@@ -93,8 +85,7 @@ describe("MenuPage.tsx", () => {
     test("It must render a loader before render modes in menu page.", () => {
       const { container } = renderComponent();
 
-      //eslint-disable-next-line
-      const loader = container.querySelector(".loader");
+      const loader = container.querySelector<HTMLSpanElement>(".loader");
       const linkGoHome = screen.queryByRole("link", {
         name: /go home/i,
       });

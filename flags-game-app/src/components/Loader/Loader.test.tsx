@@ -19,8 +19,7 @@ describe("Loader.tsx", () => {
     test("You must render the Loader component.", () => {
       const { container } = renderComponent();
 
-      // eslint-disable-next-line
-      const loader = container.querySelector(".loader");
+      const loader = container.querySelector<HTMLSpanElement>(".loader");
 
       expect(loader).toBeInTheDocument();
     });

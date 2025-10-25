@@ -5,7 +5,7 @@ import { MemoryRouter } from "react-router-dom";
 
 import { Navbar } from "@src/components/Navbar/Navbar";
 
-import { UiProvider } from "@src/context/UiContext/UiProvider";
+import { UiProvider } from "@src/contexts/UiContext/UiContext";
 
 type RenderComponent = {
   container: HTMLElement;

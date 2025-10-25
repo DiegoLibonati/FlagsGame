@@ -3,9 +3,11 @@ import { useEffect, useRef } from "react";
 import { FormGuessFlagProps } from "@src/entities/props";
 
 import { useForm } from "@src/hooks/useForm";
-import { useModeContext } from "@src/context/ModeContext/ModeProvider";
-import { useGameContext } from "@src/context/GameContext/GameProvider";
-import { rootCss } from "@src/constants/configCss";
+import { useGameContext } from "@src/hooks/useGameContext";
+import { useModeContext } from "@src/hooks/useModeContext";
+import { useFlagsContext } from "@src/hooks/useFlagsContext";
+
+import { theme } from "@src/styles/theme";
 
 import "@src/components/Forms/FormGuessFlag/FormGuessFlag.css";
 
@@ -14,6 +16,7 @@ export const FormGuessFlag = ({
 }: FormGuessFlagProps): JSX.Element => {
   const inputRef = useRef<HTMLInputElement | null>(null);
 
+  const { flags } = useFlagsContext();
   const { currentFlagToGuess, score, handleSetScore, handleNextFlagToGuess } =
     useGameContext();
   const { mode } = useModeContext();
@@ -30,14 +33,14 @@ export const FormGuessFlag = ({
     const inputValue = formState.name.toLowerCase();
 
     if (currentFlagName === inputValue) {
-      inputElement.style.borderColor = rootCss.colors.green;
+      inputElement.style.borderColor = theme.colors.green;
       onResetForm();
       handleSetScore(score + secondsLeft * mode.mode?.multiplier!);
-      handleNextFlagToGuess();
+      handleNextFlagToGuess(flags.flags);
       return;
     }
 
-    inputElement.style.borderColor = rootCss.colors.red;
+    inputElement.style.borderColor = theme.colors.red;
     onResetForm();
   };
 
@@ -47,7 +50,7 @@ export const FormGuessFlag = ({
     if (!inputElement) return;
 
     const timeout = setTimeout(() => {
-      inputRef.current!.style.borderColor = rootCss.colors.white;
+      inputRef.current!.style.borderColor = theme.colors.white;
     }, 500);
 
     return () => {

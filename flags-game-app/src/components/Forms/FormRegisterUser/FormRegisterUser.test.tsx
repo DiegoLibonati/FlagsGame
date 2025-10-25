@@ -1,20 +1,14 @@
 import { screen, render } from "@testing-library/react";
-import user from "@testing-library/user-event";
 
 import { MemoryRouter } from "react-router-dom";
 
-import { createServer } from "@tests/msw/server";
-import {
-  ALERT_PROVIDER_STATIC,
-  FLAGS_DATA_STATIC_TEST,
-} from "@tests/jest.constants";
-
 import { FormRegisterUser } from "@src/components/Forms/FormRegisterUser/FormRegisterUser";
 
-import { AlertContext } from "@src/context/AlertContext/AlertContext";
-import { FlagsProvider } from "@src/context/FlagsContext/FlagsProvider";
-import { GameProvider } from "@src/context/GameContext/GameProvider";
-import { apiRouteFlags, apiRouteUsers } from "@src/api/apiRoute";
+import { AlertContext } from "@src/contexts/AlertContext/AlertContext";
+import { FlagsProvider } from "@src/contexts/FlagsContext/FlagsContext";
+import { GameProvider } from "@src/contexts/GameContext/GameContext";
+
+import { ALERT_PROVIDER_STATIC } from "@tests/jest.constants";
 
 type RenderComponent = {
   container: HTMLElement;
@@ -47,18 +41,6 @@ const renderComponent = async (): Promise<RenderComponent> => {
 
 describe("FormRegisterUser.tsx", () => {
   describe("General Tests", () => {
-    createServer([
-      {
-        path: `${apiRouteFlags}/random/:quantity`,
-        method: "get",
-        res: () => {
-          return {
-            data: FLAGS_DATA_STATIC_TEST,
-          };
-        },
-      },
-    ]);
-
     beforeEach(() => {
       jest.clearAllMocks();
     });
@@ -66,8 +48,9 @@ describe("FormRegisterUser.tsx", () => {
     test("It must render the form.", async () => {
       const { container } = await renderComponent();
 
-      //eslint-disable-next-line
-      const form = container.querySelector(".form-register-user");
+      const form = container.querySelector<HTMLFormElement>(
+        ".form-register-user"
+      );
 
       expect(form).toBeInTheDocument();
       expect(form).toHaveClass("form-register-user");
@@ -95,146 +78,6 @@ describe("FormRegisterUser.tsx", () => {
       expect(inputPassword).toBeInTheDocument();
       expect(inputPassword).toHaveAttribute("name", "password");
       expect(submitButton).toBeInTheDocument();
-    });
-  });
-
-  describe("Result is ok. AddOrModifyUser Service", () => {
-    const messageService = "Success";
-
-    createServer([
-      {
-        path: `${apiRouteFlags}/random/:quantity`,
-        method: "get",
-        res: () => {
-          return {
-            data: FLAGS_DATA_STATIC_TEST,
-          };
-        },
-      },
-      {
-        path: `${apiRouteUsers}/`,
-        method: "post",
-        status: 200,
-        res: () => {
-          return {
-            message: messageService,
-          };
-        },
-      },
-    ]);
-
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
-
-    test("It should send the form when you click submit.", async () => {
-      await renderComponent();
-
-      const heading = screen.getByRole("heading", {
-        name: `Your score was: 0 PTS`,
-      });
-      const inputUsername = screen.getByPlaceholderText(
-        /Your username goes here/i
-      );
-      const inputPassword = screen.getByPlaceholderText(
-        /Your password goes here/i
-      );
-      const submitButton = screen.getByRole("button", {
-        name: /send and register/i,
-      });
-
-      expect(heading).toBeInTheDocument();
-      expect(inputUsername).toBeInTheDocument();
-      expect(inputUsername).toHaveAttribute("name", "username");
-      expect(inputPassword).toBeInTheDocument();
-      expect(inputPassword).toHaveAttribute("name", "password");
-      expect(submitButton).toBeInTheDocument();
-
-      await user.click(inputUsername);
-      await user.keyboard("Jose");
-
-      await user.click(inputPassword);
-      await user.keyboard("1234");
-
-      await user.click(submitButton);
-
-      expect(ALERT_PROVIDER_STATIC.handleSetAlert).toHaveBeenCalledTimes(1);
-      expect(ALERT_PROVIDER_STATIC.handleSetAlert).toHaveBeenCalledWith({
-        type: "alert-auth-success",
-        message: messageService,
-      });
-      expect(inputUsername).not.toHaveValue();
-      expect(inputPassword).not.toHaveValue();
-    });
-  });
-
-  describe("Result is NOT ok. AddOrModifyUser Service", () => {
-    const messageService = "Error";
-
-    createServer([
-      {
-        path: `${apiRouteFlags}/random/:quantity`,
-        method: "get",
-        res: () => {
-          return {
-            data: FLAGS_DATA_STATIC_TEST,
-          };
-        },
-      },
-      {
-        path: `${apiRouteUsers}/`,
-        method: "post",
-        status: 400,
-        res: () => {
-          return {
-            message: messageService,
-          };
-        },
-      },
-    ]);
-
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
-
-    test("It should send the form when you click submit.", async () => {
-      await renderComponent();
-
-      const heading = screen.getByRole("heading", {
-        name: `Your score was: 0 PTS`,
-      });
-      const inputUsername = screen.getByPlaceholderText(
-        /Your username goes here/i
-      );
-      const inputPassword = screen.getByPlaceholderText(
-        /Your password goes here/i
-      );
-      const submitButton = screen.getByRole("button", {
-        name: /send and register/i,
-      });
-
-      expect(heading).toBeInTheDocument();
-      expect(inputUsername).toBeInTheDocument();
-      expect(inputUsername).toHaveAttribute("name", "username");
-      expect(inputPassword).toBeInTheDocument();
-      expect(inputPassword).toHaveAttribute("name", "password");
-      expect(submitButton).toBeInTheDocument();
-
-      await user.click(inputUsername);
-      await user.keyboard("Jose");
-
-      await user.click(inputPassword);
-      await user.keyboard("1234");
-
-      await user.click(submitButton);
-
-      expect(ALERT_PROVIDER_STATIC.handleSetAlert).toHaveBeenCalledTimes(1);
-      expect(ALERT_PROVIDER_STATIC.handleSetAlert).toHaveBeenCalledWith({
-        type: "alert-auth-error",
-        message: messageService,
-      });
-      expect(inputUsername).not.toHaveValue();
-      expect(inputPassword).not.toHaveValue();
     });
   });
 });

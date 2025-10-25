@@ -1,40 +1,92 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { Loader } from "@src/components/Loader/Loader";
 import { Flag as FlagComponent } from "@src/components/Flag/Flag";
 import { FormGuessFlag } from "@src/components/Forms/FormGuessFlag/FormGuessFlag";
 
 import { useCountdown } from "@src/hooks/useCountdown";
-import { useFlagsContext } from "@src/context/FlagsContext/FlagsProvider";
-import { useModeContext } from "@src/context/ModeContext/ModeProvider";
-import { useGameContext } from "@src/context/GameContext/GameProvider";
+import { useFlagsContext } from "@src/hooks/useFlagsContext";
+import { useModeContext } from "@src/hooks/useModeContext";
+import { useGameContext } from "@src/hooks/useGameContext";
+
+import { getRandomFlags } from "@src/api/get/getRandomFlags";
+import { getMode } from "@src/api/get/getMode";
 
 import "@src/pages/GamePage/GamePage.css";
 
 export const GamePage = (): JSX.Element => {
+  const { idMode } = useParams();
   const navigate = useNavigate();
 
-  const { flags } = useFlagsContext()!;
-  const { mode } = useModeContext();
-  const { completeGuess, currentFlagToGuess, score } = useGameContext();
+  const {
+    flags,
+    handleClearFlags,
+    handleEndFetchFlags,
+    handleSetErrorFlags,
+    handleSetFlags,
+    handleStartFetchFlags,
+  } = useFlagsContext();
+  const {
+    mode,
+    handleClearMode,
+    handleEndFetchMode,
+    handleSetErrorMode,
+    handleSetMode,
+    handleStartFetchMode,
+  } = useModeContext();
+  const { completeGuess, currentFlagToGuess, score, handleSetFlagToGuess } =
+    useGameContext();
 
   const { timerText, secondsLeft, endTime, onCountdownReset } = useCountdown(
     mode.mode! && mode.mode?.timeleft
   );
 
+  const handleGetRandomFlags = async () => {
+    try {
+      handleStartFetchFlags();
+      const response = await getRandomFlags(5);
+      handleSetFlags(response.data);
+    } catch (error) {
+      handleSetErrorFlags(String(error));
+    } finally {
+      handleEndFetchFlags();
+    }
+  };
+
+  const handleGetMode = async () => {
+    try {
+      handleStartFetchMode();
+      const response = await getMode(idMode!);
+      handleSetMode(response.data);
+    } catch (error) {
+      handleSetErrorMode(String(error));
+    } finally {
+      handleEndFetchMode();
+    }
+  };
+
   useEffect(() => {
+    handleGetRandomFlags();
+    handleGetMode();
+
     return () => {
       onCountdownReset();
+      handleClearFlags();
+      handleClearMode();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (endTime || completeGuess)
       navigate(`/menu/${mode.mode?._id}/finishgame`);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [endTime, completeGuess]);
+
+  useEffect(() => {
+    if (!flags.flags || flags.flags.length === 0 || currentFlagToGuess) return;
+
+    handleSetFlagToGuess(flags.flags[0]);
+  }, [flags.flags]);
 
   if (flags.loading || !currentFlagToGuess) {
     return (

@@ -2,17 +2,18 @@ import { screen, render, within } from "@testing-library/react";
 
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 
+import { MenuModePage } from "@src/pages/MenuModePage/MenuModePage";
+
+import { UsersProvider } from "@src/contexts/UsersContext/UsersContext";
+import { ModeProvider } from "@src/contexts/ModeContext/ModeContext";
+
+import { modesApi } from "@src/api/modes";
+
 import { createServer } from "@tests/msw/server";
 import {
   MODE_DATA_STATIC_TEST,
   USERS_TOP_STATIC_TEST,
 } from "@tests/jest.constants";
-
-import { MenuModePage } from "@src/pages/MenuModePage/MenuModePage";
-
-import { UsersProvider } from "@src/context/UsersContext/UsersProvider";
-import { ModeProvider } from "@src/context/ModeContext/ModeProvider";
-import { apiRouteModes, apiRouteUsers } from "@src/api/apiRoute";
 
 type RenderComponent = {
   container: HTMLElement;
@@ -86,7 +87,7 @@ describe("MenuModePage.tsx", () => {
   describe("General Tests.", () => {
     createServer([
       {
-        path: `${apiRouteModes}/:idMode/top`,
+        path: `${modesApi}/:idMode/top`,
         method: "get",
         res: () => {
           return {
@@ -95,20 +96,11 @@ describe("MenuModePage.tsx", () => {
         },
       },
       {
-        path: `${apiRouteModes}/:idMode`,
+        path: `${modesApi}/:idMode`,
         method: "get",
         res: () => {
           return {
             data: MODE_DATA_STATIC_TEST,
-          };
-        },
-      },
-      {
-        path: `${apiRouteUsers}/top_global`,
-        method: "get",
-        res: () => {
-          return {
-            data: USERS_TOP_STATIC_TEST,
           };
         },
       },
@@ -125,8 +117,7 @@ describe("MenuModePage.tsx", () => {
     test("It must render a loader before render modes in menu page.", () => {
       const { container } = renderComponent();
 
-      //eslint-disable-next-line
-      const loader = container.querySelector(".loader");
+      const loader = container.querySelector<HTMLSpanElement>(".loader");
       const linkGoHome = screen.queryByRole("link", {
         name: /go home/i,
       });

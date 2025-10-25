@@ -2,8 +2,8 @@ import ReactDOM from "react-dom/client";
 
 import App from "@src/App";
 
-import { UiProvider } from "@src/context/UiContext/UiProvider";
-import { AlertProvider } from "@src/context/AlertContext/AlertProvider";
+import { AlertProvider } from "@src/contexts/AlertContext/AlertContext";
+import { UiProvider } from "@src/contexts/UiContext/UiContext";
 
 import "@src/index.css";
 

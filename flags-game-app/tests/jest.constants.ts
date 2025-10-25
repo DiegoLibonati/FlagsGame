@@ -1,5 +1,5 @@
 import { AlertContext } from "@src/entities/contexts";
-import { Flag, Mode, UserTop } from "@src/entities/entities";
+import { Flag, Mode, UserTop } from "@src/entities/app";
 
 export const FLAGS_DATA_STATIC_TEST: Flag[] = [
   {

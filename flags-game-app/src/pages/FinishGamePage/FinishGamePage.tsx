@@ -3,9 +3,10 @@ import { useCallback, useEffect } from "react";
 import { FormRegisterUser } from "@src/components/Forms/FormRegisterUser/FormRegisterUser";
 import { FormUpdateUser } from "@src/components/Forms/FormUpdateUser/FormUpdateUser";
 
-import { useAlertContext } from "@src/context/AlertContext/AlertProvider";
-import { useGameContext } from "@src/context/GameContext/GameProvider";
 import { parseAlertType } from "@src/helpers/parseAlertType";
+
+import { useAlertContext } from "@src/hooks/useAlertContext";
+import { useGameContext } from "@src/hooks/useGameContext";
 
 import "@src/pages/FinishGamePage/FinishGamePage.css";
 
@@ -24,7 +25,6 @@ export const FinishGamePage = (): JSX.Element => {
     return () => {
       handleSetScore(0);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

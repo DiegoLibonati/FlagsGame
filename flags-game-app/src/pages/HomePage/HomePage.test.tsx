@@ -2,13 +2,14 @@ import { screen, render, within } from "@testing-library/react";
 
 import { MemoryRouter } from "react-router-dom";
 
-import { createServer } from "@tests/msw/server";
-import { USERS_TOP_STATIC_TEST } from "@tests/jest.constants";
-
 import { HomePage } from "@src/pages/HomePage/HomePage";
 
-import { UsersProvider } from "@src/context/UsersContext/UsersProvider";
-import { apiRouteUsers } from "@src/api/apiRoute";
+import { UsersProvider } from "@src/contexts/UsersContext/UsersContext";
+
+import { usersApi } from "@src/api/users";
+
+import { createServer } from "@tests/msw/server";
+import { USERS_TOP_STATIC_TEST } from "@tests/jest.constants";
 
 type RenderComponent = {
   container: HTMLElement;
@@ -58,7 +59,7 @@ describe("HomePage.tsx", () => {
   describe("General Tests.", () => {
     createServer([
       {
-        path: `${apiRouteUsers}/top_global`,
+        path: `${usersApi}/top_global`,
         method: "get",
         res: () => {
           return {
@@ -79,8 +80,7 @@ describe("HomePage.tsx", () => {
     test("It must render a loader before the top load is completed and must not display the list of users.", () => {
       const { container } = renderComponent();
 
-      //eslint-disable-next-line
-      const loader = container.querySelector(".loader");
+      const loader = container.querySelector<HTMLSpanElement>(".loader");
       const list = screen.queryByRole("list");
 
       expect(loader).toBeInTheDocument();

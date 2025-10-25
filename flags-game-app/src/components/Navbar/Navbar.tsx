@@ -2,7 +2,7 @@ import { Link, NavLink } from "react-router-dom";
 
 import { Hamburger } from "@src/components/Hamburger/Hamburger";
 
-import { useUiContext } from "@src/context/UiContext/UiProvider";
+import { useUiContext } from "@src/hooks/useUiContext";
 
 import "@src/components/Navbar/Navbar.css";
 
@@ -12,11 +12,7 @@ export const Navbar = (): JSX.Element => {
   return (
     <header className="header-wrapper">
       <div className="header__logo">
-        <Link
-          to="/"
-          aria-label="title FlagsGame"
-          className="header__title"
-        >
+        <Link to="/" aria-label="title FlagsGame" className="header__title">
           FlagsGame
         </Link>
 
@@ -33,7 +29,9 @@ export const Navbar = (): JSX.Element => {
               to="/"
               aria-label="home"
               className={({ isActive }) =>
-                isActive ? "header__nav-link header__nav-link--active" : "header__nav-link"
+                isActive
+                  ? "header__nav-link header__nav-link--active"
+                  : "header__nav-link"
               }
             >
               Home
@@ -44,7 +42,9 @@ export const Navbar = (): JSX.Element => {
               to="/menu"
               aria-label="menu"
               className={({ isActive }) =>
-                isActive ? "header__nav-link header__nav-link--active" : "header__nav-link"
+                isActive
+                  ? "header__nav-link header__nav-link--active"
+                  : "header__nav-link"
               }
             >
               Menu

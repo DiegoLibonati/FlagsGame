@@ -1,17 +1,71 @@
+import { useEffect } from "react";
 import { BsChevronLeft } from "react-icons/bs";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 import { ListStats } from "@src/components/ListStats/ListStats";
 import { Loader } from "@src/components/Loader/Loader";
 
-import { useUsersContext } from "@src/context/UsersContext/UsersProvider";
-import { useModeContext } from "@src/context/ModeContext/ModeProvider";
+import { useUsersContext } from "@src/hooks/useUsersContext";
+import { useModeContext } from "@src/hooks/useModeContext";
+
+import { getTopMode } from "@src/api/get/getTopMode";
+import { getMode } from "@src/api/get/getMode";
 
 import "@src/pages/MenuModePage/MenuModePage.css";
 
 export const MenuModePage = (): JSX.Element => {
-  const { topUsers } = useUsersContext();
-  const { mode } = useModeContext();
+  const { idMode } = useParams();
+
+  const {
+    topUsers,
+    handleClearTopUsers,
+    handleEndFetchUsers,
+    handleSetErrorUsers,
+    handleSetTopUsers,
+    handleStartFetchUsers,
+  } = useUsersContext();
+  const {
+    mode,
+    handleClearMode,
+    handleEndFetchMode,
+    handleSetErrorMode,
+    handleSetMode,
+    handleStartFetchMode,
+  } = useModeContext();
+
+  const handleGetTopMode = async () => {
+    try {
+      handleStartFetchUsers();
+      const response = await getTopMode(idMode!);
+      handleSetTopUsers(response.data);
+    } catch (error) {
+      handleSetErrorUsers(String(error));
+    } finally {
+      handleEndFetchUsers();
+    }
+  };
+
+  const handleGetMode = async () => {
+    try {
+      handleStartFetchMode();
+      const response = await getMode(idMode!);
+      handleSetMode(response.data);
+    } catch (error) {
+      handleSetErrorMode(String(error));
+    } finally {
+      handleEndFetchMode();
+    }
+  };
+
+  useEffect(() => {
+    handleGetTopMode();
+    handleGetMode();
+
+    return () => {
+      handleClearTopUsers();
+      handleClearMode();
+    };
+  }, []);
 
   if (mode.loading) {
     return (

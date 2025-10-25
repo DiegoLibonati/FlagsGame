@@ -1,14 +1,44 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { BsChevronLeft } from "react-icons/bs";
 
 import { Loader } from "@src/components/Loader/Loader";
 
-import { useModesContext } from "@src/context/ModesContext/ModesProvider";
+import { useModesContext } from "@src/hooks/useModesContext";
+
+import { getModes } from "@src/api/get/getModes";
 
 import "@src/pages/MenuPage/MenuPage.css";
 
 export const MenuPage = (): JSX.Element => {
-  const { modes } = useModesContext()!;
+  const {
+    modes,
+    handleStartFetchModes,
+    handleSetModes,
+    handleSetErrorModes,
+    handleEndFetchModes,
+    handleClearModes,
+  } = useModesContext()!;
+
+  const handleGetModes = async () => {
+    try {
+      handleStartFetchModes();
+      const response = await getModes();
+      handleSetModes(response.data);
+    } catch (error) {
+      handleSetErrorModes(String(error));
+    } finally {
+      handleEndFetchModes();
+    }
+  };
+
+  useEffect(() => {
+    handleGetModes();
+
+    return () => {
+      handleClearModes();
+    };
+  }, []);
 
   if (modes.loading)
     return (
