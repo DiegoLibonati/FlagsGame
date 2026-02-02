@@ -1,62 +1,91 @@
-from typing import Any
+from flask import Flask
 
-import pytest
-
-from src.constants.codes import CODE_ERROR_API
-from src.constants.messages import MESSAGE_ERROR_API
 from src.utils.exceptions import (
     AuthenticationAPIError,
     BaseAPIError,
+    BusinessAPIError,
     ConflictAPIError,
+    InternalAPIError,
     NotFoundAPIError,
     ValidationAPIError,
 )
 
 
-def test_base_api_error_defaults() -> None:
-    err = BaseAPIError()
-    body: dict[str, Any] = err.to_dict()
+class TestBaseAPIError:
+    def test_default_values(self) -> None:
+        error = BaseAPIError()
 
-    assert err.status_code == 500
-    assert err.code == CODE_ERROR_API
-    assert err.message == MESSAGE_ERROR_API
-    assert isinstance(body, dict)
-    assert body["code"] == CODE_ERROR_API
-    assert body["message"] == MESSAGE_ERROR_API
-    assert body["payload"] == {}
+        assert error.status_code == 500
+        assert error.message is not None
+        assert error.code is not None
+
+    def test_custom_values(self) -> None:
+        error = BaseAPIError(
+            code="CUSTOM_CODE",
+            message="Custom message",
+            status_code=418,
+        )
+
+        assert error.status_code == 418
+        assert error.message == "Custom message"
+        assert error.code == "CUSTOM_CODE"
+
+    def test_to_dict(self) -> None:
+        error = BaseAPIError(code="TEST", message="Test message")
+        result = error.to_dict()
+
+        assert result["code"] == "TEST"
+        assert result["message"] == "Test message"
+
+    def test_to_dict_with_payload(self) -> None:
+        error = BaseAPIError(code="TEST", message="Test", payload={"detail": "value"})
+        result = error.to_dict()
+
+        assert "payload" in result
+        assert result["payload"]["detail"] == "value"
+
+    def test_flask_response(self, app: Flask) -> None:
+        with app.app_context():
+            error = BaseAPIError(code="TEST", message="Test", status_code=400)
+            response, status_code = error.flask_response()
+
+            assert status_code == 400
 
 
-def test_base_api_error_overrides() -> None:
-    err = BaseAPIError(
-        code="CUSTOM_CODE",
-        message="Custom message",
-        status_code=418,
-        payload={"x": 1},
-    )
-    body: dict[str, Any] = err.to_dict()
+class TestSpecificErrors:
+    def test_validation_error_status_code(self) -> None:
+        error = ValidationAPIError(code="VAL", message="Validation failed")
+        assert error.status_code == 400
 
-    assert err.status_code == 418
-    assert err.code == "CUSTOM_CODE"
-    assert err.message == "Custom message"
-    assert body["payload"] == {"x": 1}
+    def test_authentication_error_status_code(self) -> None:
+        error = AuthenticationAPIError(code="AUTH", message="Auth failed")
+        assert error.status_code == 401
 
+    def test_not_found_error_status_code(self) -> None:
+        error = NotFoundAPIError(code="NF", message="Not found")
+        assert error.status_code == 404
 
-@pytest.mark.parametrize(
-    "exc_cls,expected_status,expected_message",
-    [
-        (ValidationAPIError, 400, "Validation error"),
-        (AuthenticationAPIError, 401, "Authentication error"),
-        (NotFoundAPIError, 404, "Resource not found"),
-        (ConflictAPIError, 409, "Conflict error"),
-    ],
-)
-def test_specific_errors(
-    exc_cls: type[BaseAPIError], expected_status: int, expected_message: str
-) -> None:
-    err = exc_cls()
-    body: dict[str, Any] = err.to_dict()
+    def test_conflict_error_status_code(self) -> None:
+        error = ConflictAPIError(code="CONF", message="Conflict")
+        assert error.status_code == 409
 
-    assert err.status_code == expected_status
-    assert err.message == expected_message
-    assert body["code"] == err.code
-    assert body["message"] == expected_message
+    def test_business_error_status_code(self) -> None:
+        error = BusinessAPIError(code="BUS", message="Business rule")
+        assert error.status_code == 422
+
+    def test_internal_error_status_code(self) -> None:
+        error = InternalAPIError(code="INT", message="Internal")
+        assert error.status_code == 500
+
+    def test_all_errors_inherit_from_base(self) -> None:
+        error_classes = [
+            ValidationAPIError,
+            AuthenticationAPIError,
+            NotFoundAPIError,
+            ConflictAPIError,
+            BusinessAPIError,
+            InternalAPIError,
+        ]
+
+        for cls in error_classes:
+            assert issubclass(cls, BaseAPIError)

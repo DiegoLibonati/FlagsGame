@@ -1,60 +1,48 @@
-from typing import Any
+import pytest
+from flask import Flask
+from pydantic import BaseModel
+from pymongo.errors import PyMongoError
 
-from flask.testing import FlaskClient
-from werkzeug.test import TestResponse
-
-from src.constants.codes import (
-    CODE_ERROR_DATABASE,
-    CODE_ERROR_GENERIC,
-    CODE_ERROR_PYDANTIC,
-)
-from src.constants.messages import (
-    MESSAGE_ERROR_DATABASE,
-    MESSAGE_ERROR_GENERIC,
-    MESSAGE_ERROR_PYDANTIC,
-)
+from src.utils.error_handler import handle_exceptions
+from src.utils.exceptions import InternalAPIError, ValidationAPIError
 
 
-def test_handle_exceptions_base_api_error(error_app: FlaskClient) -> None:
-    res: TestResponse = error_app.get("/base-api-error")
-    body: dict[str, Any] = res.get_json()
+class TestHandleExceptionsDecorator:
+    def test_passes_through_on_success(self, app: Flask) -> None:
+        @handle_exceptions
+        def successful_function():
+            return "success"
 
-    assert res.status_code == 400
-    assert body["code"] == "ERROR_INTERNAL_SERVER"
-    assert body["message"] == "Custom API error"
+        with app.app_context():
+            result = successful_function()
+            assert result == "success"
 
+    def test_converts_validation_error(self, app: Flask) -> None:
+        class StrictModel(BaseModel):
+            value: int
 
-def test_handle_exceptions_pydantic_error(error_app: FlaskClient) -> None:
-    res: TestResponse = error_app.get("/pydantic-error")
-    body: dict[str, Any] = res.get_json()
+        @handle_exceptions
+        def function_with_validation():
+            StrictModel(value="not an int")
 
-    assert res.status_code == 400
-    assert body["code"] == CODE_ERROR_PYDANTIC
-    assert body["message"] == MESSAGE_ERROR_PYDANTIC
-    assert "details" in body["payload"]
+        with app.app_context():
+            with pytest.raises(ValidationAPIError):
+                function_with_validation()
 
+    def test_converts_pymongo_error(self, app: Flask) -> None:
+        @handle_exceptions
+        def function_with_mongo_error():
+            raise PyMongoError("DB error")
 
-def test_handle_exceptions_mongo_error(error_app: FlaskClient) -> None:
-    res: TestResponse = error_app.get("/mongo-error")
-    body: dict[str, Any] = res.get_json()
+        with app.app_context():
+            with pytest.raises(InternalAPIError):
+                function_with_mongo_error()
 
-    assert res.status_code == 500
-    assert body["code"] == CODE_ERROR_DATABASE
-    assert body["message"] == MESSAGE_ERROR_DATABASE
+    def test_preserves_function_metadata(self) -> None:
+        @handle_exceptions
+        def my_function():
+            """My docstring."""
+            pass
 
-
-def test_handle_exceptions_generic_error(error_app: FlaskClient) -> None:
-    res: TestResponse = error_app.get("/generic-error")
-    body: dict[str, Any] = res.get_json()
-
-    assert res.status_code == 500
-    assert body["code"] == CODE_ERROR_GENERIC
-    assert MESSAGE_ERROR_GENERIC.split("{")[0] in body["message"]
-
-
-def test_handle_exceptions_no_error(error_app: FlaskClient) -> None:
-    res: TestResponse = error_app.get("/no-error")
-    body: dict[str, Any] = res.get_json()
-
-    assert res.status_code == 200
-    assert body["ok"] is True
+        assert my_function.__name__ == "my_function"
+        assert my_function.__doc__ == "My docstring."

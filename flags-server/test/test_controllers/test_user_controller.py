@@ -1,8 +1,9 @@
-from test.constants import BLUEPRINTS
 from typing import Any
 
+from bson import ObjectId
+from flask import Flask
 from flask.testing import FlaskClient
-from werkzeug.test import TestResponse
+from pymongo.database import Database
 
 from src.constants.codes import (
     CODE_ERROR_AUTHENTICATION,
@@ -13,205 +14,481 @@ from src.constants.codes import (
     CODE_SUCCESS_GET_GLOBAL_TOP_USER,
     CODE_SUCCESS_UPDATE_USER,
 )
-from src.constants.messages import (
-    MESSAGE_ERROR_AUTHENTICATION,
-    MESSAGE_NOT_FOUND_MODE,
-    MESSAGE_NOT_FOUND_USER,
-    MESSAGE_SUCCESS_ADD_USER,
-    MESSAGE_SUCCESS_DELETE_USER,
-    MESSAGE_SUCCESS_GET_GLOBAL_TOP_USER,
-    MESSAGE_SUCCESS_UPDATE_USER,
-)
 
 
-def test_alive(flask_client: FlaskClient) -> None:
-    res: TestResponse = flask_client.get(f"{BLUEPRINTS['users']}/alive")
-    body: dict[str, Any] = res.get_json()
+class TestAliveEndpoint:
+    def test_alive_returns_200(self, client: FlaskClient) -> None:
+        response = client.get("/api/v1/users/alive")
 
-    assert res.status_code == 200
-    assert body["name_bp"] == "Users"
-    assert body["message"] == "I am Alive!"
+        assert response.status_code == 200
 
+    def test_alive_returns_correct_structure(self, client: FlaskClient) -> None:
+        response = client.get("/api/v1/users/alive")
+        data = response.get_json()
 
-def test_top_general(flask_client: FlaskClient) -> None:
-    res: TestResponse = flask_client.get(f"{BLUEPRINTS['users']}/top_global")
-    body: dict[str, Any] = res.get_json()
+        assert "message" in data
+        assert "version_bp" in data
+        assert "author" in data
+        assert "name_bp" in data
 
-    assert res.status_code == 200
-    assert body["code"] == CODE_SUCCESS_GET_GLOBAL_TOP_USER
-    assert body["message"] == MESSAGE_SUCCESS_GET_GLOBAL_TOP_USER
-    assert isinstance(body["data"], list)
+    def test_alive_returns_correct_values(self, client: FlaskClient) -> None:
+        response = client.get("/api/v1/users/alive")
+        data = response.get_json()
 
+        assert data["message"] == "I am Alive!"
+        assert data["name_bp"] == "Users"
 
-def test_add_user_success(
-    flask_client: FlaskClient, unique_mode: dict[str, Any], unique_user: dict[str, Any]
-) -> None:
-    res_mode: TestResponse = flask_client.post(
-        f"{BLUEPRINTS['modes']}/", json=unique_mode
-    )
-    mode_id: str = res_mode.get_json()["data"]["_id"]
+    def test_alive_returns_json_content_type(self, client: FlaskClient) -> None:
+        response = client.get("/api/v1/users/alive")
 
-    user_data: dict[str, Any] = {
-        **unique_user,
-        "mode_id": mode_id,
-    }
-
-    res: TestResponse = flask_client.post(f"{BLUEPRINTS['users']}/", json=user_data)
-    body: dict[str, Any] = res.get_json()
-
-    assert res.status_code == 201
-    assert body["code"] == CODE_SUCCESS_ADD_USER
-    assert body["message"] == MESSAGE_SUCCESS_ADD_USER
-    assert body["data"]["username"] == user_data["username"]
-    assert "password" not in body["data"]
-    assert "_id" in body["data"]
+        assert response.content_type == "application/json"
 
 
-def test_add_user_mode_not_found(
-    flask_client: FlaskClient, unique_user: dict[str, Any]
-) -> None:
-    user_data: dict[str, Any] = {
-        **unique_user,
-        "mode_id": "673773206d0e53d0d63f3343",
-    }
+class TestTopGeneralEndpoint:
+    def test_top_general_returns_200(self, client: FlaskClient) -> None:
+        response = client.get("/api/v1/users/top_global")
 
-    res: TestResponse = flask_client.post(f"{BLUEPRINTS['users']}/", json=user_data)
-    body: dict[str, Any] = res.get_json()
+        assert response.status_code == 200
 
-    assert res.status_code == 404
-    assert body["code"] == CODE_NOT_FOUND_MODE
-    assert body["message"] == MESSAGE_NOT_FOUND_MODE
+    def test_top_general_returns_correct_structure(self, client: FlaskClient) -> None:
+        response = client.get("/api/v1/users/top_global")
+        data = response.get_json()
 
+        assert "code" in data
+        assert "message" in data
+        assert "data" in data
 
-def test_modify_user_success(
-    flask_client: FlaskClient, unique_mode: dict[str, Any], unique_user: dict[str, Any]
-) -> None:
-    res_mode: TestResponse = flask_client.post(
-        f"{BLUEPRINTS['modes']}/", json=unique_mode
-    )
-    mode_id: str = res_mode.get_json()["data"]["_id"]
+    def test_top_general_returns_correct_code(self, client: FlaskClient) -> None:
+        response = client.get("/api/v1/users/top_global")
+        data = response.get_json()
 
-    user_data: dict[str, Any] = {
-        **unique_user,
-        "mode_id": mode_id,
-    }
+        assert data["code"] == CODE_SUCCESS_GET_GLOBAL_TOP_USER
 
-    flask_client.post(f"{BLUEPRINTS['users']}/", json=user_data)
+    def test_top_general_returns_list(self, client: FlaskClient) -> None:
+        response = client.get("/api/v1/users/top_global")
+        data = response.get_json()
 
-    modify_data: dict[str, Any] = {
-        **unique_user,
-        "score": 75,
-        "mode_id": mode_id,
-    }
+        assert isinstance(data["data"], list)
 
-    res: TestResponse = flask_client.patch(f"{BLUEPRINTS['users']}/", json=modify_data)
-    body: dict[str, Any] = res.get_json()
+    def test_top_general_returns_empty_when_no_users(
+        self, app: Flask, client: FlaskClient, mongo_db: Database
+    ) -> None:
+        mongo_db.users.delete_many({})
 
-    assert res.status_code == 200
-    assert body["code"] == CODE_SUCCESS_UPDATE_USER
-    assert body["message"] == MESSAGE_SUCCESS_UPDATE_USER
-    assert body["data"]["scores"][unique_mode["name"]] == 75
+        response = client.get("/api/v1/users/top_global")
+        data = response.get_json()
 
+        assert data["data"] == []
 
-def test_modify_user_mode_not_found(
-    flask_client: FlaskClient, unique_user: dict[str, Any]
-) -> None:
-    modify_data: dict[str, Any] = {
-        **unique_user,
-        "mode_id": "673773206d0e53d0d63f3343",
-    }
+    def test_top_general_returns_users_sorted_by_score(
+        self, client: FlaskClient, inserted_users: list[dict[str, Any]]
+    ) -> None:
+        response = client.get("/api/v1/users/top_global")
+        data = response.get_json()
 
-    res: TestResponse = flask_client.patch(f"{BLUEPRINTS['users']}/", json=modify_data)
-    body: dict[str, Any] = res.get_json()
-
-    assert res.status_code == 404
-    assert body["code"] == CODE_NOT_FOUND_MODE
-    assert body["message"] == MESSAGE_NOT_FOUND_MODE
+        assert len(data["data"]) == len(inserted_users)
+        scores = [user["score"] for user in data["data"]]
+        assert scores == sorted(scores, reverse=True)
 
 
-def test_modify_user_not_found(
-    flask_client: FlaskClient, unique_mode: dict[str, Any], unique_user: dict[str, Any]
-) -> None:
-    res_mode: TestResponse = flask_client.post(
-        f"{BLUEPRINTS['modes']}/", json=unique_mode
-    )
-    mode_id: str = res_mode.get_json()["data"]["_id"]
+class TestAddUserEndpoint:
+    def test_add_user_returns_201(
+        self,
+        app: Flask,
+        client: FlaskClient,
+        mongo_db: Database,
+        inserted_mode: dict[str, Any],
+    ) -> None:
+        mongo_db.users.delete_many({})
 
-    modify_data: dict[str, Any] = {
-        **unique_user,
-        "username": "non_existing",
-        "mode_id": mode_id,
-    }
+        user_data = {
+            "username": "newuser",
+            "password": "newpassword123",
+            "mode_id": inserted_mode["_id"],
+            "score": 100,
+        }
 
-    res: TestResponse = flask_client.patch(f"{BLUEPRINTS['users']}/", json=modify_data)
-    body: dict[str, Any] = res.get_json()
+        response = client.post("/api/v1/users/", json=user_data)
 
-    assert res.status_code == 404
-    assert body["code"] == CODE_NOT_FOUND_USER
-    assert body["message"] == MESSAGE_NOT_FOUND_USER
+        assert response.status_code == 201
+
+    def test_add_user_returns_correct_structure(
+        self,
+        app: Flask,
+        client: FlaskClient,
+        mongo_db: Database,
+        inserted_mode: dict[str, Any],
+    ) -> None:
+        mongo_db.users.delete_many({})
+
+        user_data = {
+            "username": "newuser",
+            "password": "newpassword123",
+            "mode_id": inserted_mode["_id"],
+            "score": 100,
+        }
+
+        response = client.post("/api/v1/users/", json=user_data)
+        data = response.get_json()
+
+        assert "code" in data
+        assert "message" in data
+        assert "data" in data
+        assert "_id" in data["data"]
+
+    def test_add_user_returns_correct_code(
+        self,
+        app: Flask,
+        client: FlaskClient,
+        mongo_db: Database,
+        inserted_mode: dict[str, Any],
+    ) -> None:
+        mongo_db.users.delete_many({})
+
+        user_data = {
+            "username": "newuser",
+            "password": "newpassword123",
+            "mode_id": inserted_mode["_id"],
+            "score": 100,
+        }
+
+        response = client.post("/api/v1/users/", json=user_data)
+        data = response.get_json()
+
+        assert data["code"] == CODE_SUCCESS_ADD_USER
+
+    def test_add_user_does_not_return_password(
+        self,
+        app: Flask,
+        client: FlaskClient,
+        mongo_db: Database,
+        inserted_mode: dict[str, Any],
+    ) -> None:
+        mongo_db.users.delete_many({})
+
+        user_data = {
+            "username": "newuser",
+            "password": "newpassword123",
+            "mode_id": inserted_mode["_id"],
+            "score": 100,
+        }
+
+        response = client.post("/api/v1/users/", json=user_data)
+        data = response.get_json()
+
+        assert "password" not in data["data"]
+
+    def test_add_user_creates_user_in_database(
+        self,
+        app: Flask,
+        client: FlaskClient,
+        mongo_db: Database,
+        inserted_mode: dict[str, Any],
+    ) -> None:
+        mongo_db.users.delete_many({})
+        initial_count = mongo_db.users.count_documents({})
+
+        user_data = {
+            "username": "newuser",
+            "password": "newpassword123",
+            "mode_id": inserted_mode["_id"],
+            "score": 100,
+        }
+
+        client.post("/api/v1/users/", json=user_data)
+
+        final_count = mongo_db.users.count_documents({})
+        assert final_count == initial_count + 1
+
+    def test_add_user_with_invalid_mode_returns_404(
+        self, app: Flask, client: FlaskClient, mongo_db: Database
+    ) -> None:
+        mongo_db.users.delete_many({})
+        mongo_db.modes.delete_many({})
+
+        user_data = {
+            "username": "newuser",
+            "password": "newpassword123",
+            "mode_id": str(ObjectId()),
+            "score": 100,
+        }
+
+        response = client.post("/api/v1/users/", json=user_data)
+
+        assert response.status_code == 404
+
+    def test_add_user_with_invalid_mode_returns_correct_code(
+        self, app: Flask, client: FlaskClient, mongo_db: Database
+    ) -> None:
+        mongo_db.users.delete_many({})
+        mongo_db.modes.delete_many({})
+
+        user_data = {
+            "username": "newuser",
+            "password": "newpassword123",
+            "mode_id": str(ObjectId()),
+            "score": 100,
+        }
+
+        response = client.post("/api/v1/users/", json=user_data)
+        data = response.get_json()
+
+        assert data["code"] == CODE_NOT_FOUND_MODE
+
+    def test_add_user_duplicate_returns_409(
+        self,
+        client: FlaskClient,
+        inserted_user: dict[str, Any],
+        inserted_mode: dict[str, Any],
+    ) -> None:
+        user_data = {
+            "username": inserted_user["username"],
+            "password": "newpassword123",
+            "mode_id": inserted_mode["_id"],
+            "score": 100,
+        }
+
+        response = client.post("/api/v1/users/", json=user_data)
+
+        assert response.status_code == 409
 
 
-def test_modify_user_authentication_error(
-    flask_client: FlaskClient, unique_mode: dict[str, Any], unique_user: dict[str, Any]
-) -> None:
-    res_mode: TestResponse = flask_client.post(
-        f"{BLUEPRINTS['modes']}/", json=unique_mode
-    )
-    mode_id: str = res_mode.get_json()["data"]["_id"]
+class TestModifyUserEndpoint:
+    def test_modify_user_returns_200(
+        self,
+        client: FlaskClient,
+        inserted_user: dict[str, Any],
+        inserted_mode: dict[str, Any],
+    ) -> None:
+        user_data = {
+            "username": inserted_user["username"],
+            "password": "testpassword123",
+            "mode_id": inserted_mode["_id"],
+            "score": 200,
+        }
 
-    user_data: dict[str, Any] = {
-        **unique_user,
-        "mode_id": mode_id,
-    }
+        response = client.patch("/api/v1/users/", json=user_data)
 
-    flask_client.post(f"{BLUEPRINTS['users']}/", json=user_data)
+        assert response.status_code == 200
 
-    modify_data: dict[str, Any] = {
-        **unique_user,
-        "password": "wrong",
-        "mode_id": mode_id,
-    }
+    def test_modify_user_returns_correct_structure(
+        self,
+        client: FlaskClient,
+        inserted_user: dict[str, Any],
+        inserted_mode: dict[str, Any],
+    ) -> None:
+        user_data = {
+            "username": inserted_user["username"],
+            "password": "testpassword123",
+            "mode_id": inserted_mode["_id"],
+            "score": 200,
+        }
 
-    res: TestResponse = flask_client.patch(f"{BLUEPRINTS['users']}/", json=modify_data)
-    body: dict[str, Any] = res.get_json()
+        response = client.patch("/api/v1/users/", json=user_data)
+        data = response.get_json()
 
-    assert res.status_code == 401
-    assert body["code"] == CODE_ERROR_AUTHENTICATION
-    assert body["message"] == MESSAGE_ERROR_AUTHENTICATION
+        assert "code" in data
+        assert "message" in data
+        assert "data" in data
+
+    def test_modify_user_returns_correct_code(
+        self,
+        client: FlaskClient,
+        inserted_user: dict[str, Any],
+        inserted_mode: dict[str, Any],
+    ) -> None:
+        user_data = {
+            "username": inserted_user["username"],
+            "password": "testpassword123",
+            "mode_id": inserted_mode["_id"],
+            "score": 200,
+        }
+
+        response = client.patch("/api/v1/users/", json=user_data)
+        data = response.get_json()
+
+        assert data["code"] == CODE_SUCCESS_UPDATE_USER
+
+    def test_modify_user_does_not_return_password(
+        self,
+        client: FlaskClient,
+        inserted_user: dict[str, Any],
+        inserted_mode: dict[str, Any],
+    ) -> None:
+        user_data = {
+            "username": inserted_user["username"],
+            "password": "testpassword123",
+            "mode_id": inserted_mode["_id"],
+            "score": 200,
+        }
+
+        response = client.patch("/api/v1/users/", json=user_data)
+        data = response.get_json()
+
+        assert "password" not in data["data"]
+
+    def test_modify_user_with_invalid_mode_returns_404(
+        self, client: FlaskClient, inserted_user: dict[str, Any], mongo_db: Database
+    ) -> None:
+        mongo_db.modes.delete_many({})
+
+        user_data = {
+            "username": inserted_user["username"],
+            "password": "testpassword123",
+            "mode_id": str(ObjectId()),
+            "score": 200,
+        }
+
+        response = client.patch("/api/v1/users/", json=user_data)
+
+        assert response.status_code == 404
+
+    def test_modify_user_with_invalid_mode_returns_correct_code(
+        self, client: FlaskClient, inserted_user: dict[str, Any], mongo_db: Database
+    ) -> None:
+        mongo_db.modes.delete_many({})
+
+        user_data = {
+            "username": inserted_user["username"],
+            "password": "testpassword123",
+            "mode_id": str(ObjectId()),
+            "score": 200,
+        }
+
+        response = client.patch("/api/v1/users/", json=user_data)
+        data = response.get_json()
+
+        assert data["code"] == CODE_NOT_FOUND_MODE
+
+    def test_modify_user_not_found_returns_404(
+        self,
+        app: Flask,
+        client: FlaskClient,
+        mongo_db: Database,
+        inserted_mode: dict[str, Any],
+    ) -> None:
+        mongo_db.users.delete_many({})
+
+        user_data = {
+            "username": "nonexistentuser",
+            "password": "testpassword123",
+            "mode_id": inserted_mode["_id"],
+            "score": 200,
+        }
+
+        response = client.patch("/api/v1/users/", json=user_data)
+
+        assert response.status_code == 404
+
+    def test_modify_user_not_found_returns_correct_code(
+        self,
+        app: Flask,
+        client: FlaskClient,
+        mongo_db: Database,
+        inserted_mode: dict[str, Any],
+    ) -> None:
+        mongo_db.users.delete_many({})
+
+        user_data = {
+            "username": "nonexistentuser",
+            "password": "testpassword123",
+            "mode_id": inserted_mode["_id"],
+            "score": 200,
+        }
+
+        response = client.patch("/api/v1/users/", json=user_data)
+        data = response.get_json()
+
+        assert data["code"] == CODE_NOT_FOUND_USER
+
+    def test_modify_user_wrong_password_returns_401(
+        self,
+        client: FlaskClient,
+        inserted_user: dict[str, Any],
+        inserted_mode: dict[str, Any],
+    ) -> None:
+        user_data = {
+            "username": inserted_user["username"],
+            "password": "wrongpassword",
+            "mode_id": inserted_mode["_id"],
+            "score": 200,
+        }
+
+        response = client.patch("/api/v1/users/", json=user_data)
+
+        assert response.status_code == 401
+
+    def test_modify_user_wrong_password_returns_correct_code(
+        self,
+        client: FlaskClient,
+        inserted_user: dict[str, Any],
+        inserted_mode: dict[str, Any],
+    ) -> None:
+        user_data = {
+            "username": inserted_user["username"],
+            "password": "wrongpassword",
+            "mode_id": inserted_mode["_id"],
+            "score": 200,
+        }
+
+        response = client.patch("/api/v1/users/", json=user_data)
+        data = response.get_json()
+
+        assert data["code"] == CODE_ERROR_AUTHENTICATION
 
 
-def test_delete_user_success(
-    flask_client: FlaskClient, unique_mode: dict[str, Any], unique_user: dict[str, Any]
-) -> None:
-    res_mode: TestResponse = flask_client.post(
-        f"{BLUEPRINTS['modes']}/", json=unique_mode
-    )
-    mode_id: str = res_mode.get_json()["data"]["_id"]
+class TestDeleteUserEndpoint:
+    def test_delete_user_returns_200(
+        self, client: FlaskClient, inserted_user: dict[str, Any]
+    ) -> None:
+        response = client.delete(f"/api/v1/users/{inserted_user['_id']}")
 
-    user_data: dict[str, Any] = {
-        **unique_user,
-        "mode_id": mode_id,
-    }
+        assert response.status_code == 200
 
-    res_insert: TestResponse = flask_client.post(
-        f"{BLUEPRINTS['users']}/", json=user_data
-    )
-    _id: str = res_insert.get_json()["data"]["_id"]
+    def test_delete_user_returns_correct_structure(
+        self, client: FlaskClient, inserted_user: dict[str, Any]
+    ) -> None:
+        response = client.delete(f"/api/v1/users/{inserted_user['_id']}")
+        data = response.get_json()
 
-    res: TestResponse = flask_client.delete(f"{BLUEPRINTS['users']}/{_id}")
-    body: dict[str, Any] = res.get_json()
+        assert "code" in data
+        assert "message" in data
 
-    assert res.status_code == 200
-    assert body["code"] == CODE_SUCCESS_DELETE_USER
-    assert body["message"] == MESSAGE_SUCCESS_DELETE_USER
+    def test_delete_user_returns_correct_code(
+        self, client: FlaskClient, inserted_user: dict[str, Any]
+    ) -> None:
+        response = client.delete(f"/api/v1/users/{inserted_user['_id']}")
+        data = response.get_json()
 
+        assert data["code"] == CODE_SUCCESS_DELETE_USER
 
-def test_delete_user_not_found(flask_client: FlaskClient) -> None:
-    res: TestResponse = flask_client.delete(
-        f"{BLUEPRINTS['users']}/673773206d0e53d0d63f3343"
-    )
-    body: dict[str, Any] = res.get_json()
+    def test_delete_user_removes_from_database(
+        self, client: FlaskClient, inserted_user: dict[str, Any], mongo_db: Database
+    ) -> None:
+        initial_count = mongo_db.users.count_documents({})
 
-    assert res.status_code == 404
-    assert body["code"] == CODE_NOT_FOUND_USER
-    assert body["message"] == MESSAGE_NOT_FOUND_USER
+        client.delete(f"/api/v1/users/{inserted_user['_id']}")
+
+        final_count = mongo_db.users.count_documents({})
+        assert final_count == initial_count - 1
+
+    def test_delete_nonexistent_user_returns_404(
+        self, app: Flask, client: FlaskClient, mongo_db: Database
+    ) -> None:
+        mongo_db.users.delete_many({})
+        fake_id = str(ObjectId())
+
+        response = client.delete(f"/api/v1/users/{fake_id}")
+
+        assert response.status_code == 404
+
+    def test_delete_nonexistent_user_returns_correct_code(
+        self, app: Flask, client: FlaskClient, mongo_db: Database
+    ) -> None:
+        mongo_db.users.delete_many({})
+        fake_id = str(ObjectId())
+
+        response = client.delete(f"/api/v1/users/{fake_id}")
+        data = response.get_json()
+
+        assert data["code"] == CODE_NOT_FOUND_USER

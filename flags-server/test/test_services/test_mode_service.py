@@ -1,123 +1,219 @@
-from unittest.mock import patch
+from typing import Any
 
 import pytest
 from bson import ObjectId
+from flask import Flask
+from pymongo.database import Database
+from pymongo.results import DeleteResult, InsertOneResult
 
+from src.constants.codes import CODE_ERROR_MODE_ALREADY_EXISTS, CODE_NOT_FOUND_MODE
 from src.models.mode_model import ModeModel
 from src.services.mode_service import ModeService
 from src.utils.exceptions import ConflictAPIError, NotFoundAPIError
 
 
-class DummyInsertOneResult:
-    def __init__(self, inserted_id: ObjectId) -> None:
-        self.inserted_id: ObjectId = inserted_id
+class TestModeServiceAddMode:
+    def test_add_mode_inserts_document(
+        self, app: Flask, mongo_db: Database, sample_mode: dict[str, Any]
+    ) -> None:
+        mongo_db.modes.delete_many({})
 
+        mode = ModeModel(**sample_mode)
+        result = ModeService.add_mode(mode)
 
-class DummyDeleteResult:
-    def __init__(self, deleted_count: int) -> None:
-        self.deleted_count: int = deleted_count
+        assert result.inserted_id is not None
 
+        doc = mongo_db.modes.find_one({"_id": result.inserted_id})
+        assert doc is not None
+        assert doc["name"] == sample_mode["name"]
 
-def test_add_mode_success() -> None:
-    mode = ModeModel(name="Arcade", description="Fast mode", multiplier=2, timeleft=90)
+    def test_add_mode_returns_insert_result(
+        self, app: Flask, mongo_db: Database, sample_mode: dict[str, Any]
+    ) -> None:
+        mongo_db.modes.delete_many({})
 
-    with patch(
-        "src.services.mode_service.ModeDAO.find_one_by_name", return_value=None
-    ), patch(
-        "src.services.mode_service.ModeDAO.insert_one",
-        return_value=DummyInsertOneResult(ObjectId()),
-    ):
-        res = ModeService.add_mode(mode)
+        mode = ModeModel(**sample_mode)
+        result = ModeService.add_mode(mode)
 
-    assert isinstance(res, DummyInsertOneResult)
-    assert res.inserted_id is not None
+        assert isinstance(result, InsertOneResult)
 
+    def test_add_mode_raises_conflict_for_duplicate(
+        self, app: Flask, inserted_mode: dict[str, Any]
+    ) -> None:
+        mode = ModeModel(
+            name=inserted_mode["name"],
+            description="Other description",
+            multiplier=50,
+            timeleft=45,
+        )
 
-def test_add_mode_conflict() -> None:
-    mode = ModeModel(name="Arcade", description="Fast mode", multiplier=2, timeleft=90)
+        with pytest.raises(ConflictAPIError) as exc_info:
+            ModeService.add_mode(mode)
 
-    with patch(
-        "src.services.mode_service.ModeDAO.find_one_by_name",
-        return_value={"name": "Arcade"},
-    ):
+        assert exc_info.value.status_code == 409
+        assert exc_info.value.code == CODE_ERROR_MODE_ALREADY_EXISTS
+
+    def test_add_mode_duplicate_is_case_insensitive(
+        self, app: Flask, inserted_mode: dict[str, Any]
+    ) -> None:
+        mode = ModeModel(
+            name=inserted_mode["name"].upper(),
+            description="Other description",
+            multiplier=50,
+            timeleft=45,
+        )
+
         with pytest.raises(ConflictAPIError):
             ModeService.add_mode(mode)
 
 
-def test_get_all_modes() -> None:
-    mock_modes: list[dict[str, str | int]] = [
-        {
-            "_id": "1",
-            "name": "Arcade",
-            "description": "Fast",
-            "multiplier": 2,
-            "timeleft": 90,
-        }
-    ]
+class TestModeServiceGetAllModes:
+    def test_get_all_modes_returns_empty_list(
+        self, app: Flask, mongo_db: Database
+    ) -> None:
+        mongo_db.modes.delete_many({})
 
-    with patch("src.services.mode_service.ModeDAO.find", return_value=mock_modes):
-        res = ModeService.get_all_modes()
+        result = ModeService.get_all_modes()
 
-    assert res == mock_modes
-    assert res[0]["name"] == "Arcade"
+        assert result == []
 
+    def test_get_all_modes_returns_all(
+        self, app: Flask, inserted_modes: list[dict[str, Any]]
+    ) -> None:
+        result = ModeService.get_all_modes()
 
-def test_get_mode_by_id() -> None:
-    _id: ObjectId = ObjectId()
-    mock_mode: dict[str, str | int] = {
-        "_id": str(_id),
-        "name": "Classic",
-        "description": "Normal",
-        "multiplier": 1,
-        "timeleft": 60,
-    }
+        assert len(result) == len(inserted_modes)
 
-    with patch(
-        "src.services.mode_service.ModeDAO.find_one_by_id", return_value=mock_mode
-    ):
-        res = ModeService.get_mode_by_id(_id)
+    def test_get_all_modes_returns_parsed_documents(
+        self, app: Flask, inserted_modes: list[dict[str, Any]]
+    ) -> None:
+        result = ModeService.get_all_modes()
 
-    assert res == mock_mode
-    assert res["name"] == "Classic"
+        assert len(result) > 0
+        assert all(isinstance(doc["_id"], str) for doc in result)
 
 
-def test_get_mode_by_name() -> None:
-    mock_mode: dict[str, str | int] = {
-        "_id": "1",
-        "name": "Survival",
-        "description": "Hardcore",
-        "multiplier": 3,
-        "timeleft": 120,
-    }
+class TestModeServiceGetModeById:
+    def test_get_mode_by_id_returns_document(
+        self, app: Flask, inserted_mode: dict[str, Any]
+    ) -> None:
+        result = ModeService.get_mode_by_id(inserted_mode["_id"])
 
-    with patch(
-        "src.services.mode_service.ModeDAO.find_one_by_name", return_value=mock_mode
-    ):
-        res = ModeService.get_mode_by_name("Survival")
+        assert result is not None
+        assert result["_id"] == inserted_mode["_id"]
+        assert result["name"] == inserted_mode["name"]
 
-    assert res == mock_mode
-    assert res["name"] == "Survival"
+    def test_get_mode_by_id_returns_none_for_nonexistent(
+        self, app: Flask, mongo_db: Database
+    ) -> None:
+        mongo_db.modes.delete_many({})
+        fake_id = str(ObjectId())
 
+        result = ModeService.get_mode_by_id(fake_id)
 
-def test_delete_mode_success() -> None:
-    _id: ObjectId = ObjectId()
+        assert result is None
 
-    with patch(
-        "src.services.mode_service.ModeDAO.find_one_by_id",
-        return_value={"_id": str(_id), "name": "Arcade"},
-    ), patch(
-        "src.services.mode_service.ModeDAO.delete_one_by_id",
-        return_value=DummyDeleteResult(1),
-    ):
-        res = ModeService.delete_mode_by_id(_id)
+    def test_get_mode_by_id_returns_all_fields(
+        self, app: Flask, inserted_mode: dict[str, Any]
+    ) -> None:
+        result = ModeService.get_mode_by_id(inserted_mode["_id"])
 
-    assert isinstance(res, DummyDeleteResult)
-    assert res.deleted_count == 1
+        assert "name" in result
+        assert "description" in result
+        assert "multiplier" in result
+        assert "timeleft" in result
 
 
-def test_delete_mode_not_found() -> None:
-    _id: ObjectId = ObjectId()
+class TestModeServiceGetModeByName:
+    def test_get_mode_by_name_returns_document(
+        self, app: Flask, inserted_mode: dict[str, Any]
+    ) -> None:
+        result = ModeService.get_mode_by_name(inserted_mode["name"])
 
-    with patch("src.services.mode_service.ModeDAO.find_one_by_id", return_value=None):
-        with pytest.raises(NotFoundAPIError):
-            ModeService.delete_mode_by_id(_id)
+        assert result is not None
+        assert result["name"] == inserted_mode["name"]
+
+    def test_get_mode_by_name_returns_none_for_nonexistent(
+        self, app: Flask, mongo_db: Database
+    ) -> None:
+        mongo_db.modes.delete_many({})
+
+        result = ModeService.get_mode_by_name("NonexistentMode")
+
+        assert result is None
+
+    def test_get_mode_by_name_is_case_insensitive(
+        self, app: Flask, inserted_mode: dict[str, Any]
+    ) -> None:
+        result_lower = ModeService.get_mode_by_name(inserted_mode["name"].lower())
+        result_upper = ModeService.get_mode_by_name(inserted_mode["name"].upper())
+
+        assert result_lower is not None
+        assert result_upper is not None
+
+
+class TestModeServiceDeleteModeById:
+    def test_delete_mode_removes_document(
+        self, app: Flask, inserted_mode: dict[str, Any], mongo_db: Database
+    ) -> None:
+        initial_count = mongo_db.modes.count_documents({})
+
+        ModeService.delete_mode_by_id(inserted_mode["_id"])
+
+        final_count = mongo_db.modes.count_documents({})
+        assert final_count == initial_count - 1
+
+    def test_delete_mode_returns_delete_result(
+        self, app: Flask, inserted_mode: dict[str, Any]
+    ) -> None:
+        result = ModeService.delete_mode_by_id(inserted_mode["_id"])
+
+        assert isinstance(result, DeleteResult)
+
+    def test_delete_mode_raises_not_found(self, app: Flask, mongo_db: Database) -> None:
+        mongo_db.modes.delete_many({})
+        fake_id = str(ObjectId())
+
+        with pytest.raises(NotFoundAPIError) as exc_info:
+            ModeService.delete_mode_by_id(fake_id)
+
+        assert exc_info.value.status_code == 404
+        assert exc_info.value.code == CODE_NOT_FOUND_MODE
+
+    def test_delete_mode_only_removes_one(
+        self, app: Flask, inserted_modes: list[dict[str, Any]], mongo_db: Database
+    ) -> None:
+        initial_count = mongo_db.modes.count_documents({})
+
+        ModeService.delete_mode_by_id(inserted_modes[0]["_id"])
+
+        final_count = mongo_db.modes.count_documents({})
+        assert final_count == initial_count - 1
+
+
+class TestModeServiceIntegration:
+    def test_full_crud_cycle(self, app: Flask, mongo_db: Database) -> None:
+        mongo_db.modes.delete_many({})
+
+        mode = ModeModel(
+            name="TestMode",
+            description="Test mode description",
+            multiplier=50,
+            timeleft=60,
+        )
+        create_result = ModeService.add_mode(mode)
+        mode_id = str(create_result.inserted_id)
+
+        modes = ModeService.get_all_modes()
+        assert len(modes) == 1
+        assert modes[0]["_id"] == mode_id
+
+        found_mode = ModeService.get_mode_by_id(mode_id)
+        assert found_mode is not None
+        assert found_mode["name"] == "TestMode"
+
+        delete_result = ModeService.delete_mode_by_id(mode_id)
+        assert delete_result.deleted_count == 1
+
+        modes = ModeService.get_all_modes()
+        assert len(modes) == 0

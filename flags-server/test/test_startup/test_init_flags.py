@@ -1,41 +1,61 @@
-from unittest.mock import patch
+from flask import Flask
+from pymongo.database import Database
 
 from src.constants.defaults import DEFAULT_FLAGS
-from src.models.flag_model import FlagModel
-from src.services.flag_service import FlagService
 from src.startup.init_flags import add_default_flags
 
 
-def test_add_default_flags_when_flags_exist() -> None:
-    with patch.object(
-        FlagService, "get_all_flags", return_value=[{"name": "Argentina"}]
-    ) as mock_get, patch.object(FlagService, "add_flag") as mock_add:
+class TestAddDefaultFlags:
+    def test_adds_flags_when_empty(self, app: Flask, mongo_db: Database) -> None:
+        mongo_db.flags.delete_many({})
+
         add_default_flags()
 
-        mock_get.assert_called_once()
-        mock_add.assert_not_called()
+        count = mongo_db.flags.count_documents({})
+        assert count == len(DEFAULT_FLAGS)
 
+    def test_does_not_add_when_flags_exist(
+        self, app: Flask, mongo_db: Database
+    ) -> None:
+        mongo_db.flags.delete_many({})
+        mongo_db.flags.insert_one(
+            {"name": "ExistingFlag", "image": "https://example.com/flag.png"}
+        )
 
-def test_add_default_flags_when_no_flags() -> None:
-    with patch.object(
-        FlagService, "get_all_flags", return_value=[]
-    ) as mock_get, patch.object(FlagService, "add_flag") as mock_add:
         add_default_flags()
 
-        mock_get.assert_called_once()
-        assert mock_add.call_count == len(DEFAULT_FLAGS)
+        count = mongo_db.flags.count_documents({})
+        assert count == 1
 
-        for call in mock_add.call_args_list:
-            args, _ = call
-            assert isinstance(args[0], FlagModel)
+    def test_adds_correct_flag_names(self, app: Flask, mongo_db: Database) -> None:
+        mongo_db.flags.delete_many({})
 
-
-def test_add_default_flags_idempotent() -> None:
-    with patch.object(
-        FlagService, "get_all_flags", side_effect=[[], [{}]]
-    ) as mock_get, patch.object(FlagService, "add_flag") as mock_add:
-        add_default_flags()
         add_default_flags()
 
-        assert mock_add.call_count == len(DEFAULT_FLAGS)
-        assert mock_get.call_count == 2
+        expected_names = [flag["name"] for flag in DEFAULT_FLAGS]
+        actual_names = [flag["name"] for flag in mongo_db.flags.find()]
+
+        for name in expected_names:
+            assert name in actual_names
+
+    def test_adds_correct_flag_images(self, app: Flask, mongo_db: Database) -> None:
+        mongo_db.flags.delete_many({})
+
+        add_default_flags()
+
+        expected_images = [flag["image"] for flag in DEFAULT_FLAGS]
+        actual_images = [flag["image"] for flag in mongo_db.flags.find()]
+
+        for image in expected_images:
+            assert image in actual_images
+
+    def test_is_idempotent(self, app: Flask, mongo_db: Database) -> None:
+        mongo_db.flags.delete_many({})
+
+        add_default_flags()
+        initial_count = mongo_db.flags.count_documents({})
+
+        add_default_flags()
+        final_count = mongo_db.flags.count_documents({})
+
+        assert initial_count == final_count

@@ -1,41 +1,67 @@
-from unittest.mock import patch
+from flask import Flask
+from pymongo.database import Database
 
 from src.constants.defaults import DEFAULT_MODES
-from src.models.mode_model import ModeModel
-from src.services.mode_service import ModeService
 from src.startup.init_modes import add_default_modes
 
 
-def test_add_default_modes_when_modes_exist() -> None:
-    with patch.object(
-        ModeService, "get_all_modes", return_value=[{"name": "Arcade"}]
-    ) as mock_get, patch.object(ModeService, "add_mode") as mock_add:
+class TestAddDefaultModes:
+    def test_adds_modes_when_empty(self, app: Flask, mongo_db: Database) -> None:
+        mongo_db.modes.delete_many({})
+
         add_default_modes()
 
-        mock_get.assert_called_once()
-        mock_add.assert_not_called()
+        count = mongo_db.modes.count_documents({})
+        assert count == len(DEFAULT_MODES)
 
+    def test_does_not_add_when_modes_exist(
+        self, app: Flask, mongo_db: Database
+    ) -> None:
+        mongo_db.modes.delete_many({})
+        mongo_db.modes.insert_one(
+            {
+                "name": "ExistingMode",
+                "description": "Existing mode",
+                "multiplier": 10,
+                "timeleft": 90,
+            }
+        )
 
-def test_add_default_modes_when_no_modes() -> None:
-    with patch.object(
-        ModeService, "get_all_modes", return_value=[]
-    ) as mock_get, patch.object(ModeService, "add_mode") as mock_add:
         add_default_modes()
 
-        mock_get.assert_called_once()
-        assert mock_add.call_count == len(DEFAULT_MODES)
+        count = mongo_db.modes.count_documents({})
+        assert count == 1
 
-        for call in mock_add.call_args_list:
-            args, _ = call
-            assert isinstance(args[0], ModeModel)
+    def test_adds_correct_mode_names(self, app: Flask, mongo_db: Database) -> None:
+        mongo_db.modes.delete_many({})
 
-
-def test_add_default_modes_idempotent() -> None:
-    with patch.object(
-        ModeService, "get_all_modes", side_effect=[[], [{}]]
-    ) as mock_get, patch.object(ModeService, "add_mode") as mock_add:
-        add_default_modes()
         add_default_modes()
 
-        assert mock_add.call_count == len(DEFAULT_MODES)
-        assert mock_get.call_count == 2
+        expected_names = [mode["name"] for mode in DEFAULT_MODES]
+        actual_names = [mode["name"] for mode in mongo_db.modes.find()]
+
+        for name in expected_names:
+            assert name in actual_names
+
+    def test_adds_correct_mode_data(self, app: Flask, mongo_db: Database) -> None:
+        mongo_db.modes.delete_many({})
+
+        add_default_modes()
+
+        for default_mode in DEFAULT_MODES:
+            doc = mongo_db.modes.find_one({"name": default_mode["name"]})
+            assert doc is not None
+            assert doc["description"] == default_mode["description"]
+            assert doc["multiplier"] == default_mode["multiplier"]
+            assert doc["timeleft"] == default_mode["timeleft"]
+
+    def test_is_idempotent(self, app: Flask, mongo_db: Database) -> None:
+        mongo_db.modes.delete_many({})
+
+        add_default_modes()
+        initial_count = mongo_db.modes.count_documents({})
+
+        add_default_modes()
+        final_count = mongo_db.modes.count_documents({})
+
+        assert initial_count == final_count
