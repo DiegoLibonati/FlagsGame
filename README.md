@@ -161,7 +161,7 @@ VITE_API_URL=http://host.docker.internal:5050
 # Backend Envs
 TZ=America/Argentina/Buenos_Aires
 
-MONGO_HOST=host.docker.internal
+MONGO_HOST=flags-db
 MONGO_PORT=27017
 MONGO_USER=admin
 MONGO_PASS=secret123
