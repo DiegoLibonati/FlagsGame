@@ -13,9 +13,7 @@ from src.utils.exceptions import ConflictAPIError, NotFoundAPIError
 
 
 class TestUserServiceAddUser:
-    def test_add_user_inserts_document(
-        self, app: Flask, mongo_db: Database, sample_user: dict[str, Any]
-    ) -> None:
+    def test_add_user_inserts_document(self, app: Flask, mongo_db: Database, sample_user: dict[str, Any]) -> None:
         mongo_db.users.delete_many({})
 
         user = UserModel(**sample_user)
@@ -27,9 +25,7 @@ class TestUserServiceAddUser:
         assert doc is not None
         assert doc["username"] == sample_user["username"]
 
-    def test_add_user_returns_insert_result(
-        self, app: Flask, mongo_db: Database, sample_user: dict[str, Any]
-    ) -> None:
+    def test_add_user_returns_insert_result(self, app: Flask, mongo_db: Database, sample_user: dict[str, Any]) -> None:
         mongo_db.users.delete_many({})
 
         user = UserModel(**sample_user)
@@ -37,9 +33,7 @@ class TestUserServiceAddUser:
 
         assert isinstance(result, InsertOneResult)
 
-    def test_add_user_raises_conflict_for_duplicate(
-        self, app: Flask, inserted_user: dict[str, Any]
-    ) -> None:
+    def test_add_user_raises_conflict_for_duplicate(self, app: Flask, inserted_user: dict[str, Any]) -> None:
         user = UserModel(
             username=inserted_user["username"],
             password="otherpassword",
@@ -55,25 +49,19 @@ class TestUserServiceAddUser:
 
 
 class TestUserServiceGetAllUsers:
-    def test_get_all_users_returns_empty_list(
-        self, app: Flask, mongo_db: Database
-    ) -> None:
+    def test_get_all_users_returns_empty_list(self, app: Flask, mongo_db: Database) -> None:
         mongo_db.users.delete_many({})
 
         result = UserService.get_all_users()
 
         assert result == []
 
-    def test_get_all_users_returns_all(
-        self, app: Flask, inserted_users: list[dict[str, Any]]
-    ) -> None:
+    def test_get_all_users_returns_all(self, app: Flask, inserted_users: list[dict[str, Any]]) -> None:
         result = UserService.get_all_users()
 
         assert len(result) == len(inserted_users)
 
-    def test_get_all_users_returns_parsed_documents(
-        self, app: Flask, inserted_users: list[dict[str, Any]]
-    ) -> None:
+    def test_get_all_users_returns_parsed_documents(self, app: Flask, inserted_users: list[dict[str, Any]]) -> None:
         result = UserService.get_all_users()
 
         assert len(result) > 0
@@ -81,44 +69,34 @@ class TestUserServiceGetAllUsers:
 
 
 class TestUserServiceGetUserByUsername:
-    def test_get_user_by_username_returns_document(
-        self, app: Flask, inserted_user: dict[str, Any]
-    ) -> None:
+    def test_get_user_by_username_returns_document(self, app: Flask, inserted_user: dict[str, Any]) -> None:
         result = UserService.get_user_by_username(inserted_user["username"])
 
         assert result is not None
         assert result["username"] == inserted_user["username"]
 
-    def test_get_user_by_username_returns_none_for_nonexistent(
-        self, app: Flask, mongo_db: Database
-    ) -> None:
+    def test_get_user_by_username_returns_none_for_nonexistent(self, app: Flask, mongo_db: Database) -> None:
         mongo_db.users.delete_many({})
 
         result = UserService.get_user_by_username("nonexistentuser")
 
         assert result is None
 
-    def test_get_user_by_username_is_case_sensitive(
-        self, app: Flask, inserted_user: dict[str, Any]
-    ) -> None:
+    def test_get_user_by_username_is_case_sensitive(self, app: Flask, inserted_user: dict[str, Any]) -> None:
         result = UserService.get_user_by_username(inserted_user["username"].upper())
 
         assert result is None
 
 
 class TestUserServiceGetTopUsers:
-    def test_get_top_users_returns_empty_when_no_users(
-        self, app: Flask, mongo_db: Database
-    ) -> None:
+    def test_get_top_users_returns_empty_when_no_users(self, app: Flask, mongo_db: Database) -> None:
         mongo_db.users.delete_many({})
 
         result = UserService.get_top_users("General")
 
         assert result == []
 
-    def test_get_top_users_returns_sorted_by_general_score(
-        self, app: Flask, inserted_users: list[dict[str, Any]]
-    ) -> None:
+    def test_get_top_users_returns_sorted_by_general_score(self, app: Flask, inserted_users: list[dict[str, Any]]) -> None:
         result = UserService.get_top_users("General")
 
         scores = [user["score"] for user in result]
@@ -141,17 +119,13 @@ class TestUserServiceGetTopUsers:
 
         assert len(result) == 10
 
-    def test_get_top_users_uses_total_score_for_general(
-        self, app: Flask, inserted_users: list[dict[str, Any]]
-    ) -> None:
+    def test_get_top_users_uses_total_score_for_general(self, app: Flask, inserted_users: list[dict[str, Any]]) -> None:
         result = UserService.get_top_users("General")
 
         assert len(result) > 0
         assert all("score" in user for user in result)
 
-    def test_get_top_users_uses_mode_score_for_specific_mode(
-        self, app: Flask, mongo_db: Database
-    ) -> None:
+    def test_get_top_users_uses_mode_score_for_specific_mode(self, app: Flask, mongo_db: Database) -> None:
         mongo_db.users.delete_many({})
 
         mongo_db.users.insert_one(
@@ -176,9 +150,7 @@ class TestUserServiceGetTopUsers:
         assert result[0]["username"] == "user2"
         assert result[0]["score"] == 200
 
-    def test_get_top_users_returns_zero_for_missing_mode(
-        self, app: Flask, mongo_db: Database
-    ) -> None:
+    def test_get_top_users_returns_zero_for_missing_mode(self, app: Flask, mongo_db: Database) -> None:
         mongo_db.users.delete_many({})
 
         mongo_db.users.insert_one(
@@ -196,42 +168,28 @@ class TestUserServiceGetTopUsers:
 
 
 class TestUserServiceUpdateUserScoresByUsername:
-    def test_update_user_scores_updates_document(
-        self, app: Flask, inserted_user: dict[str, Any], mongo_db: Database
-    ) -> None:
+    def test_update_user_scores_updates_document(self, app: Flask, inserted_user: dict[str, Any], mongo_db: Database) -> None:
         new_scores = {"General": 500, "Normal": 300}
 
-        UserService.update_user_scores_by_username(
-            inserted_user["username"], {"scores": new_scores}
-        )
+        UserService.update_user_scores_by_username(inserted_user["username"], {"scores": new_scores})
 
         doc = mongo_db.users.find_one({"username": inserted_user["username"]})
         assert doc["scores"] == new_scores
 
-    def test_update_user_scores_returns_update_result(
-        self, app: Flask, inserted_user: dict[str, Any]
-    ) -> None:
-        result = UserService.update_user_scores_by_username(
-            inserted_user["username"], {"total_score": 999}
-        )
+    def test_update_user_scores_returns_update_result(self, app: Flask, inserted_user: dict[str, Any]) -> None:
+        result = UserService.update_user_scores_by_username(inserted_user["username"], {"total_score": 999})
 
         assert isinstance(result, UpdateResult)
 
-    def test_update_user_scores_updates_total_score(
-        self, app: Flask, inserted_user: dict[str, Any], mongo_db: Database
-    ) -> None:
-        UserService.update_user_scores_by_username(
-            inserted_user["username"], {"total_score": 999}
-        )
+    def test_update_user_scores_updates_total_score(self, app: Flask, inserted_user: dict[str, Any], mongo_db: Database) -> None:
+        UserService.update_user_scores_by_username(inserted_user["username"], {"total_score": 999})
 
         doc = mongo_db.users.find_one({"username": inserted_user["username"]})
         assert doc["total_score"] == 999
 
 
 class TestUserServiceDeleteUserById:
-    def test_delete_user_removes_document(
-        self, app: Flask, inserted_user: dict[str, Any], mongo_db: Database
-    ) -> None:
+    def test_delete_user_removes_document(self, app: Flask, inserted_user: dict[str, Any], mongo_db: Database) -> None:
         initial_count = mongo_db.users.count_documents({})
 
         UserService.delete_user_by_id(inserted_user["_id"])
@@ -239,9 +197,7 @@ class TestUserServiceDeleteUserById:
         final_count = mongo_db.users.count_documents({})
         assert final_count == initial_count - 1
 
-    def test_delete_user_returns_delete_result(
-        self, app: Flask, inserted_user: dict[str, Any]
-    ) -> None:
+    def test_delete_user_returns_delete_result(self, app: Flask, inserted_user: dict[str, Any]) -> None:
         result = UserService.delete_user_by_id(inserted_user["_id"])
 
         assert isinstance(result, DeleteResult)
@@ -256,9 +212,7 @@ class TestUserServiceDeleteUserById:
         assert exc_info.value.status_code == 404
         assert exc_info.value.code == CODE_NOT_FOUND_USER
 
-    def test_delete_user_only_removes_one(
-        self, app: Flask, inserted_users: list[dict[str, Any]], mongo_db: Database
-    ) -> None:
+    def test_delete_user_only_removes_one(self, app: Flask, inserted_users: list[dict[str, Any]], mongo_db: Database) -> None:
         initial_count = mongo_db.users.count_documents({})
 
         UserService.delete_user_by_id(inserted_users[0]["_id"])
@@ -286,9 +240,7 @@ class TestUserServiceIntegration:
         found_user = UserService.get_user_by_username("integrationuser")
         assert found_user is not None
 
-        UserService.update_user_scores_by_username(
-            "integrationuser", {"total_score": 500}
-        )
+        UserService.update_user_scores_by_username("integrationuser", {"total_score": 500})
         updated_user = UserService.get_user_by_username("integrationuser")
         assert updated_user["total_score"] == 500
 

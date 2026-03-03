@@ -63,9 +63,7 @@ class TestGetModesEndpoint:
 
         assert data["code"] == CODE_SUCCESS_GET_ALL_MODES
 
-    def test_get_modes_returns_empty_list_when_no_modes(
-        self, app: Flask, client: FlaskClient, mongo_db: Database
-    ) -> None:
+    def test_get_modes_returns_empty_list_when_no_modes(self, app: Flask, client: FlaskClient, mongo_db: Database) -> None:
         mongo_db.modes.delete_many({})
 
         response = client.get("/api/v1/modes/")
@@ -73,9 +71,7 @@ class TestGetModesEndpoint:
 
         assert data["data"] == []
 
-    def test_get_modes_returns_all_modes(
-        self, client: FlaskClient, inserted_modes: list[dict[str, Any]]
-    ) -> None:
+    def test_get_modes_returns_all_modes(self, client: FlaskClient, inserted_modes: list[dict[str, Any]]) -> None:
         response = client.get("/api/v1/modes/")
         data = response.get_json()
 
@@ -83,16 +79,12 @@ class TestGetModesEndpoint:
 
 
 class TestFindModeEndpoint:
-    def test_find_mode_returns_200(
-        self, client: FlaskClient, inserted_mode: dict[str, Any]
-    ) -> None:
+    def test_find_mode_returns_200(self, client: FlaskClient, inserted_mode: dict[str, Any]) -> None:
         response = client.get(f"/api/v1/modes/{inserted_mode['_id']}")
 
         assert response.status_code == 200
 
-    def test_find_mode_returns_correct_structure(
-        self, client: FlaskClient, inserted_mode: dict[str, Any]
-    ) -> None:
+    def test_find_mode_returns_correct_structure(self, client: FlaskClient, inserted_mode: dict[str, Any]) -> None:
         response = client.get(f"/api/v1/modes/{inserted_mode['_id']}")
         data = response.get_json()
 
@@ -100,26 +92,20 @@ class TestFindModeEndpoint:
         assert "message" in data
         assert "data" in data
 
-    def test_find_mode_returns_correct_code(
-        self, client: FlaskClient, inserted_mode: dict[str, Any]
-    ) -> None:
+    def test_find_mode_returns_correct_code(self, client: FlaskClient, inserted_mode: dict[str, Any]) -> None:
         response = client.get(f"/api/v1/modes/{inserted_mode['_id']}")
         data = response.get_json()
 
         assert data["code"] == CODE_SUCCESS_GET_MODE
 
-    def test_find_mode_returns_correct_data(
-        self, client: FlaskClient, inserted_mode: dict[str, Any]
-    ) -> None:
+    def test_find_mode_returns_correct_data(self, client: FlaskClient, inserted_mode: dict[str, Any]) -> None:
         response = client.get(f"/api/v1/modes/{inserted_mode['_id']}")
         data = response.get_json()
 
         assert data["data"]["name"] == inserted_mode["name"]
         assert data["data"]["description"] == inserted_mode["description"]
 
-    def test_find_mode_not_found_returns_404(
-        self, app: Flask, client: FlaskClient, mongo_db: Database
-    ) -> None:
+    def test_find_mode_not_found_returns_404(self, app: Flask, client: FlaskClient, mongo_db: Database) -> None:
         mongo_db.modes.delete_many({})
         fake_id = str(ObjectId())
 
@@ -127,9 +113,7 @@ class TestFindModeEndpoint:
 
         assert response.status_code == 404
 
-    def test_find_mode_not_found_returns_correct_code(
-        self, app: Flask, client: FlaskClient, mongo_db: Database
-    ) -> None:
+    def test_find_mode_not_found_returns_correct_code(self, app: Flask, client: FlaskClient, mongo_db: Database) -> None:
         mongo_db.modes.delete_many({})
         fake_id = str(ObjectId())
 
@@ -140,16 +124,12 @@ class TestFindModeEndpoint:
 
 
 class TestTopModeEndpoint:
-    def test_top_mode_returns_200(
-        self, client: FlaskClient, inserted_mode: dict[str, Any]
-    ) -> None:
+    def test_top_mode_returns_200(self, client: FlaskClient, inserted_mode: dict[str, Any]) -> None:
         response = client.get(f"/api/v1/modes/{inserted_mode['_id']}/top")
 
         assert response.status_code == 200
 
-    def test_top_mode_returns_correct_structure(
-        self, client: FlaskClient, inserted_mode: dict[str, Any]
-    ) -> None:
+    def test_top_mode_returns_correct_structure(self, client: FlaskClient, inserted_mode: dict[str, Any]) -> None:
         response = client.get(f"/api/v1/modes/{inserted_mode['_id']}/top")
         data = response.get_json()
 
@@ -157,25 +137,19 @@ class TestTopModeEndpoint:
         assert "message" in data
         assert "data" in data
 
-    def test_top_mode_returns_correct_code(
-        self, client: FlaskClient, inserted_mode: dict[str, Any]
-    ) -> None:
+    def test_top_mode_returns_correct_code(self, client: FlaskClient, inserted_mode: dict[str, Any]) -> None:
         response = client.get(f"/api/v1/modes/{inserted_mode['_id']}/top")
         data = response.get_json()
 
         assert data["code"] == CODE_SUCCESS_GET_TOP_MODE
 
-    def test_top_mode_returns_list(
-        self, client: FlaskClient, inserted_mode: dict[str, Any]
-    ) -> None:
+    def test_top_mode_returns_list(self, client: FlaskClient, inserted_mode: dict[str, Any]) -> None:
         response = client.get(f"/api/v1/modes/{inserted_mode['_id']}/top")
         data = response.get_json()
 
         assert isinstance(data["data"], list)
 
-    def test_top_mode_not_found_returns_404(
-        self, app: Flask, client: FlaskClient, mongo_db: Database
-    ) -> None:
+    def test_top_mode_not_found_returns_404(self, app: Flask, client: FlaskClient, mongo_db: Database) -> None:
         mongo_db.modes.delete_many({})
         fake_id = str(ObjectId())
 
@@ -271,9 +245,7 @@ class TestAddModeEndpoint:
 
         assert response.status_code == 400
 
-    def test_add_mode_duplicate_returns_409(
-        self, client: FlaskClient, inserted_mode: dict[str, Any]
-    ) -> None:
+    def test_add_mode_duplicate_returns_409(self, client: FlaskClient, inserted_mode: dict[str, Any]) -> None:
         duplicate_mode = {
             "name": inserted_mode["name"],
             "description": "Other description",
@@ -287,33 +259,25 @@ class TestAddModeEndpoint:
 
 
 class TestDeleteModeEndpoint:
-    def test_delete_mode_returns_200(
-        self, client: FlaskClient, inserted_mode: dict[str, Any]
-    ) -> None:
+    def test_delete_mode_returns_200(self, client: FlaskClient, inserted_mode: dict[str, Any]) -> None:
         response = client.delete(f"/api/v1/modes/{inserted_mode['_id']}")
 
         assert response.status_code == 200
 
-    def test_delete_mode_returns_correct_structure(
-        self, client: FlaskClient, inserted_mode: dict[str, Any]
-    ) -> None:
+    def test_delete_mode_returns_correct_structure(self, client: FlaskClient, inserted_mode: dict[str, Any]) -> None:
         response = client.delete(f"/api/v1/modes/{inserted_mode['_id']}")
         data = response.get_json()
 
         assert "code" in data
         assert "message" in data
 
-    def test_delete_mode_returns_correct_code(
-        self, client: FlaskClient, inserted_mode: dict[str, Any]
-    ) -> None:
+    def test_delete_mode_returns_correct_code(self, client: FlaskClient, inserted_mode: dict[str, Any]) -> None:
         response = client.delete(f"/api/v1/modes/{inserted_mode['_id']}")
         data = response.get_json()
 
         assert data["code"] == CODE_SUCCESS_DELETE_MODE
 
-    def test_delete_mode_removes_from_database(
-        self, client: FlaskClient, inserted_mode: dict[str, Any], mongo_db: Database
-    ) -> None:
+    def test_delete_mode_removes_from_database(self, client: FlaskClient, inserted_mode: dict[str, Any], mongo_db: Database) -> None:
         initial_count = mongo_db.modes.count_documents({})
 
         client.delete(f"/api/v1/modes/{inserted_mode['_id']}")
@@ -321,9 +285,7 @@ class TestDeleteModeEndpoint:
         final_count = mongo_db.modes.count_documents({})
         assert final_count == initial_count - 1
 
-    def test_delete_nonexistent_mode_returns_404(
-        self, app: Flask, client: FlaskClient, mongo_db: Database
-    ) -> None:
+    def test_delete_nonexistent_mode_returns_404(self, app: Flask, client: FlaskClient, mongo_db: Database) -> None:
         mongo_db.modes.delete_many({})
         fake_id = str(ObjectId())
 
@@ -331,9 +293,7 @@ class TestDeleteModeEndpoint:
 
         assert response.status_code == 404
 
-    def test_delete_nonexistent_mode_returns_correct_code(
-        self, app: Flask, client: FlaskClient, mongo_db: Database
-    ) -> None:
+    def test_delete_nonexistent_mode_returns_correct_code(self, app: Flask, client: FlaskClient, mongo_db: Database) -> None:
         mongo_db.modes.delete_many({})
         fake_id = str(ObjectId())
 

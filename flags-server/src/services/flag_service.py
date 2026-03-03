@@ -37,8 +37,6 @@ class FlagService:
         existing = FlagDAO.find_one_by_id(_id)
 
         if not existing:
-            raise NotFoundAPIError(
-                code=CODE_NOT_FOUND_FLAG, message=MESSAGE_NOT_FOUND_FLAG
-            )
+            raise NotFoundAPIError(code=CODE_NOT_FOUND_FLAG, message=MESSAGE_NOT_FOUND_FLAG)
 
         return FlagDAO.delete_one_by_id(_id)

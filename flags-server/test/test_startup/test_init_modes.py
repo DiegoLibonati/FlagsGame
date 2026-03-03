@@ -14,9 +14,7 @@ class TestAddDefaultModes:
         count = mongo_db.modes.count_documents({})
         assert count == len(DEFAULT_MODES)
 
-    def test_does_not_add_when_modes_exist(
-        self, app: Flask, mongo_db: Database
-    ) -> None:
+    def test_does_not_add_when_modes_exist(self, app: Flask, mongo_db: Database) -> None:
         mongo_db.modes.delete_many({})
         mongo_db.modes.insert_one(
             {

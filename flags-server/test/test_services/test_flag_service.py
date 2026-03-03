@@ -11,9 +11,7 @@ from src.utils.exceptions import ConflictAPIError, NotFoundAPIError
 
 
 class TestFlagServiceAddFlag:
-    def test_add_flag_inserts_document(
-        self, app: Flask, mongo_db: Database, sample_flag: dict[str, str]
-    ) -> None:
+    def test_add_flag_inserts_document(self, app: Flask, mongo_db: Database, sample_flag: dict[str, str]) -> None:
         mongo_db.flags.delete_many({})
 
         flag = FlagModel(**sample_flag)
@@ -25,9 +23,7 @@ class TestFlagServiceAddFlag:
         assert doc is not None
         assert doc["name"] == sample_flag["name"]
 
-    def test_add_flag_returns_insert_result(
-        self, app: Flask, mongo_db: Database, sample_flag: dict[str, str]
-    ) -> None:
+    def test_add_flag_returns_insert_result(self, app: Flask, mongo_db: Database, sample_flag: dict[str, str]) -> None:
         mongo_db.flags.delete_many({})
 
         flag = FlagModel(**sample_flag)
@@ -35,12 +31,8 @@ class TestFlagServiceAddFlag:
 
         assert isinstance(result, InsertOneResult)
 
-    def test_add_flag_raises_conflict_for_duplicate(
-        self, app: Flask, inserted_flag: dict[str, str]
-    ) -> None:
-        flag = FlagModel(
-            name=inserted_flag["name"], image="https://example.com/other.png"
-        )
+    def test_add_flag_raises_conflict_for_duplicate(self, app: Flask, inserted_flag: dict[str, str]) -> None:
+        flag = FlagModel(name=inserted_flag["name"], image="https://example.com/other.png")
 
         with pytest.raises(ConflictAPIError) as exc_info:
             FlagService.add_flag(flag)
@@ -48,37 +40,27 @@ class TestFlagServiceAddFlag:
         assert exc_info.value.status_code == 409
         assert exc_info.value.code == CODE_ERROR_FLAG_ALREADY_EXISTS
 
-    def test_add_flag_duplicate_is_case_insensitive(
-        self, app: Flask, inserted_flag: dict[str, str]
-    ) -> None:
-        flag = FlagModel(
-            name=inserted_flag["name"].upper(), image="https://example.com/other.png"
-        )
+    def test_add_flag_duplicate_is_case_insensitive(self, app: Flask, inserted_flag: dict[str, str]) -> None:
+        flag = FlagModel(name=inserted_flag["name"].upper(), image="https://example.com/other.png")
 
         with pytest.raises(ConflictAPIError):
             FlagService.add_flag(flag)
 
 
 class TestFlagServiceGetAllFlags:
-    def test_get_all_flags_returns_empty_list(
-        self, app: Flask, mongo_db: Database
-    ) -> None:
+    def test_get_all_flags_returns_empty_list(self, app: Flask, mongo_db: Database) -> None:
         mongo_db.flags.delete_many({})
 
         result = FlagService.get_all_flags()
 
         assert result == []
 
-    def test_get_all_flags_returns_all(
-        self, app: Flask, inserted_flags: list[dict[str, str]]
-    ) -> None:
+    def test_get_all_flags_returns_all(self, app: Flask, inserted_flags: list[dict[str, str]]) -> None:
         result = FlagService.get_all_flags()
 
         assert len(result) == len(inserted_flags)
 
-    def test_get_all_flags_returns_parsed_documents(
-        self, app: Flask, inserted_flags: list[dict[str, str]]
-    ) -> None:
+    def test_get_all_flags_returns_parsed_documents(self, app: Flask, inserted_flags: list[dict[str, str]]) -> None:
         result = FlagService.get_all_flags()
 
         assert len(result) > 0
@@ -86,41 +68,31 @@ class TestFlagServiceGetAllFlags:
 
 
 class TestFlagServiceGetRandomFlags:
-    def test_get_random_flags_returns_requested_quantity(
-        self, app: Flask, inserted_flags: list[dict[str, str]]
-    ) -> None:
+    def test_get_random_flags_returns_requested_quantity(self, app: Flask, inserted_flags: list[dict[str, str]]) -> None:
         result = FlagService.get_random_flags(2)
 
         assert len(result) == 2
 
-    def test_get_random_flags_returns_empty_when_no_flags(
-        self, app: Flask, mongo_db: Database
-    ) -> None:
+    def test_get_random_flags_returns_empty_when_no_flags(self, app: Flask, mongo_db: Database) -> None:
         mongo_db.flags.delete_many({})
 
         result = FlagService.get_random_flags(5)
 
         assert result == []
 
-    def test_get_random_flags_returns_all_when_quantity_exceeds_total(
-        self, app: Flask, inserted_flags: list[dict[str, str]]
-    ) -> None:
+    def test_get_random_flags_returns_all_when_quantity_exceeds_total(self, app: Flask, inserted_flags: list[dict[str, str]]) -> None:
         result = FlagService.get_random_flags(100)
 
         assert len(result) == len(inserted_flags)
 
-    def test_get_random_flags_returns_parsed_documents(
-        self, app: Flask, inserted_flags: list[dict[str, str]]
-    ) -> None:
+    def test_get_random_flags_returns_parsed_documents(self, app: Flask, inserted_flags: list[dict[str, str]]) -> None:
         result = FlagService.get_random_flags(2)
 
         assert all(isinstance(doc["_id"], str) for doc in result)
 
 
 class TestFlagServiceDeleteFlagById:
-    def test_delete_flag_removes_document(
-        self, app: Flask, inserted_flag: dict[str, str], mongo_db: Database
-    ) -> None:
+    def test_delete_flag_removes_document(self, app: Flask, inserted_flag: dict[str, str], mongo_db: Database) -> None:
         initial_count = mongo_db.flags.count_documents({})
 
         FlagService.delete_flag_by_id(inserted_flag["_id"])
@@ -128,9 +100,7 @@ class TestFlagServiceDeleteFlagById:
         final_count = mongo_db.flags.count_documents({})
         assert final_count == initial_count - 1
 
-    def test_delete_flag_returns_delete_result(
-        self, app: Flask, inserted_flag: dict[str, str]
-    ) -> None:
+    def test_delete_flag_returns_delete_result(self, app: Flask, inserted_flag: dict[str, str]) -> None:
         result = FlagService.delete_flag_by_id(inserted_flag["_id"])
 
         assert isinstance(result, DeleteResult)
@@ -145,9 +115,7 @@ class TestFlagServiceDeleteFlagById:
         assert exc_info.value.status_code == 404
         assert exc_info.value.code == CODE_NOT_FOUND_FLAG
 
-    def test_delete_flag_only_removes_one(
-        self, app: Flask, inserted_flags: list[dict[str, str]], mongo_db: Database
-    ) -> None:
+    def test_delete_flag_only_removes_one(self, app: Flask, inserted_flags: list[dict[str, str]], mongo_db: Database) -> None:
         initial_count = mongo_db.flags.count_documents({})
 
         FlagService.delete_flag_by_id(inserted_flags[0]["_id"])

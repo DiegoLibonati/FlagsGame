@@ -41,8 +41,6 @@ class ModeService:
         existing = ModeDAO.find_one_by_id(_id)
 
         if not existing:
-            raise NotFoundAPIError(
-                code=CODE_NOT_FOUND_MODE, message=MESSAGE_NOT_FOUND_MODE
-            )
+            raise NotFoundAPIError(code=CODE_NOT_FOUND_MODE, message=MESSAGE_NOT_FOUND_MODE)
 
         return ModeDAO.delete_one_by_id(_id)

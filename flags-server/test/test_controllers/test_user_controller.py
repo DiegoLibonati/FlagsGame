@@ -70,9 +70,7 @@ class TestTopGeneralEndpoint:
 
         assert isinstance(data["data"], list)
 
-    def test_top_general_returns_empty_when_no_users(
-        self, app: Flask, client: FlaskClient, mongo_db: Database
-    ) -> None:
+    def test_top_general_returns_empty_when_no_users(self, app: Flask, client: FlaskClient, mongo_db: Database) -> None:
         mongo_db.users.delete_many({})
 
         response = client.get("/api/v1/users/top_global")
@@ -80,9 +78,7 @@ class TestTopGeneralEndpoint:
 
         assert data["data"] == []
 
-    def test_top_general_returns_users_sorted_by_score(
-        self, client: FlaskClient, inserted_users: list[dict[str, Any]]
-    ) -> None:
+    def test_top_general_returns_users_sorted_by_score(self, client: FlaskClient, inserted_users: list[dict[str, Any]]) -> None:
         response = client.get("/api/v1/users/top_global")
         data = response.get_json()
 
@@ -200,9 +196,7 @@ class TestAddUserEndpoint:
         final_count = mongo_db.users.count_documents({})
         assert final_count == initial_count + 1
 
-    def test_add_user_with_invalid_mode_returns_404(
-        self, app: Flask, client: FlaskClient, mongo_db: Database
-    ) -> None:
+    def test_add_user_with_invalid_mode_returns_404(self, app: Flask, client: FlaskClient, mongo_db: Database) -> None:
         mongo_db.users.delete_many({})
         mongo_db.modes.delete_many({})
 
@@ -217,9 +211,7 @@ class TestAddUserEndpoint:
 
         assert response.status_code == 404
 
-    def test_add_user_with_invalid_mode_returns_correct_code(
-        self, app: Flask, client: FlaskClient, mongo_db: Database
-    ) -> None:
+    def test_add_user_with_invalid_mode_returns_correct_code(self, app: Flask, client: FlaskClient, mongo_db: Database) -> None:
         mongo_db.users.delete_many({})
         mongo_db.modes.delete_many({})
 
@@ -327,9 +319,7 @@ class TestModifyUserEndpoint:
 
         assert "password" not in data["data"]
 
-    def test_modify_user_with_invalid_mode_returns_404(
-        self, client: FlaskClient, inserted_user: dict[str, Any], mongo_db: Database
-    ) -> None:
+    def test_modify_user_with_invalid_mode_returns_404(self, client: FlaskClient, inserted_user: dict[str, Any], mongo_db: Database) -> None:
         mongo_db.modes.delete_many({})
 
         user_data = {
@@ -343,9 +333,7 @@ class TestModifyUserEndpoint:
 
         assert response.status_code == 404
 
-    def test_modify_user_with_invalid_mode_returns_correct_code(
-        self, client: FlaskClient, inserted_user: dict[str, Any], mongo_db: Database
-    ) -> None:
+    def test_modify_user_with_invalid_mode_returns_correct_code(self, client: FlaskClient, inserted_user: dict[str, Any], mongo_db: Database) -> None:
         mongo_db.modes.delete_many({})
 
         user_data = {
@@ -438,33 +426,25 @@ class TestModifyUserEndpoint:
 
 
 class TestDeleteUserEndpoint:
-    def test_delete_user_returns_200(
-        self, client: FlaskClient, inserted_user: dict[str, Any]
-    ) -> None:
+    def test_delete_user_returns_200(self, client: FlaskClient, inserted_user: dict[str, Any]) -> None:
         response = client.delete(f"/api/v1/users/{inserted_user['_id']}")
 
         assert response.status_code == 200
 
-    def test_delete_user_returns_correct_structure(
-        self, client: FlaskClient, inserted_user: dict[str, Any]
-    ) -> None:
+    def test_delete_user_returns_correct_structure(self, client: FlaskClient, inserted_user: dict[str, Any]) -> None:
         response = client.delete(f"/api/v1/users/{inserted_user['_id']}")
         data = response.get_json()
 
         assert "code" in data
         assert "message" in data
 
-    def test_delete_user_returns_correct_code(
-        self, client: FlaskClient, inserted_user: dict[str, Any]
-    ) -> None:
+    def test_delete_user_returns_correct_code(self, client: FlaskClient, inserted_user: dict[str, Any]) -> None:
         response = client.delete(f"/api/v1/users/{inserted_user['_id']}")
         data = response.get_json()
 
         assert data["code"] == CODE_SUCCESS_DELETE_USER
 
-    def test_delete_user_removes_from_database(
-        self, client: FlaskClient, inserted_user: dict[str, Any], mongo_db: Database
-    ) -> None:
+    def test_delete_user_removes_from_database(self, client: FlaskClient, inserted_user: dict[str, Any], mongo_db: Database) -> None:
         initial_count = mongo_db.users.count_documents({})
 
         client.delete(f"/api/v1/users/{inserted_user['_id']}")
@@ -472,9 +452,7 @@ class TestDeleteUserEndpoint:
         final_count = mongo_db.users.count_documents({})
         assert final_count == initial_count - 1
 
-    def test_delete_nonexistent_user_returns_404(
-        self, app: Flask, client: FlaskClient, mongo_db: Database
-    ) -> None:
+    def test_delete_nonexistent_user_returns_404(self, app: Flask, client: FlaskClient, mongo_db: Database) -> None:
         mongo_db.users.delete_many({})
         fake_id = str(ObjectId())
 
@@ -482,9 +460,7 @@ class TestDeleteUserEndpoint:
 
         assert response.status_code == 404
 
-    def test_delete_nonexistent_user_returns_correct_code(
-        self, app: Flask, client: FlaskClient, mongo_db: Database
-    ) -> None:
+    def test_delete_nonexistent_user_returns_correct_code(self, app: Flask, client: FlaskClient, mongo_db: Database) -> None:
         mongo_db.users.delete_many({})
         fake_id = str(ObjectId())
 

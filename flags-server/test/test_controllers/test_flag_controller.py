@@ -61,9 +61,7 @@ class TestFlagsEndpoint:
 
         assert data["code"] == CODE_SUCCESS_GET_ALL_FLAGS
 
-    def test_flags_returns_empty_list_when_no_flags(
-        self, app: Flask, client: FlaskClient, mongo_db: Database
-    ) -> None:
+    def test_flags_returns_empty_list_when_no_flags(self, app: Flask, client: FlaskClient, mongo_db: Database) -> None:
         mongo_db.flags.delete_many({})
 
         response = client.get("/api/v1/flags/")
@@ -71,9 +69,7 @@ class TestFlagsEndpoint:
 
         assert data["data"] == []
 
-    def test_flags_returns_all_flags(
-        self, client: FlaskClient, inserted_flags: list[dict[str, str]]
-    ) -> None:
+    def test_flags_returns_all_flags(self, client: FlaskClient, inserted_flags: list[dict[str, str]]) -> None:
         response = client.get("/api/v1/flags/")
         data = response.get_json()
 
@@ -165,9 +161,7 @@ class TestAddFlagEndpoint:
 
         assert response.status_code == 400
 
-    def test_add_flag_duplicate_returns_409(
-        self, client: FlaskClient, inserted_flag: dict[str, str]
-    ) -> None:
+    def test_add_flag_duplicate_returns_409(self, client: FlaskClient, inserted_flag: dict[str, str]) -> None:
         duplicate_flag = {
             "name": inserted_flag["name"],
             "image": "https://example.com/other.png",
@@ -179,16 +173,12 @@ class TestAddFlagEndpoint:
 
 
 class TestGetRandomFlagsEndpoint:
-    def test_get_random_flags_returns_200(
-        self, client: FlaskClient, inserted_flags: list[dict[str, str]]
-    ) -> None:
+    def test_get_random_flags_returns_200(self, client: FlaskClient, inserted_flags: list[dict[str, str]]) -> None:
         response = client.get("/api/v1/flags/random/2")
 
         assert response.status_code == 200
 
-    def test_get_random_flags_returns_correct_structure(
-        self, client: FlaskClient, inserted_flags: list[dict[str, str]]
-    ) -> None:
+    def test_get_random_flags_returns_correct_structure(self, client: FlaskClient, inserted_flags: list[dict[str, str]]) -> None:
         response = client.get("/api/v1/flags/random/2")
         data = response.get_json()
 
@@ -196,80 +186,60 @@ class TestGetRandomFlagsEndpoint:
         assert "message" in data
         assert "data" in data
 
-    def test_get_random_flags_returns_correct_code(
-        self, client: FlaskClient, inserted_flags: list[dict[str, str]]
-    ) -> None:
+    def test_get_random_flags_returns_correct_code(self, client: FlaskClient, inserted_flags: list[dict[str, str]]) -> None:
         response = client.get("/api/v1/flags/random/2")
         data = response.get_json()
 
         assert data["code"] == CODE_SUCCESS_GET_ALL_FLAGS
 
-    def test_get_random_flags_returns_requested_quantity(
-        self, client: FlaskClient, inserted_flags: list[dict[str, str]]
-    ) -> None:
+    def test_get_random_flags_returns_requested_quantity(self, client: FlaskClient, inserted_flags: list[dict[str, str]]) -> None:
         response = client.get("/api/v1/flags/random/2")
         data = response.get_json()
 
         assert len(data["data"]) == 2
 
-    def test_get_random_flags_with_invalid_quantity_returns_400(
-        self, client: FlaskClient
-    ) -> None:
+    def test_get_random_flags_with_invalid_quantity_returns_400(self, client: FlaskClient) -> None:
         response = client.get("/api/v1/flags/random/invalid")
 
         assert response.status_code == 400
 
-    def test_get_random_flags_with_invalid_quantity_returns_correct_code(
-        self, client: FlaskClient
-    ) -> None:
+    def test_get_random_flags_with_invalid_quantity_returns_correct_code(self, client: FlaskClient) -> None:
         response = client.get("/api/v1/flags/random/invalid")
         data = response.get_json()
 
         assert data["code"] == CODE_ERROR_VALUE_IS_NOT_INTEGER
 
-    def test_get_random_flags_with_negative_returns_400(
-        self, client: FlaskClient
-    ) -> None:
+    def test_get_random_flags_with_negative_returns_400(self, client: FlaskClient) -> None:
         response = client.get("/api/v1/flags/random/-5")
 
         assert response.status_code == 400
 
-    def test_get_random_flags_with_zero_returns_empty(
-        self, client: FlaskClient, inserted_flags: list[dict[str, str]]
-    ) -> None:
+    def test_get_random_flags_with_zero_returns_empty(self, client: FlaskClient, inserted_flags: list[dict[str, str]]) -> None:
         response = client.get("/api/v1/flags/random/0")
 
         assert response.status_code == 400
 
 
 class TestDeleteFlagEndpoint:
-    def test_delete_flag_returns_200(
-        self, client: FlaskClient, inserted_flag: dict[str, str]
-    ) -> None:
+    def test_delete_flag_returns_200(self, client: FlaskClient, inserted_flag: dict[str, str]) -> None:
         response = client.delete(f"/api/v1/flags/{inserted_flag['_id']}")
 
         assert response.status_code == 200
 
-    def test_delete_flag_returns_correct_structure(
-        self, client: FlaskClient, inserted_flag: dict[str, str]
-    ) -> None:
+    def test_delete_flag_returns_correct_structure(self, client: FlaskClient, inserted_flag: dict[str, str]) -> None:
         response = client.delete(f"/api/v1/flags/{inserted_flag['_id']}")
         data = response.get_json()
 
         assert "code" in data
         assert "message" in data
 
-    def test_delete_flag_returns_correct_code(
-        self, client: FlaskClient, inserted_flag: dict[str, str]
-    ) -> None:
+    def test_delete_flag_returns_correct_code(self, client: FlaskClient, inserted_flag: dict[str, str]) -> None:
         response = client.delete(f"/api/v1/flags/{inserted_flag['_id']}")
         data = response.get_json()
 
         assert data["code"] == CODE_SUCCESS_DELETE_FLAG
 
-    def test_delete_flag_removes_from_database(
-        self, client: FlaskClient, inserted_flag: dict[str, str], mongo_db: Database
-    ) -> None:
+    def test_delete_flag_removes_from_database(self, client: FlaskClient, inserted_flag: dict[str, str], mongo_db: Database) -> None:
         initial_count = mongo_db.flags.count_documents({})
 
         client.delete(f"/api/v1/flags/{inserted_flag['_id']}")
@@ -277,9 +247,7 @@ class TestDeleteFlagEndpoint:
         final_count = mongo_db.flags.count_documents({})
         assert final_count == initial_count - 1
 
-    def test_delete_nonexistent_flag_returns_404(
-        self, app: Flask, client: FlaskClient, mongo_db: Database
-    ) -> None:
+    def test_delete_nonexistent_flag_returns_404(self, app: Flask, client: FlaskClient, mongo_db: Database) -> None:
         mongo_db.flags.delete_many({})
         fake_id = str(ObjectId())
 

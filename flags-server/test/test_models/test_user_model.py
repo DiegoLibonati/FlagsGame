@@ -89,16 +89,12 @@ class TestUserModelMinLength:
 
 class TestUserModelStripWhitespace:
     def test_username_strips_whitespace(self) -> None:
-        user = UserModel(
-            username="  testuser  ", password="pass", scores={}, total_score=0
-        )
+        user = UserModel(username="  testuser  ", password="pass", scores={}, total_score=0)
 
         assert user.username == "testuser"
 
     def test_password_strips_whitespace(self) -> None:
-        user = UserModel(
-            username="user", password="  secret  ", scores={}, total_score=0
-        )
+        user = UserModel(username="user", password="  secret  ", scores={}, total_score=0)
 
         assert user.password == "secret"
 
@@ -136,17 +132,13 @@ class TestUserModelScoresField:
         assert user.scores == {}
 
     def test_scores_accepts_single_entry(self) -> None:
-        user = UserModel(
-            username="user", password="pass", scores={"General": 100}, total_score=100
-        )
+        user = UserModel(username="user", password="pass", scores={"General": 100}, total_score=100)
 
         assert user.scores == {"General": 100}
 
     def test_scores_accepts_multiple_entries(self) -> None:
         scores = {"General": 300, "Normal": 100, "Hard": 200}
-        user = UserModel(
-            username="user", password="pass", scores=scores, total_score=300
-        )
+        user = UserModel(username="user", password="pass", scores=scores, total_score=300)
 
         assert user.scores == scores
 
@@ -178,9 +170,7 @@ class TestUserModelTotalScoreField:
 
     def test_total_score_string_fails(self) -> None:
         with pytest.raises(ValidationError):
-            UserModel(
-                username="user", password="pass", scores={}, total_score="hundred"
-            )
+            UserModel(username="user", password="pass", scores={}, total_score="hundred")
 
 
 class TestUserModelSerialization:

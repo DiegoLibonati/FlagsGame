@@ -14,13 +14,9 @@ class TestAddDefaultFlags:
         count = mongo_db.flags.count_documents({})
         assert count == len(DEFAULT_FLAGS)
 
-    def test_does_not_add_when_flags_exist(
-        self, app: Flask, mongo_db: Database
-    ) -> None:
+    def test_does_not_add_when_flags_exist(self, app: Flask, mongo_db: Database) -> None:
         mongo_db.flags.delete_many({})
-        mongo_db.flags.insert_one(
-            {"name": "ExistingFlag", "image": "https://example.com/flag.png"}
-        )
+        mongo_db.flags.insert_one({"name": "ExistingFlag", "image": "https://example.com/flag.png"})
 
         add_default_flags()
 

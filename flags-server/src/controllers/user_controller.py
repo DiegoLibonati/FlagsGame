@@ -113,9 +113,7 @@ def modify_user() -> Response:
         raise NotFoundAPIError(code=CODE_NOT_FOUND_USER, message=MESSAGE_NOT_FOUND_USER)
 
     if not EncryptService(password=password).valid_password(pwhash=user["password"]):
-        raise AuthenticationAPIError(
-            code=CODE_ERROR_AUTHENTICATION, message=MESSAGE_ERROR_AUTHENTICATION
-        )
+        raise AuthenticationAPIError(code=CODE_ERROR_AUTHENTICATION, message=MESSAGE_ERROR_AUTHENTICATION)
 
     mode_name = mode["name"]
 
@@ -124,16 +122,11 @@ def modify_user() -> Response:
     if mode_name not in user["scores"].keys():
         user["scores"]["General"] = user["scores"]["General"] + score_actual
     else:
-        user["scores"]["General"] = (
-            reduce(lambda a, b: a + b, user["scores"].values())
-            - user["scores"]["General"]
-        )
+        user["scores"]["General"] = reduce(lambda a, b: a + b, user["scores"].values()) - user["scores"]["General"]
 
     user["total_score"] = user["scores"]["General"]
 
-    UserService.update_user_scores_by_username(
-        user["username"], {"scores": user["scores"], "total_score": user["total_score"]}
-    )
+    UserService.update_user_scores_by_username(user["username"], {"scores": user["scores"], "total_score": user["total_score"]})
 
     user = UserService.get_user_by_username(username)
     del user["password"]

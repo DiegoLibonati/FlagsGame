@@ -104,9 +104,7 @@ class TestFlagModelSerialization:
         assert flag.image == "https://example.com/peru.png"
 
     def test_model_ignores_extra_fields(self) -> None:
-        flag = FlagModel(
-            name="Test", image="https://example.com/test.png", extra_field="ignored"
-        )
+        flag = FlagModel(name="Test", image="https://example.com/test.png", extra_field="ignored")
 
         assert flag.name == "Test"
         assert not hasattr(flag, "extra_field")

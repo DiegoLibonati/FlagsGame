@@ -62,9 +62,7 @@ class UserService:
         return data[:10]
 
     @staticmethod
-    def update_user_scores_by_username(
-        username: str, values: dict[str, Any]
-    ) -> UpdateResult:
+    def update_user_scores_by_username(username: str, values: dict[str, Any]) -> UpdateResult:
         return UserDAO.update_one_by_username(username, values)
 
     @staticmethod
@@ -72,8 +70,6 @@ class UserService:
         existing = UserDAO.find_one_by_id(_id)
 
         if not existing:
-            raise NotFoundAPIError(
-                code=CODE_NOT_FOUND_USER, message=MESSAGE_NOT_FOUND_USER
-            )
+            raise NotFoundAPIError(code=CODE_NOT_FOUND_USER, message=MESSAGE_NOT_FOUND_USER)
 
         return UserDAO.delete_one_by_id(_id)

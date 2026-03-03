@@ -13,9 +13,7 @@ class TestDefaultModes:
 
         for mode in DEFAULT_MODES:
             for key in required_keys:
-                assert (
-                    key in mode
-                ), f"Mode {mode.get('name', 'unknown')} missing key: {key}"
+                assert key in mode, f"Mode {mode.get('name', 'unknown')} missing key: {key}"
 
     def test_default_modes_name_is_string(self) -> None:
         for mode in DEFAULT_MODES:
@@ -70,9 +68,7 @@ class TestDefaultFlags:
 
         for flag in DEFAULT_FLAGS:
             for key in required_keys:
-                assert (
-                    key in flag
-                ), f"Flag {flag.get('name', 'unknown')} missing key: {key}"
+                assert key in flag, f"Flag {flag.get('name', 'unknown')} missing key: {key}"
 
     def test_default_flags_name_is_string(self) -> None:
         for flag in DEFAULT_FLAGS:

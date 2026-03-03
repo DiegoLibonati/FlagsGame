@@ -19,9 +19,7 @@ class TestModeModelCreation:
         assert mode.timeleft == 90
 
     def test_model_dump_returns_dict(self) -> None:
-        mode = ModeModel(
-            name="Hard", description="Hard mode", multiplier=100, timeleft=60
-        )
+        mode = ModeModel(name="Hard", description="Hard mode", multiplier=100, timeleft=60)
 
         result = mode.model_dump()
 
@@ -86,16 +84,12 @@ class TestModeModelMinLength:
 
 class TestModeModelStripWhitespace:
     def test_name_strips_whitespace(self) -> None:
-        mode = ModeModel(
-            name="  Normal  ", description="Desc", multiplier=10, timeleft=90
-        )
+        mode = ModeModel(name="  Normal  ", description="Desc", multiplier=10, timeleft=90)
 
         assert mode.name == "Normal"
 
     def test_description_strips_whitespace(self) -> None:
-        mode = ModeModel(
-            name="Test", description="  Description  ", multiplier=10, timeleft=90
-        )
+        mode = ModeModel(name="Test", description="  Description  ", multiplier=10, timeleft=90)
 
         assert mode.description == "Description"
 
@@ -148,9 +142,7 @@ class TestModeModelIntegerFields:
         assert mode.timeleft == -30
 
     def test_multiplier_accepts_large_number(self) -> None:
-        mode = ModeModel(
-            name="Test", description="Desc", multiplier=1000000, timeleft=90
-        )
+        mode = ModeModel(name="Test", description="Desc", multiplier=1000000, timeleft=90)
 
         assert mode.multiplier == 1000000
 
@@ -165,9 +157,7 @@ class TestModeModelIntegerFields:
 
 class TestModeModelSerialization:
     def test_model_to_json(self) -> None:
-        mode = ModeModel(
-            name="Hardcore", description="Hardcore mode", multiplier=1000, timeleft=30
-        )
+        mode = ModeModel(name="Hardcore", description="Hardcore mode", multiplier=1000, timeleft=30)
 
         json_str = mode.model_dump_json()
 

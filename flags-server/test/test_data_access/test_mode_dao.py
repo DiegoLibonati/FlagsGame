@@ -9,9 +9,7 @@ from src.data_access.mode_dao import ModeDAO
 
 
 class TestModeDAOInsert:
-    def test_insert_one_creates_document(
-        self, app: Flask, mongo_db: Database, sample_mode: dict[str, Any]
-    ) -> None:
+    def test_insert_one_creates_document(self, app: Flask, mongo_db: Database, sample_mode: dict[str, Any]) -> None:
         mongo_db.modes.delete_many({})
 
         result = ModeDAO.insert_one(sample_mode.copy())
@@ -22,9 +20,7 @@ class TestModeDAOInsert:
         assert doc is not None
         assert doc["name"] == sample_mode["name"]
 
-    def test_insert_one_returns_insert_result(
-        self, app: Flask, mongo_db: Database, sample_mode: dict[str, Any]
-    ) -> None:
+    def test_insert_one_returns_insert_result(self, app: Flask, mongo_db: Database, sample_mode: dict[str, Any]) -> None:
         mongo_db.modes.delete_many({})
 
         result = ModeDAO.insert_one(sample_mode.copy())
@@ -32,9 +28,7 @@ class TestModeDAOInsert:
         assert isinstance(result, InsertOneResult)
         assert result.acknowledged is True
 
-    def test_insert_multiple_documents(
-        self, app: Flask, mongo_db: Database, sample_modes: list[dict[str, Any]]
-    ) -> None:
+    def test_insert_multiple_documents(self, app: Flask, mongo_db: Database, sample_modes: list[dict[str, Any]]) -> None:
         mongo_db.modes.delete_many({})
 
         for mode in sample_modes:
@@ -45,25 +39,19 @@ class TestModeDAOInsert:
 
 
 class TestModeDAOFind:
-    def test_find_returns_empty_list_when_no_documents(
-        self, app: Flask, mongo_db: Database
-    ) -> None:
+    def test_find_returns_empty_list_when_no_documents(self, app: Flask, mongo_db: Database) -> None:
         mongo_db.modes.delete_many({})
 
         result = ModeDAO.find()
 
         assert result == []
 
-    def test_find_returns_all_documents(
-        self, app: Flask, inserted_modes: list[dict[str, Any]]
-    ) -> None:
+    def test_find_returns_all_documents(self, app: Flask, inserted_modes: list[dict[str, Any]]) -> None:
         result = ModeDAO.find()
 
         assert len(result) == len(inserted_modes)
 
-    def test_find_returns_parsed_documents(
-        self, app: Flask, inserted_modes: list[dict[str, Any]]
-    ) -> None:
+    def test_find_returns_parsed_documents(self, app: Flask, inserted_modes: list[dict[str, Any]]) -> None:
         result = ModeDAO.find()
 
         assert len(result) > 0
@@ -71,18 +59,14 @@ class TestModeDAOFind:
 
 
 class TestModeDAOFindOneById:
-    def test_find_one_by_id_returns_document(
-        self, app: Flask, inserted_mode: dict[str, Any]
-    ) -> None:
+    def test_find_one_by_id_returns_document(self, app: Flask, inserted_mode: dict[str, Any]) -> None:
         result = ModeDAO.find_one_by_id(inserted_mode["_id"])
 
         assert result is not None
         assert result["_id"] == inserted_mode["_id"]
         assert result["name"] == inserted_mode["name"]
 
-    def test_find_one_by_id_returns_none_for_nonexistent(
-        self, app: Flask, mongo_db: Database
-    ) -> None:
+    def test_find_one_by_id_returns_none_for_nonexistent(self, app: Flask, mongo_db: Database) -> None:
         mongo_db.modes.delete_many({})
         fake_id = str(ObjectId())
 
@@ -90,17 +74,13 @@ class TestModeDAOFindOneById:
 
         assert result is None
 
-    def test_find_one_by_id_accepts_string_id(
-        self, app: Flask, inserted_mode: dict[str, Any]
-    ) -> None:
+    def test_find_one_by_id_accepts_string_id(self, app: Flask, inserted_mode: dict[str, Any]) -> None:
         result = ModeDAO.find_one_by_id(inserted_mode["_id"])
 
         assert result is not None
         assert isinstance(result["_id"], str)
 
-    def test_find_one_by_id_returns_all_fields(
-        self, app: Flask, inserted_mode: dict[str, Any]
-    ) -> None:
+    def test_find_one_by_id_returns_all_fields(self, app: Flask, inserted_mode: dict[str, Any]) -> None:
         result = ModeDAO.find_one_by_id(inserted_mode["_id"])
 
         assert "name" in result
@@ -110,17 +90,13 @@ class TestModeDAOFindOneById:
 
 
 class TestModeDAOFindOneByName:
-    def test_find_one_by_name_returns_document(
-        self, app: Flask, inserted_mode: dict[str, Any]
-    ) -> None:
+    def test_find_one_by_name_returns_document(self, app: Flask, inserted_mode: dict[str, Any]) -> None:
         result = ModeDAO.find_one_by_name(inserted_mode["name"])
 
         assert result is not None
         assert result["name"] == inserted_mode["name"]
 
-    def test_find_one_by_name_is_case_insensitive(
-        self, app: Flask, inserted_mode: dict[str, Any]
-    ) -> None:
+    def test_find_one_by_name_is_case_insensitive(self, app: Flask, inserted_mode: dict[str, Any]) -> None:
         result_lower = ModeDAO.find_one_by_name(inserted_mode["name"].lower())
         result_upper = ModeDAO.find_one_by_name(inserted_mode["name"].upper())
 
@@ -128,9 +104,7 @@ class TestModeDAOFindOneByName:
         assert result_upper is not None
         assert result_lower["name"] == result_upper["name"]
 
-    def test_find_one_by_name_returns_none_for_nonexistent(
-        self, app: Flask, mongo_db: Database
-    ) -> None:
+    def test_find_one_by_name_returns_none_for_nonexistent(self, app: Flask, mongo_db: Database) -> None:
         mongo_db.modes.delete_many({})
 
         result = ModeDAO.find_one_by_name("NonexistentMode")
@@ -139,9 +113,7 @@ class TestModeDAOFindOneByName:
 
 
 class TestModeDAODelete:
-    def test_delete_one_by_id_removes_document(
-        self, app: Flask, inserted_mode: dict[str, Any], mongo_db: Database
-    ) -> None:
+    def test_delete_one_by_id_removes_document(self, app: Flask, inserted_mode: dict[str, Any], mongo_db: Database) -> None:
         initial_count = mongo_db.modes.count_documents({})
 
         result = ModeDAO.delete_one_by_id(inserted_mode["_id"])
@@ -149,17 +121,13 @@ class TestModeDAODelete:
         assert result.deleted_count == 1
         assert mongo_db.modes.count_documents({}) == initial_count - 1
 
-    def test_delete_one_by_id_returns_delete_result(
-        self, app: Flask, inserted_mode: dict[str, Any]
-    ) -> None:
+    def test_delete_one_by_id_returns_delete_result(self, app: Flask, inserted_mode: dict[str, Any]) -> None:
         result = ModeDAO.delete_one_by_id(inserted_mode["_id"])
 
         assert isinstance(result, DeleteResult)
         assert result.acknowledged is True
 
-    def test_delete_one_by_id_nonexistent_returns_zero(
-        self, app: Flask, mongo_db: Database
-    ) -> None:
+    def test_delete_one_by_id_nonexistent_returns_zero(self, app: Flask, mongo_db: Database) -> None:
         mongo_db.modes.delete_many({})
         fake_id = str(ObjectId())
 
