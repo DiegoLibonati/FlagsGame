@@ -3,7 +3,7 @@ from typing import Any
 from bson import ObjectId
 from pymongo.results import DeleteResult, InsertOneResult, UpdateResult
 
-from config.mongo_config import mongo
+from src.configs.mongo_config import mongo
 
 
 class UserDAO:

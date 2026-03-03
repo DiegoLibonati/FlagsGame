@@ -3,7 +3,7 @@ from typing import Any
 from bson import ObjectId
 from pymongo.results import DeleteResult, InsertOneResult
 
-from config.mongo_config import mongo
+from src.configs.mongo_config import mongo
 
 
 class FlagDAO:
@@ -17,9 +17,7 @@ class FlagDAO:
 
     @staticmethod
     def find_random(quantity: int) -> list[dict[str, Any]]:
-        return FlagDAO.parse_flags(
-            list(mongo.db.flags.aggregate([{"$sample": {"size": quantity}}]))
-        )
+        return FlagDAO.parse_flags(list(mongo.db.flags.aggregate([{"$sample": {"size": quantity}}])))
 
     @staticmethod
     def find_one_by_id(_id: ObjectId) -> dict[str, Any] | None:
@@ -27,9 +25,7 @@ class FlagDAO:
 
     @staticmethod
     def find_one_by_name(name: str) -> dict[str, Any] | None:
-        return FlagDAO.parse_flag(
-            mongo.db.flags.find_one({"name": {"$regex": f"^{name}$", "$options": "i"}})
-        )
+        return FlagDAO.parse_flag(mongo.db.flags.find_one({"name": {"$regex": f"^{name}$", "$options": "i"}}))
 
     @staticmethod
     def delete_one_by_id(_id: ObjectId) -> DeleteResult:

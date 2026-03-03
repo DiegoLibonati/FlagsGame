@@ -3,7 +3,7 @@ from typing import Any
 from bson import ObjectId
 from pymongo.results import DeleteResult, InsertOneResult
 
-from config.mongo_config import mongo
+from src.configs.mongo_config import mongo
 
 
 class ModeDAO:
@@ -21,9 +21,7 @@ class ModeDAO:
 
     @staticmethod
     def find_one_by_name(name: str) -> dict[str, Any] | None:
-        return ModeDAO.parse_mode(
-            mongo.db.modes.find_one({"name": {"$regex": f"^{name}$", "$options": "i"}})
-        )
+        return ModeDAO.parse_mode(mongo.db.modes.find_one({"name": {"$regex": f"^{name}$", "$options": "i"}}))
 
     @staticmethod
     def delete_one_by_id(_id: ObjectId) -> DeleteResult:
