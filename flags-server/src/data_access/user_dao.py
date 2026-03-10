@@ -8,7 +8,7 @@ from src.configs.mongo_config import mongo
 
 class UserDAO:
     @staticmethod
-    def insert_one(user: dict) -> InsertOneResult:
+    def insert_one(user: dict[str, Any]) -> InsertOneResult:
         return mongo.db.users.insert_one(user)
 
     @staticmethod

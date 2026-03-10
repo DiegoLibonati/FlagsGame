@@ -8,7 +8,7 @@ from src.configs.mongo_config import mongo
 
 class ModeDAO:
     @staticmethod
-    def insert_one(mode: dict) -> InsertOneResult:
+    def insert_one(mode: dict[str, Any]) -> InsertOneResult:
         return mongo.db.modes.insert_one(mode)
 
     @staticmethod

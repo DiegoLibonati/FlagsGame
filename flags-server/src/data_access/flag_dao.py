@@ -8,7 +8,7 @@ from src.configs.mongo_config import mongo
 
 class FlagDAO:
     @staticmethod
-    def insert_one(flag: dict) -> InsertOneResult:
+    def insert_one(flag: dict[str, Any]) -> InsertOneResult:
         return mongo.db.flags.insert_one(flag)
 
     @staticmethod
