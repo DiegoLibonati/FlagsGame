@@ -3,9 +3,9 @@ from typing import Any
 from bson import ObjectId
 from pymongo.results import DeleteResult, InsertOneResult, UpdateResult
 
-from src.constants.codes import CODE_ERROR_USER_ALREADY_EXISTS, CODE_NOT_FOUND_USER
+from src.constants.codes import CODE_ALREADY_EXISTS_USER, CODE_NOT_FOUND_USER
 from src.constants.messages import (
-    MESSAGE_ERROR_USER_ALREADY_EXISTS,
+    MESSAGE_ALREADY_EXISTS_USER,
     MESSAGE_NOT_FOUND_USER,
 )
 from src.data_access.user_dao import UserDAO
@@ -19,8 +19,8 @@ class UserService:
         existing = UserDAO.find_one_by_username(user.username)
         if existing:
             raise ConflictAPIError(
-                code=CODE_ERROR_USER_ALREADY_EXISTS,
-                message=MESSAGE_ERROR_USER_ALREADY_EXISTS,
+                code=CODE_ALREADY_EXISTS_USER,
+                message=MESSAGE_ALREADY_EXISTS_USER,
             )
         return UserDAO.insert_one(user.model_dump())
 

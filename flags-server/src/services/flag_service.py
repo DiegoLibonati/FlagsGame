@@ -3,9 +3,9 @@ from typing import Any
 from bson import ObjectId
 from pymongo.results import DeleteResult, InsertOneResult
 
-from src.constants.codes import CODE_ERROR_FLAG_ALREADY_EXISTS, CODE_NOT_FOUND_FLAG
+from src.constants.codes import CODE_ALREADY_EXISTS_FLAG, CODE_NOT_FOUND_FLAG
 from src.constants.messages import (
-    MESSAGE_ERROR_FLAG_ALREADY_EXISTS,
+    MESSAGE_ALREADY_EXISTS_FLAG,
     MESSAGE_NOT_FOUND_FLAG,
 )
 from src.data_access.flag_dao import FlagDAO
@@ -19,8 +19,8 @@ class FlagService:
         existing = FlagDAO.find_one_by_name(flag.name)
         if existing:
             raise ConflictAPIError(
-                code=CODE_ERROR_FLAG_ALREADY_EXISTS,
-                message=MESSAGE_ERROR_FLAG_ALREADY_EXISTS,
+                code=CODE_ALREADY_EXISTS_FLAG,
+                message=MESSAGE_ALREADY_EXISTS_FLAG,
             )
         return FlagDAO.insert_one(flag.model_dump())
 

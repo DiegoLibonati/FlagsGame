@@ -6,7 +6,7 @@ from flask import Flask
 from pymongo.database import Database
 from pymongo.results import DeleteResult, InsertOneResult
 
-from src.constants.codes import CODE_ERROR_MODE_ALREADY_EXISTS, CODE_NOT_FOUND_MODE
+from src.constants.codes import CODE_ALREADY_EXISTS_MODE, CODE_NOT_FOUND_MODE
 from src.models.mode_model import ModeModel
 from src.services.mode_service import ModeService
 from src.utils.exceptions import ConflictAPIError, NotFoundAPIError
@@ -45,7 +45,7 @@ class TestModeServiceAddMode:
             ModeService.add_mode(mode)
 
         assert exc_info.value.status_code == 409
-        assert exc_info.value.code == CODE_ERROR_MODE_ALREADY_EXISTS
+        assert exc_info.value.code == CODE_ALREADY_EXISTS_MODE
 
     def test_add_mode_duplicate_is_case_insensitive(self, app: Flask, inserted_mode: dict[str, Any]) -> None:
         mode = ModeModel(

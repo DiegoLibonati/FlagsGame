@@ -6,7 +6,7 @@ from flask import Flask
 from pymongo.database import Database
 from pymongo.results import DeleteResult, InsertOneResult, UpdateResult
 
-from src.constants.codes import CODE_ERROR_USER_ALREADY_EXISTS, CODE_NOT_FOUND_USER
+from src.constants.codes import CODE_ALREADY_EXISTS_USER, CODE_NOT_FOUND_USER
 from src.models.user_model import UserModel
 from src.services.user_service import UserService
 from src.utils.exceptions import ConflictAPIError, NotFoundAPIError
@@ -45,7 +45,7 @@ class TestUserServiceAddUser:
             UserService.add_user(user)
 
         assert exc_info.value.status_code == 409
-        assert exc_info.value.code == CODE_ERROR_USER_ALREADY_EXISTS
+        assert exc_info.value.code == CODE_ALREADY_EXISTS_USER
 
 
 class TestUserServiceGetAllUsers:

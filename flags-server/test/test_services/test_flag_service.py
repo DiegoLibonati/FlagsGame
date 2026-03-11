@@ -4,7 +4,7 @@ from flask import Flask
 from pymongo.database import Database
 from pymongo.results import DeleteResult, InsertOneResult
 
-from src.constants.codes import CODE_ERROR_FLAG_ALREADY_EXISTS, CODE_NOT_FOUND_FLAG
+from src.constants.codes import CODE_ALREADY_EXISTS_FLAG, CODE_NOT_FOUND_FLAG
 from src.models.flag_model import FlagModel
 from src.services.flag_service import FlagService
 from src.utils.exceptions import ConflictAPIError, NotFoundAPIError
@@ -38,7 +38,7 @@ class TestFlagServiceAddFlag:
             FlagService.add_flag(flag)
 
         assert exc_info.value.status_code == 409
-        assert exc_info.value.code == CODE_ERROR_FLAG_ALREADY_EXISTS
+        assert exc_info.value.code == CODE_ALREADY_EXISTS_FLAG
 
     def test_add_flag_duplicate_is_case_insensitive(self, app: Flask, inserted_flag: dict[str, str]) -> None:
         flag = FlagModel(name=inserted_flag["name"].upper(), image="https://example.com/other.png")

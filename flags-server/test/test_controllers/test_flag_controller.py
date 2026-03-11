@@ -4,7 +4,7 @@ from flask.testing import FlaskClient
 from pymongo.database import Database
 
 from src.constants.codes import (
-    CODE_ERROR_VALUE_IS_NOT_INTEGER,
+    CODE_NOT_VALID_INTEGER,
     CODE_SUCCESS_ADD_FLAG,
     CODE_SUCCESS_DELETE_FLAG,
     CODE_SUCCESS_GET_ALL_FLAGS,
@@ -207,7 +207,7 @@ class TestGetRandomFlagsEndpoint:
         response = client.get("/api/v1/flags/random/invalid")
         data = response.get_json()
 
-        assert data["code"] == CODE_ERROR_VALUE_IS_NOT_INTEGER
+        assert data["code"] == CODE_NOT_VALID_INTEGER
 
     def test_get_random_flags_with_negative_returns_400(self, client: FlaskClient) -> None:
         response = client.get("/api/v1/flags/random/-5")

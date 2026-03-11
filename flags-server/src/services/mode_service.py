@@ -3,9 +3,9 @@ from typing import Any
 from bson import ObjectId
 from pymongo.results import DeleteResult, InsertOneResult
 
-from src.constants.codes import CODE_ERROR_MODE_ALREADY_EXISTS, CODE_NOT_FOUND_MODE
+from src.constants.codes import CODE_ALREADY_EXISTS_MODE, CODE_NOT_FOUND_MODE
 from src.constants.messages import (
-    MESSAGE_ERROR_MODE_ALREADY_EXISTS,
+    MESSAGE_ALREADY_EXISTS_MODE,
     MESSAGE_NOT_FOUND_MODE,
 )
 from src.data_access.mode_dao import ModeDAO
@@ -19,8 +19,8 @@ class ModeService:
         existing = ModeDAO.find_one_by_name(mode.name)
         if existing:
             raise ConflictAPIError(
-                code=CODE_ERROR_MODE_ALREADY_EXISTS,
-                message=MESSAGE_ERROR_MODE_ALREADY_EXISTS,
+                code=CODE_ALREADY_EXISTS_MODE,
+                message=MESSAGE_ALREADY_EXISTS_MODE,
             )
         return ModeDAO.insert_one(mode.model_dump())
 

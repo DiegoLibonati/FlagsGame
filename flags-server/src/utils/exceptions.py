@@ -2,14 +2,14 @@ from typing import Any
 
 from flask import Response, jsonify
 
-from src.constants.codes import CODE_ERROR_API
-from src.constants.messages import MESSAGE_ERROR_API
+from src.constants.codes import CODE_ERROR_INTERNAL_SERVER
+from src.constants.messages import MESSAGE_ERROR_INTERNAL_SERVER
 
 
 class BaseAPIError(Exception):
     status_code: int = 500
-    message: str = MESSAGE_ERROR_API
-    code: str = CODE_ERROR_API
+    message: str = MESSAGE_ERROR_INTERNAL_SERVER
+    code: str = CODE_ERROR_INTERNAL_SERVER
 
     def __init__(
         self,

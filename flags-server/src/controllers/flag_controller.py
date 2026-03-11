@@ -1,13 +1,13 @@
 from flask import Response, jsonify, request
 
 from src.constants.codes import (
-    CODE_ERROR_VALUE_IS_NOT_INTEGER,
+    CODE_NOT_VALID_INTEGER,
     CODE_SUCCESS_ADD_FLAG,
     CODE_SUCCESS_DELETE_FLAG,
     CODE_SUCCESS_GET_ALL_FLAGS,
 )
 from src.constants.messages import (
-    MESSAGE_ERROR_VALUE_IS_NOT_INTEGER,
+    MESSAGE_NOT_VALID_INTEGER,
     MESSAGE_SUCCESS_ADD_FLAG,
     MESSAGE_SUCCESS_DELETE_FLAG,
     MESSAGE_SUCCESS_GET_ALL_FLAGS,
@@ -66,8 +66,8 @@ def add_flag() -> Response:
 def get_random_flags(quantity: str) -> Response:
     if not is_positive_integer(quantity):
         raise ValidationAPIError(
-            code=CODE_ERROR_VALUE_IS_NOT_INTEGER,
-            message=MESSAGE_ERROR_VALUE_IS_NOT_INTEGER,
+            code=CODE_NOT_VALID_INTEGER,
+            message=MESSAGE_NOT_VALID_INTEGER,
         )
 
     quantity = int(quantity)

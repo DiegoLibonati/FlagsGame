@@ -1,3 +1,4 @@
+# ##### SUCCESS #####
 MESSAGE_SUCCESS_ADD_FLAG = "The flag was successfully added."
 MESSAGE_SUCCESS_GET_ALL_FLAGS = "Flags were successfully obtained."
 MESSAGE_SUCCESS_DELETE_FLAG = "Flag was successfully deleted."
@@ -12,16 +13,26 @@ MESSAGE_SUCCESS_GET_ALL_USERS = "Users were successfully obtained."
 MESSAGE_SUCCESS_GET_GLOBAL_TOP_USER = "Global top was successfully obtained."
 MESSAGE_SUCCESS_DELETE_USER = "User was successfully deleted."
 
-MESSAGE_ERROR_API = "Internal server error."
+# ##### ERROR #####
+MESSAGE_ERROR_INTERNAL_SERVER = "Internal server error."
 MESSAGE_ERROR_PYDANTIC = "Pydantic error."
 MESSAGE_ERROR_DATABASE = "Database error."
 MESSAGE_ERROR_GENERIC = "Error: {e}"
-MESSAGE_ERROR_VALUE_IS_NOT_INTEGER = "The value entered is not a valid integer."
-MESSAGE_ERROR_FLAG_ALREADY_EXISTS = "Flag already exists."
-MESSAGE_ERROR_MODE_ALREADY_EXISTS = "Mode already exists."
-MESSAGE_ERROR_USER_ALREADY_EXISTS = "User already exists."
 MESSAGE_ERROR_AUTHENTICATION = "Unable to authenticate."
 
+# ##### NOT #####
+
+# ##### NOT_VALID #####
+MESSAGE_NOT_VALID_INTEGER = "The value entered is not a valid integer."
+
+# ##### NOT_EXISTS #####
+
+# ##### ALREADY_EXISTS #####
+MESSAGE_ALREADY_EXISTS_FLAG = "Flag already exists."
+MESSAGE_ALREADY_EXISTS_MODE = "Mode already exists."
+MESSAGE_ALREADY_EXISTS_USER = "User already exists."
+
+# ##### NOT_FOUND #####
 MESSAGE_NOT_FOUND_FLAG = "No flag found."
 MESSAGE_NOT_FOUND_MODE = "No mode found."
 MESSAGE_NOT_FOUND_USER = "No user found."
