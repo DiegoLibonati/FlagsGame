@@ -22,6 +22,15 @@ NOTE: Install **pre-commit** inside: `flags-server` folder.
 1. Once you're inside the virtual environment, let's install the hooks specified in the pre-commit. Execute: `pre-commit install`
 2. Now every time you try to commit, the pre-commit lint will run. If you want to do it manually, you can run the command: `pre-commit run --all-files`
 
+## Security Audit (Python)
+
+You can check your dependencies for known vulnerabilities using **pip-audit**.
+
+1. Go to the repository folder
+2. Activate your virtual environment
+3. Execute: `pip install -r requirements.dev.txt`
+4. Execute: `pip-audit -r requirements.txt`
+
 ## Description
 
 I made a web application with React JS and Flask for the api-rest, I used mongodb to save the information. In this web application you can play guess the flag, there are a total of 3 game modes among them we have normal, hard and hardcore mode. In each of them will appear 5 flags and depending on the game mode will have more or less time. In game modes with a higher difficulty the points multiplier will be higher, because every time you guess a flag you add points. In each game mode there is a ranking and there is also a global ranking of players that is governed by the amount of points they score.
@@ -89,12 +98,18 @@ Database:
 #### Requirements.txt
 
 ```
-flask==3.1.2
+flask==3.1.3
 pymongo==4.16.0
 pydantic==2.11.9
-werkzeug==3.1.3
+werkzeug==3.1.6
 gunicorn==23.0.0
+```
+
+#### Requirements.dev.txt
+
+```
 pre-commit==4.3.0
+pip-audit==2.7.3
 ```
 
 #### Requirements.test.txt

@@ -24,11 +24,11 @@ from src.models.user_model import UserModel
 from src.services.encrypt_service import EncryptService
 from src.services.mode_service import ModeService
 from src.services.user_service import UserService
-from src.utils.error_handler import handle_exceptions
 from src.utils.exceptions import AuthenticationAPIError, NotFoundAPIError
+from src.utils.exceptions_handler import exceptions_handler
 
 
-@handle_exceptions
+@exceptions_handler
 def alive() -> Response:
     response = {
         "message": "I am Alive!",
@@ -40,7 +40,7 @@ def alive() -> Response:
     return jsonify(response), 200
 
 
-@handle_exceptions
+@exceptions_handler
 def top_general() -> Response:
     users = UserService.get_top_users("General")
 
@@ -53,7 +53,7 @@ def top_general() -> Response:
     return jsonify(response), 200
 
 
-@handle_exceptions
+@exceptions_handler
 def add_user() -> Response:
     body = request.json
 
@@ -92,7 +92,7 @@ def add_user() -> Response:
     return jsonify(response), 201
 
 
-@handle_exceptions
+@exceptions_handler
 def modify_user() -> Response:
     body = request.json
 
@@ -140,7 +140,7 @@ def modify_user() -> Response:
     return jsonify(response), 200
 
 
-@handle_exceptions
+@exceptions_handler
 def delete_user(id: str) -> Response:
     UserService.delete_user_by_id(id)
 

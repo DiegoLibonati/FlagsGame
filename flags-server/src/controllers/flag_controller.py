@@ -14,12 +14,12 @@ from src.constants.messages import (
 )
 from src.models.flag_model import FlagModel
 from src.services.flag_service import FlagService
-from src.utils.error_handler import handle_exceptions
 from src.utils.exceptions import ValidationAPIError
+from src.utils.exceptions_handler import exceptions_handler
 from src.utils.helpers import is_positive_integer
 
 
-@handle_exceptions
+@exceptions_handler
 def alive() -> Response:
     response = {
         "message": "I am Alive!",
@@ -31,7 +31,7 @@ def alive() -> Response:
     return jsonify(response), 200
 
 
-@handle_exceptions
+@exceptions_handler
 def flags() -> Response:
     flags = FlagService.get_all_flags()
 
@@ -44,7 +44,7 @@ def flags() -> Response:
     return jsonify(response), 200
 
 
-@handle_exceptions
+@exceptions_handler
 def add_flag() -> Response:
     body = request.json
     flag = FlagModel(**body)
@@ -62,7 +62,7 @@ def add_flag() -> Response:
     return jsonify(response), 201
 
 
-@handle_exceptions
+@exceptions_handler
 def get_random_flags(quantity: str) -> Response:
     if not is_positive_integer(quantity):
         raise ValidationAPIError(
@@ -83,7 +83,7 @@ def get_random_flags(quantity: str) -> Response:
     return jsonify(response), 200
 
 
-@handle_exceptions
+@exceptions_handler
 def delete_flag(id: str) -> Response:
     FlagService.delete_flag_by_id(id)
 

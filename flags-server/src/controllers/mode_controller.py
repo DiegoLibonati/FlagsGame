@@ -19,11 +19,11 @@ from src.constants.messages import (
 from src.models.mode_model import ModeModel
 from src.services.mode_service import ModeService
 from src.services.user_service import UserService
-from src.utils.error_handler import handle_exceptions
 from src.utils.exceptions import NotFoundAPIError
+from src.utils.exceptions_handler import exceptions_handler
 
 
-@handle_exceptions
+@exceptions_handler
 def alive() -> Response:
     response = {
         "message": "I am Alive!",
@@ -35,7 +35,7 @@ def alive() -> Response:
     return jsonify(response), 200
 
 
-@handle_exceptions
+@exceptions_handler
 def get_modes() -> Response:
     modes = ModeService.get_all_modes()
 
@@ -48,7 +48,7 @@ def get_modes() -> Response:
     return jsonify(response), 200
 
 
-@handle_exceptions
+@exceptions_handler
 def find_mode(id: str) -> Response:
     mode = ModeService.get_mode_by_id(id)
 
@@ -64,7 +64,7 @@ def find_mode(id: str) -> Response:
     return jsonify(response), 200
 
 
-@handle_exceptions
+@exceptions_handler
 def add_mode() -> Response:
     body = request.json
     mode = ModeModel(**body)
@@ -82,7 +82,7 @@ def add_mode() -> Response:
     return jsonify(response), 201
 
 
-@handle_exceptions
+@exceptions_handler
 def top_mode(id: str) -> Response:
     mode = ModeService.get_mode_by_id(id)
 
@@ -100,7 +100,7 @@ def top_mode(id: str) -> Response:
     return jsonify(response), 200
 
 
-@handle_exceptions
+@exceptions_handler
 def delete_mode(id: str) -> Response:
     ModeService.delete_mode_by_id(id)
 
